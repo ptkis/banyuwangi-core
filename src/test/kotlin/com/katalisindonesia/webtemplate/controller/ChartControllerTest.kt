@@ -1,6 +1,6 @@
 package com.katalisindonesia.webtemplate.controller
 
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,7 +14,11 @@ internal class ChartControllerTest(
 ) {
     @Test
     fun `flood all null`() {
-        val result = chartController.flood(null, null, null, null)
+        val result = chartController.flood(
+            startDate = null,
+            endDate = null,
+            location = null,
+        )
         assertNotNull(result)
     }
 }

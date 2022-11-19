@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
-import io.swagger.v3.oas.annotations.security.*
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
@@ -43,8 +43,11 @@ private val desas = listOf(
 @Tag(name = "chart", description = "Chart")
 class ChartController {
     @Operation(
-        summary = "Get flood chart", description = "Get flood chart data", security = [
-            SecurityRequirement(name = "oauth2", scopes = ["chart:read"])], tags = ["chart"]
+        summary = "Get flood chart", description = "Get flood chart data",
+        security = [
+            SecurityRequirement(name = "oauth2", scopes = ["chart:read"])
+        ],
+        tags = ["chart"]
     )
     @ApiResponses(
         value = [
@@ -64,28 +67,31 @@ class ChartController {
         @Parameter(description = "Location of camera, no filter if omitted") @Valid
         @RequestParam(required = false)
         location: String?,
-
-        @Parameter(description = "Camera name, no filter if omitted") @Valid
-        @RequestParam(required = false)
-        camera: String?,
     ): ChartData<ZonedDateTime> {
         val labels = dummyLabels(startDate, endDate)
+        val seriesNames = desas.filter { location == null || location == it }
         return ChartData(
-            seriesNames = desas,
+            seriesNames = seriesNames,
             labels = labels,
-            data = dummyData(desas, labels)
+            data = dummyData(seriesNames, labels)
         )
     }
 
+    private val defaultDays = 30L
+    private val dummyRange = 5000L
+    private val dummyMaxValue = 10000L
+
     private fun dummyLabels(startDate: LocalDate?, endDate: LocalDate?): List<ZonedDateTime> {
         val list = mutableListOf<ZonedDateTime>()
-        var date: ZonedDateTime = startDate?.atStartOfDay(ZoneId.systemDefault()) ?: ZonedDateTime.now().minusDays(30)
+        val date: ZonedDateTime = startDate?.atStartOfDay(ZoneId.systemDefault()) ?: ZonedDateTime.now().minusDays(
+            defaultDays
+        )
         val end = endDate?.atStartOfDay(ZoneId.systemDefault()) ?: ZonedDateTime.now()
-        for (i in 0..5000) {
-            list.add(date)
+        for (i in 0L..dummyRange) {
+            val current = date.plusHours(i)
+            list.add(current)
 
-            date = date.plusHours(1)
-            if (date > end) {
+            if (current > end) {
                 break
             }
         }
@@ -99,7 +105,7 @@ class ChartController {
             val list = mutableListOf<Long>()
 
             for (i in 1..labels.size) {
-                list.add((Math.random() * 10000L).toLong())
+                list.add((Math.random() * dummyMaxValue).toLong())
             }
 
             map[name] = list
@@ -117,5 +123,3 @@ data class ChartData<T>(
     @Schema(description = "Data of the series")
     val data: Map<String, List<Long>>
 )
-
-
