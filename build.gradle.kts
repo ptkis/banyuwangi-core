@@ -58,7 +58,10 @@ dependencies {
     implementation("org.bouncycastle:bcprov-jdk15on:1.70")
     implementation("org.hibernate:hibernate-envers")
 
-    implementation("org.springdoc:springdoc-openapi-ui:1.6.12")
+    val springdocVersion = "1.6.12"
+    implementation("org.springdoc:springdoc-openapi-ui:$springdocVersion")
+    implementation("org.springdoc:springdoc-openapi-security:$springdocVersion")
+    implementation("org.springdoc:springdoc-openapi-kotlin:$springdocVersion")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
