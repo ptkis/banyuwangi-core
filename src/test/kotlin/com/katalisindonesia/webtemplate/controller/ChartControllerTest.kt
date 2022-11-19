@@ -21,4 +21,41 @@ internal class ChartControllerTest(
         )
         assertNotNull(result)
     }
+    @Test
+    fun `trash all null`() {
+        val result = chartController.trash(
+            startDate = null,
+            endDate = null,
+            location = null,
+        )
+        assertNotNull(result)
+    }
+    @Test
+    fun `street vendor all null`() {
+        val result = chartController.streetvendor(
+            startDate = null,
+            endDate = null,
+            location = null,
+        )
+        assertNotNull(result)
+    }
+    @Test
+    fun `crowd all null`() {
+        val result = chartController.crowd(
+            startDate = null,
+            endDate = null,
+            location = null,
+        )
+        assertNotNull(result)
+    }
+
+    @Test
+    fun `traffic all null`() {
+        val result = chartController.traffic(
+            startDate = null,
+            endDate = null,
+            location = null,
+        )
+        assertNotNull(result)
+    }
 }
