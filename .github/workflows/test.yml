@@ -20,7 +20,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 120
 
-    # See https://github.com/ScaCap/action-surefire-report/issues/31#issuecomment-973980120
     permissions:
       checks: write
       contents: read
@@ -50,8 +49,7 @@ jobs:
       env:
         CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
     - name: Publish Test Report
-      uses: scacap/action-surefire-report@v1
+      uses: EnricoMi/publish-unit-test-result-action@v2
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        report_paths: '**/build/test-results/test/TEST-*.xml'
+        junit_files: "**/build/test-results/test/TEST-*.xml"
       if: always()
