@@ -3,7 +3,7 @@
 
 set -e
 BUILD_ID=${BUILD_ID:-${GITHUB_RUN_NUMBER}}
-ARTIFACT=webtemplate-core
+ARTIFACT=banyuwangi-core
 echo Displaying content of build/libs
 find build/libs
 
