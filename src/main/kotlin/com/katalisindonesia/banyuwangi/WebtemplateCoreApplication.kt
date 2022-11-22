@@ -1,8 +1,8 @@
-package com.katalisindonesia.webtemplate
+package com.katalisindonesia.banyuwangi
 
-import com.katalisindonesia.webtemplate.controller.HelloController
-import com.katalisindonesia.webtemplate.security.CorsProperties
-import com.katalisindonesia.webtemplate.security.SecurityConfig
+import com.katalisindonesia.banyuwangi.controller.HelloController
+import com.katalisindonesia.banyuwangi.security.CorsProperties
+import com.katalisindonesia.banyuwangi.security.SecurityConfig
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.context.properties.EnableConfigurationProperties

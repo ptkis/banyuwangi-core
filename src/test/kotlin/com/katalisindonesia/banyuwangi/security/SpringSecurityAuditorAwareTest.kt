@@ -1,4 +1,4 @@
-package com.katalisindonesia.webtemplate.security
+package com.katalisindonesia.banyuwangi.security
 
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue

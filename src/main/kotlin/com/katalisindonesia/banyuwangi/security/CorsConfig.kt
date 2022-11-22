@@ -1,4 +1,4 @@
-package com.katalisindonesia.webtemplate.security
+package com.katalisindonesia.banyuwangi.security
 
 import mu.KotlinLogging
 import org.springframework.boot.context.properties.ConfigurationProperties

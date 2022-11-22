@@ -1,4 +1,4 @@
-package com.katalisindonesia.webtemplate.security
+package com.katalisindonesia.banyuwangi.security
 
 import org.springframework.data.domain.AuditorAware
 import org.springframework.security.core.context.SecurityContextHolder

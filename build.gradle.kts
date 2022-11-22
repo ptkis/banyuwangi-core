@@ -16,7 +16,7 @@ plugins {
 
 val buildId = System.getenv("GITHUB_RUN_NUMBER") ?: System.getenv("BUILD_ID") ?: "1-SNAPSHOT"
 
-group = "com.katalisindonesia.webtemplate"
+group = "com.katalisindonesia.banyuwangi"
 version = "0.0.$buildId"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
@@ -154,7 +154,7 @@ tasks.jacocoTestCoverageVerification {
             }
             excludes = listOf(
                 "**/*\$log\$*.class",
-                "com/katalisindonesia/webtemplate/WebtemplateCoreApplication*.*",
+                "com/katalisindonesia/banyuwangi/WebtemplateCoreApplication*.*",
             )
         }
     }

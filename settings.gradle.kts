@@ -1,1 +1,1 @@
-rootProject.name = "webtemplate-core"
+rootProject.name = "banyuwangi-core"
