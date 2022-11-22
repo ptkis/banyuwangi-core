@@ -1,4 +1,4 @@
-package com.katalisindonesia.webtemplate.security
+package com.katalisindonesia.banyuwangi.security
 
 import org.keycloak.adapters.springsecurity.KeycloakConfiguration
 import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter

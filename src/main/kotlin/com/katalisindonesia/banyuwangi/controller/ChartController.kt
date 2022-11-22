@@ -1,4 +1,4 @@
-package com.katalisindonesia.webtemplate.controller
+package com.katalisindonesia.banyuwangi.controller
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter

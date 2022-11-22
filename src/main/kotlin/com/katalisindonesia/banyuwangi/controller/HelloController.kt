@@ -1,4 +1,4 @@
-package com.katalisindonesia.webtemplate.controller
+package com.katalisindonesia.banyuwangi.controller
 
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping

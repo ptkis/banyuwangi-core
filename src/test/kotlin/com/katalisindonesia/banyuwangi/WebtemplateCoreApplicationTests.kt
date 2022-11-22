@@ -1,4 +1,4 @@
-package com.katalisindonesia.webtemplate
+package com.katalisindonesia.banyuwangi
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
