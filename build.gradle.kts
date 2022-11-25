@@ -48,13 +48,12 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-aop")
     // implementation("org.springframework.boot:spring-boot-starter-amqp")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-undertow")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
-    testImplementation("org.springframework.security:spring-security-test")
+    implementation("org.springframework.security:spring-security-oauth2-client")
     implementation("org.bouncycastle:bcprov-jdk15on:1.70")
     implementation("org.hibernate:hibernate-envers")
 
@@ -154,7 +153,7 @@ tasks.jacocoTestCoverageVerification {
             }
             excludes = listOf(
                 "**/*\$log\$*.class",
-                "com/katalisindonesia/banyuwangi/WebtemplateCoreApplication*.*",
+                "com/katalisindonesia/banyuwangi/BanyuwangiCoreApplication*.*",
             )
         }
     }

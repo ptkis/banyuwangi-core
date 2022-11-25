@@ -12,13 +12,17 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.web.servlet.FilterRegistrationBean
 import org.springframework.context.annotation.Bean
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.core.session.SessionRegistry
 import org.springframework.security.core.session.SessionRegistryImpl
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy
 
 @KeycloakConfiguration
+@EnableWebSecurity
+@EnableMethodSecurity
 class SecurityConfig : KeycloakWebSecurityConfigurerAdapter() {
     /**
      * Registers the KeycloakAuthenticationProvider with the authentication manager.
@@ -50,9 +54,9 @@ class SecurityConfig : KeycloakWebSecurityConfigurerAdapter() {
             .oauth2Client()
             .and()
             .authorizeRequests()
-            .antMatchers("/v3/api-docs*").permitAll()
-            .antMatchers("/hello/world*").authenticated()
-            .anyRequest().denyAll() // deny all request if not declared
+            .antMatchers("/v3/api-docs**").permitAll()
+            .antMatchers("/hello/world**").authenticated()
+            .anyRequest().authenticated() // deny all request if not declared
     }
 
     @Bean
