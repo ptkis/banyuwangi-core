@@ -153,7 +153,7 @@ tasks.jacocoTestCoverageVerification {
             }
             excludes = listOf(
                 "**/*\$log\$*.class",
-                "com/katalisindonesia/banyuwangi/WebtemplateCoreApplication*.*",
+                "com/katalisindonesia/banyuwangi/BanyuwangiCoreApplication*.*",
             )
         }
     }
