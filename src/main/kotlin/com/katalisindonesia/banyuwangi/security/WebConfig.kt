@@ -26,6 +26,12 @@ class WebConfig {
         authorizedClientService: OAuth2AuthorizedClientService,
     ): OAuth2AuthorizedClientManager {
         val authorizedClientProvider = OAuth2AuthorizedClientProviderBuilder.builder()
+            .clientCredentials {
+//                val client = DefaultClientCredentialsTokenResponseClient()
+//                client.setRestOperations(restTemplate)
+//                client.setRequestEntityConverter(OAuth2ClientCredentialsGrantRequestEntityConverter())
+//                it.accessTokenResponseClient(client)
+            }
             .refreshToken()
             .authorizationCode()
             .build()
