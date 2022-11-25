@@ -11,8 +11,6 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import java.net.InetSocketAddress
 
-
-
 /**
  * Integration test for uploading to OBS.
  *
@@ -21,12 +19,12 @@ import java.net.InetSocketAddress
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-class ChartControllerIntegrationTest (
+class ChartControllerIntegrationTest(
     @Autowired private val mockMvc: MockMvc,
     @Autowired private val tokenManager: TokenManager,
 
-    ) {
-    private val types = arrayOf("flood","trash","streetvendor","crowd","traffic")
+) {
+    private val types = arrayOf("flood", "trash", "streetvendor", "crowd", "traffic")
 
     @Test
     fun `chart without token should redirect`() {
@@ -46,7 +44,6 @@ class ChartControllerIntegrationTest (
 
         val token = token()
 
-
         for (type in types) {
             mockMvc.get("/v1/chart/$type") {
                 headers {
@@ -59,6 +56,5 @@ class ChartControllerIntegrationTest (
                 }
             }
         }
-   }
+    }
 }
-
