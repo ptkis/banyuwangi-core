@@ -17,7 +17,7 @@ import org.springframework.boot.runApplication
         HelloController::class,
         SecurityConfig::class,
         TokenManager::class,
-    CameraRepo::class,
+        CameraRepo::class,
     ]
 )
 @EnableConfigurationProperties

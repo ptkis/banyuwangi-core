@@ -41,4 +41,3 @@ open class Persistent {
     @JsonIgnore
     var modifiedBy: String? = ""
 }
-

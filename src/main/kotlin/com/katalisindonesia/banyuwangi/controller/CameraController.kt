@@ -37,8 +37,12 @@ class CameraController(
         @Min(0)
         @RequestParam(required = false, defaultValue = "1000") size: Int,
     ): WebResponse<Page<Camera>> {
-        return WebResponse(success = true, message = "ok", data = cameraRepo.findAll(
-            PageRequest.of(page, size, Sort.by(Camera::location.name, Camera::name.name))))
+        return WebResponse(
+            success = true, message = "ok",
+            data = cameraRepo.findAll(
+                PageRequest.of(page, size, Sort.by(Camera::location.name, Camera::name.name))
+            )
+        )
     }
 
     @PostMapping
@@ -59,17 +63,21 @@ class CameraController(
     }
 }
 
-fun <T> Optional<T>.toResponseEntity(): ResponseEntity<WebResponse<T>>{
+fun <T> Optional<T>.toResponseEntity(): ResponseEntity<WebResponse<T>> {
     if (this.isEmpty) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(WebResponse(
-            success = false,
-            message = "not found",
-            data = null,
-        ))
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+            WebResponse(
+                success = false,
+                message = "not found",
+                data = null,
+            )
+        )
     }
-    return ResponseEntity.ok(WebResponse(
-        success = true,
-        message = "ok",
-        data = this.get()
-    ))
+    return ResponseEntity.ok(
+        WebResponse(
+            success = true,
+            message = "ok",
+            data = this.get()
+        )
+    )
 }

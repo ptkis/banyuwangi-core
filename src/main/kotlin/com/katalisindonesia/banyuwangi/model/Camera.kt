@@ -11,8 +11,8 @@ import javax.persistence.Table
 @Entity
 @Table(
     indexes = [
-        Index(name="camera_isactive_idx", columnList = "isActive"),
-        Index(name="camera_isliveview_idx", columnList = "isLiveView"),
+        Index(name = "camera_isactive_idx", columnList = "isActive"),
+        Index(name = "camera_isliveview_idx", columnList = "isLiveView"),
     ]
 )
 data class Camera(
@@ -73,7 +73,7 @@ data class Camera(
     @Column(nullable = false)
     var isFlood: Boolean = false,
 
-    @Column(nullable=true)
+    @Column(nullable = true)
     @Enumerated(EnumType.STRING)
     var type: CameraType? = CameraType.HIKVISION,
 
@@ -101,4 +101,3 @@ data class Camera(
         return this::class.simpleName + "(id = $id )"
     }
 }
-
