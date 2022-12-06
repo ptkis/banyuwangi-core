@@ -154,6 +154,7 @@ tasks.jacocoTestCoverageVerification {
             excludes = listOf(
                 "**/*\$log\$*.class",
                 "com/katalisindonesia/banyuwangi/BanyuwangiCoreApplication*.*",
+                "com/katalisindonesia/banyuwangi/controller/RestExceptionHandler*.*",
             )
         }
     }
