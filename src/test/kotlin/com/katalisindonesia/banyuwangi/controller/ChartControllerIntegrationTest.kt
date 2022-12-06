@@ -1,6 +1,6 @@
 package com.katalisindonesia.banyuwangi.controller
 
-import com.katalisindonesia.banyuwangi.service.TokenManager
+import com.katalisindonesia.banyuwangi.security.TokenManager
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired

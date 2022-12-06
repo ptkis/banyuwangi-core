@@ -1,4 +1,4 @@
-package com.katalisindonesia.banyuwangi.service
+package com.katalisindonesia.banyuwangi.security
 
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
