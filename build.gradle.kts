@@ -149,6 +149,7 @@ tasks.jacocoTestCoverageVerification {
         rule {
             element = "SOURCEFILE"
             limit {
+                counter = "LINE"
                 minimum = "0.6".toBigDecimal()
             }
             excludes = listOf(
