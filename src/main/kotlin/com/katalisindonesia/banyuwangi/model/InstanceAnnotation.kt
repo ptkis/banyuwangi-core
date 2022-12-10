@@ -1,5 +1,6 @@
 package com.katalisindonesia.banyuwangi.model
 
+/*
 import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -42,3 +43,4 @@ data class InstanceAnnotation(
     @Column(nullable = false)
     var isNoMask: Boolean = false,
 ) : Persistent()
+*/

@@ -1,5 +1,6 @@
 package com.katalisindonesia.banyuwangi.model
 
+/*
 import java.util.UUID
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -18,3 +19,4 @@ data class Snapshot(
     @Column(nullable = false)
     val length: Long,
 ) : Persistent()
+*/
