@@ -7,7 +7,7 @@ import java.util.UUID
 @ConfigurationProperties(prefix = "image")
 @ConstructorBinding
 
-class ImageProperties (
+class ImageProperties(
     val folder: String = "images",
-    val dummyId: UUID= UUID.randomUUID()
+    val dummyId: UUID = UUID.randomUUID()
 )

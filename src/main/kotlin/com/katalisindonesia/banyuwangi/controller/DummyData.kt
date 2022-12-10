@@ -28,17 +28,17 @@ val desas = listOf(
     "Tukang Kayu",
 )
 
-private const val defaultDays = 30L
-private const val dummyRange = 5000L
-private const val dummyMaxValue = 10000L
+private const val DEFAULT_DAYS = 30L
+private const val DUMMY_RANGE = 5000L
+private const val DUMMY_MAX_VALUE = 10000L
 
 fun dummyLabels(startDate: LocalDate?, endDate: LocalDate?): List<ZonedDateTime> {
     val list = mutableListOf<ZonedDateTime>()
     val date: ZonedDateTime = startDate?.atStartOfDay(ZoneId.systemDefault()) ?: ZonedDateTime.now().minusDays(
-        defaultDays
+        DEFAULT_DAYS
     )
     val end = endDate?.atStartOfDay(ZoneId.systemDefault()) ?: ZonedDateTime.now()
-    for (i in 0L..dummyRange) {
+    for (i in 0L..DUMMY_RANGE) {
         val current = date.plusHours(i)
         list.add(current)
 
@@ -56,7 +56,7 @@ fun <T> dummyData(seriesNames: List<String>, labels: List<T>): Map<String, List<
         val list = mutableListOf<Long>()
 
         for (i in 1..labels.size) {
-            list.add((Math.random() * dummyMaxValue).toLong())
+            list.add((Math.random() * DUMMY_MAX_VALUE).toLong())
         }
 
         map[name] = list

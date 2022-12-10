@@ -22,7 +22,7 @@ class BrowseControllerTest(
     @Autowired private val mockMvc: MockMvc,
     @Autowired private val tokenManager: TokenManager,
 
-    ) {
+) {
 
     @Test
     fun `browse without token should redirect`() {

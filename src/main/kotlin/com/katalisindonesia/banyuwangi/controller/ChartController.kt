@@ -191,7 +191,4 @@ class ChartController {
             data = dummyData(seriesNames, labels)
         )
     }
-
-
 }
-

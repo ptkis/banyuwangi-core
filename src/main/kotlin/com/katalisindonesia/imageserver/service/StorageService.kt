@@ -8,16 +8,16 @@ import java.io.File
 import java.util.UUID
 
 @Service
-class StorageService (
+class StorageService(
     private val imageProperties: ImageProperties
-){
+) {
     fun file(id: UUID): File {
-        return File("${imageProperties.folder}/${id}.jpg")
+        return File("${imageProperties.folder}/$id.jpg")
     }
 
-    fun dummyId ()= imageProperties.dummyId
+    fun dummyId() = imageProperties.dummyId
 
-    fun dummyResource(): Resource= ClassPathResource("/dog_bike_car.jpg")
+    fun dummyResource(): Resource = ClassPathResource("/dog_bike_car.jpg")
 
     fun store(bytes: ByteArray): UUID {
         val uuid = UUID.randomUUID()

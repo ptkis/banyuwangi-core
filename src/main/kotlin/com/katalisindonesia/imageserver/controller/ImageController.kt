@@ -33,7 +33,8 @@ class ImageController(private val storageService: StorageService) {
         ]
     )
     @GetMapping(
-        "/{id}", produces = [
+        "/{id}",
+        produces = [
             MediaType.IMAGE_JPEG_VALUE,
         ]
     )

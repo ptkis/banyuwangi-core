@@ -83,9 +83,11 @@ class DetectionController(
                     date = date,
                     instant = instant,
                     location = desas[ThreadLocalRandom.current().nextInt(desas.size)],
-                    cameraName = "Camera " + ThreadLocalRandom.current().nextInt(size),
-                    type = type ?: DetectionType.values()[ThreadLocalRandom.current()
-                        .nextInt(DetectionType.values().size)],
+                    cameraName = "Camera " + i,
+                    type = type ?: DetectionType.values()[
+                        ThreadLocalRandom.current()
+                            .nextInt(DetectionType.values().size)
+                    ],
                     value = 3,
                     imageSrc = ServletUriComponentsBuilder.fromCurrentContextPath()
                         .path("/v1/image/${storageService.dummyId()}").toUriString(),
@@ -100,7 +102,7 @@ class DetectionController(
                 data = PageImpl(
                     content,
                     PageRequest.of(page, size),
-                    size * 100L
+                    size * size.toLong()
                 )
             )
         )

@@ -17,4 +17,4 @@ data class Snapshot(
 
     @Column(nullable = false)
     val length: Long,
-) :Persistent()
+) : Persistent()

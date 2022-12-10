@@ -126,7 +126,7 @@ complexity:
     constructorThreshold: 7
     ignoreDefaultParameters: false
     ignoreDataClasses: true
-    ignoreAnnotatedParameter: []
+    ignoreAnnotatedParameter: [org.springframework.web.bind.annotation.*]
   MethodOverloading:
     active: false
     threshold: 6

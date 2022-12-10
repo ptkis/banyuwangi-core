@@ -19,13 +19,16 @@ import java.util.UUID
  * @author Thomas Edwin Santosa
  */
 @ExtendWith(SpringExtension::class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = [BanyuwangiCoreApplication::class])
+@SpringBootTest(
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    classes = [BanyuwangiCoreApplication::class]
+)
 @AutoConfigureMockMvc
 class ImageControllerTest(
     @Autowired private val mockMvc: MockMvc,
     @Autowired private val imageProperties: ImageProperties,
 
-    ) {
+) {
 
     @Test
     fun `dummy image without token should success`() {
