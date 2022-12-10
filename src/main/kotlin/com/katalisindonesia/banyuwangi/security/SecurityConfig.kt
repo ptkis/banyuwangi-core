@@ -55,6 +55,7 @@ class SecurityConfig : KeycloakWebSecurityConfigurerAdapter() {
             .and()
             .authorizeRequests()
             .antMatchers("/v3/api-docs**").permitAll()
+            .antMatchers("/v1/image/**").permitAll()
             .antMatchers("/hello/world**").authenticated()
             .anyRequest().authenticated() // deny all request if not declared
     }

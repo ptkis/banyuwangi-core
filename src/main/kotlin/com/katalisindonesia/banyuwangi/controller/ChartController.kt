@@ -2,7 +2,6 @@ package com.katalisindonesia.banyuwangi.controller
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
-import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
@@ -14,30 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDate
-import java.time.ZoneId
 import java.time.ZonedDateTime
 import javax.validation.Valid
-
-private val desas = listOf(
-    "Kampung Mandar",
-    "Kampung Melayu",
-    "Karangrejo",
-    "Kebalenan",
-    "Kepatihan",
-    "Kertosari",
-    "Lateng",
-    "Pakis",
-    "Panderejo",
-    "Penganjuran",
-    "Pengantigan",
-    "Singonegaran",
-    "Singotrunan",
-    "Sobo",
-    "Sumber Rejo",
-    "Taman Baru",
-    "Temenggungan",
-    "Tukang Kayu",
-)
 
 @RestController
 @RequestMapping("/v1/chart")
@@ -215,49 +192,6 @@ class ChartController {
         )
     }
 
-    private val defaultDays = 30L
-    private val dummyRange = 5000L
-    private val dummyMaxValue = 10000L
 
-    private fun dummyLabels(startDate: LocalDate?, endDate: LocalDate?): List<ZonedDateTime> {
-        val list = mutableListOf<ZonedDateTime>()
-        val date: ZonedDateTime = startDate?.atStartOfDay(ZoneId.systemDefault()) ?: ZonedDateTime.now().minusDays(
-            defaultDays
-        )
-        val end = endDate?.atStartOfDay(ZoneId.systemDefault()) ?: ZonedDateTime.now()
-        for (i in 0L..dummyRange) {
-            val current = date.plusHours(i)
-            list.add(current)
-
-            if (current > end) {
-                break
-            }
-        }
-        return list
-    }
-
-    private fun <T> dummyData(seriesNames: List<String>, labels: List<T>): Map<String, List<Long>> {
-        val map = mutableMapOf<String, List<Long>>()
-
-        for (name in seriesNames) {
-            val list = mutableListOf<Long>()
-
-            for (i in 1..labels.size) {
-                list.add((Math.random() * dummyMaxValue).toLong())
-            }
-
-            map[name] = list
-        }
-
-        return map
-    }
 }
 
-data class ChartData<T>(
-    @Schema(description = "List of series names")
-    val seriesNames: List<String>,
-    @Schema(description = "Series labels")
-    val labels: List<T>,
-    @Schema(description = "Data of the series")
-    val data: Map<String, List<Long>>
-)
