@@ -93,13 +93,64 @@ class CameraControllerTest(
 
     @Test
     fun `create list edit list`() {
-        // CREATE
+        // DOUBLE CREATE, should be idempotent
 
         val camera = Camera(
             vmsCameraIndexCode = "00001",
             name = "Test 01",
             location = "01"
         )
+        mockMvc.post("/v1/camera") {
+            content = mapper.writeValueAsString(camera)
+            headers {
+                setBearerAuth(token())
+                contentType = MediaType.APPLICATION_JSON
+                accept = listOf(MediaType.APPLICATION_JSON)
+            }
+        }.andExpect {
+            status {
+                isOk()
+            }
+            content {
+                json(
+                    """{
+  "success": true,
+  "message": "ok",
+  "data": {
+    "vmsCameraIndexCode": "00001",
+    "vmsType": null,
+    "name": "Test 01",
+    "location": "01",
+    "latitude": 0.0,
+    "longitude": 0.0,
+    "host": "",
+    "httpPort": 80,
+    "rtspPort": 554,
+    "channel": 1,
+    "captureQualityChannel": "01",
+    "userName": "",
+    "password": "",
+    "isActive": true,
+    "isStreetvendor": false,
+    "isTraffic": false,
+    "isCrowd": false,
+    "isTrash": false,
+    "isFlood": false,
+    "type": "HIKVISION",
+    "isLoginSucceeded": null,
+    "isLiveView": true,
+    "label": null,
+    "lastCaptureMethod": null,
+    "isPing": false,
+    "pingResponseTimeSec": null,
+    "pingRawData": null,
+    "pingLast": null,
+    "version": 0
+  }
+}"""
+                )
+            }
+        }
         mockMvc.post("/v1/camera") {
             content = mapper.writeValueAsString(camera)
             headers {
@@ -247,11 +298,356 @@ class CameraControllerTest(
                 isOk()
             }
             content {
+                camera.version = (camera.version ?: 0L) + 1L
                 json(
                     mapper.writeValueAsString(
                         WebResponse(
                             success = true, message = "ok",
                             data = camera
+                        )
+                    )
+                )
+            }
+        }
+        mockMvc.post("/v1/camera") {
+            content = mapper.writeValueAsString(camera)
+            headers {
+                setBearerAuth(token())
+                contentType = MediaType.APPLICATION_JSON
+                accept = listOf(MediaType.APPLICATION_JSON)
+            }
+        }.andExpect {
+            status {
+                isOk()
+            }
+            content {
+                camera.version = (camera.version ?: 0L) + 1L
+                json(
+                    mapper.writeValueAsString(
+                        WebResponse(
+                            success = true, message = "ok",
+                            data = camera
+                        )
+                    )
+                )
+            }
+        }
+
+        // LIST
+
+        mockMvc.get("/v1/camera") {
+            headers {
+                setBearerAuth(token())
+                accept = listOf(MediaType.APPLICATION_JSON)
+            }
+        }.andExpect {
+            status { isOk() }
+            content {
+                json(
+                    """{
+  "success": true,
+  "message": "ok",
+  "data": {
+    "content": [
+      {
+        "vmsCameraIndexCode": "0002",
+        "vmsType": null,
+        "name": "Test 02",
+        "location": "01",
+        "latitude": 0.0,
+        "longitude": 0.0,
+        "host": "",
+        "httpPort": 80,
+        "rtspPort": 554,
+        "channel": 1,
+        "captureQualityChannel": "01",
+        "userName": "",
+        "password": "",
+        "isActive": true,
+        "isStreetvendor": false,
+        "isTraffic": false,
+        "isCrowd": false,
+        "isTrash": false,
+        "isFlood": false,
+        "type": "HIKVISION",
+        "isLoginSucceeded": null,
+        "isLiveView": true,
+        "label": null,
+        "lastCaptureMethod": null,
+        "isPing": false,
+        "pingResponseTimeSec": null,
+        "pingRawData": null,
+        "pingLast": null
+      }
+    ],
+    "pageable": {
+      "sort": {
+        "empty": false,
+        "unsorted": false,
+        "sorted": true
+      },
+      "offset": 0,
+      "pageNumber": 0,
+      "pageSize": 1000,
+      "paged": true,
+      "unpaged": false
+    },
+    "last": true,
+    "totalPages": 1,
+    "totalElements": 1,
+    "first": true,
+    "size": 1000,
+    "number": 0,
+    "sort": {
+      "empty": false,
+      "unsorted": false,
+      "sorted": true
+    },
+    "numberOfElements": 1,
+    "empty": false
+  }
+}""",
+                    strict = false
+                )
+            }
+        }
+    }
+    @Test
+    fun `bulk create list bulk edit list`() {
+        // DOUBLE CREATE, should be idempotent
+
+        val camera = Camera(
+            vmsCameraIndexCode = "00001",
+            name = "Test 01",
+            location = "01"
+        )
+        mockMvc.post("/v1/camera/bulk") {
+            content = mapper.writeValueAsString(listOf(camera))
+            headers {
+                setBearerAuth(token())
+                contentType = MediaType.APPLICATION_JSON
+                accept = listOf(MediaType.APPLICATION_JSON)
+            }
+        }.andExpect {
+            status {
+                isOk()
+            }
+            content {
+                json(
+                    """{
+  "success": true,
+  "message": "ok",
+  "data": [{
+    "vmsCameraIndexCode": "00001",
+    "vmsType": null,
+    "name": "Test 01",
+    "location": "01",
+    "latitude": 0.0,
+    "longitude": 0.0,
+    "host": "",
+    "httpPort": 80,
+    "rtspPort": 554,
+    "channel": 1,
+    "captureQualityChannel": "01",
+    "userName": "",
+    "password": "",
+    "isActive": true,
+    "isStreetvendor": false,
+    "isTraffic": false,
+    "isCrowd": false,
+    "isTrash": false,
+    "isFlood": false,
+    "type": "HIKVISION",
+    "isLoginSucceeded": null,
+    "isLiveView": true,
+    "label": null,
+    "lastCaptureMethod": null,
+    "isPing": false,
+    "pingResponseTimeSec": null,
+    "pingRawData": null,
+    "pingLast": null,
+    "version": 0
+  }
+]}"""
+                )
+            }
+        }
+        mockMvc.post("/v1/camera/bulk") {
+            content = mapper.writeValueAsString(listOf(camera))
+            headers {
+                setBearerAuth(token())
+                contentType = MediaType.APPLICATION_JSON
+                accept = listOf(MediaType.APPLICATION_JSON)
+            }
+        }.andExpect {
+            status {
+                isOk()
+            }
+            content {
+                json(
+                    """{
+  "success": true,
+  "message": "ok",
+  "data": [{
+    "vmsCameraIndexCode": "00001",
+    "vmsType": null,
+    "name": "Test 01",
+    "location": "01",
+    "latitude": 0.0,
+    "longitude": 0.0,
+    "host": "",
+    "httpPort": 80,
+    "rtspPort": 554,
+    "channel": 1,
+    "captureQualityChannel": "01",
+    "userName": "",
+    "password": "",
+    "isActive": true,
+    "isStreetvendor": false,
+    "isTraffic": false,
+    "isCrowd": false,
+    "isTrash": false,
+    "isFlood": false,
+    "type": "HIKVISION",
+    "isLoginSucceeded": null,
+    "isLiveView": true,
+    "label": null,
+    "lastCaptureMethod": null,
+    "isPing": false,
+    "pingResponseTimeSec": null,
+    "pingRawData": null,
+    "pingLast": null,
+    "version": 0
+  }
+]}"""
+                )
+            }
+        }
+        camera.version = 0L
+
+        // LIST
+
+        mockMvc.get("/v1/camera") {
+            headers {
+                setBearerAuth(token())
+                accept = listOf(MediaType.APPLICATION_JSON)
+            }
+        }.andExpect {
+            status { isOk() }
+            content {
+                json(
+                    """{
+  "success": true,
+  "message": "ok",
+  "data": {
+    "content": [
+      {
+        "vmsCameraIndexCode": "00001",
+        "vmsType": null,
+        "name": "Test 01",
+        "location": "01",
+        "latitude": 0.0,
+        "longitude": 0.0,
+        "host": "",
+        "httpPort": 80,
+        "rtspPort": 554,
+        "channel": 1,
+        "captureQualityChannel": "01",
+        "userName": "",
+        "password": "",
+        "isActive": true,
+        "isStreetvendor": false,
+        "isTraffic": false,
+        "isCrowd": false,
+        "isTrash": false,
+        "isFlood": false,
+        "type": "HIKVISION",
+        "isLoginSucceeded": null,
+        "isLiveView": true,
+        "label": null,
+        "lastCaptureMethod": null,
+        "isPing": false,
+        "pingResponseTimeSec": null,
+        "pingRawData": null,
+        "pingLast": null
+      }
+    ],
+    "pageable": {
+      "sort": {
+        "empty": false,
+        "unsorted": false,
+        "sorted": true
+      },
+      "offset": 0,
+      "pageNumber": 0,
+      "pageSize": 1000,
+      "paged": true,
+      "unpaged": false
+    },
+    "last": true,
+    "totalPages": 1,
+    "totalElements": 1,
+    "first": true,
+    "size": 1000,
+    "number": 0,
+    "sort": {
+      "empty": false,
+      "unsorted": false,
+      "sorted": true
+    },
+    "numberOfElements": 1,
+    "empty": false
+  }
+}""",
+                    strict = false
+                )
+            }
+        }
+
+        camera.name = "Test 02"
+        camera.vmsCameraIndexCode = "0002"
+
+        mockMvc.post("/v1/camera/bulk") {
+            content = mapper.writeValueAsString(listOf(camera))
+            headers {
+                setBearerAuth(token())
+                contentType = MediaType.APPLICATION_JSON
+                accept = listOf(MediaType.APPLICATION_JSON)
+            }
+        }.andExpect {
+            status {
+                isOk()
+            }
+            content {
+                camera.version = (camera.version ?: 0L) + 1L
+                json(
+                    mapper.writeValueAsString(
+                        WebResponse(
+                            success = true, message = "ok",
+                            data = listOf(camera)
+                        )
+                    )
+                )
+            }
+        }
+        mockMvc.post("/v1/camera/bulk") {
+            content = mapper.writeValueAsString(listOf(camera))
+            headers {
+                setBearerAuth(token())
+                contentType = MediaType.APPLICATION_JSON
+                accept = listOf(MediaType.APPLICATION_JSON)
+            }
+        }.andExpect {
+            status {
+                isOk()
+            }
+            content {
+                camera.version = (camera.version ?: 0L) + 1L
+                json(
+                    mapper.writeValueAsString(
+                        WebResponse(
+                            success = true, message = "ok",
+                            data = listOf(camera)
                         )
                     )
                 )

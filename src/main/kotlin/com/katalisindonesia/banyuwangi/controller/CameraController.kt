@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.util.Optional
 import java.util.UUID
+import javax.transaction.Transactional
 import javax.validation.Valid
 import javax.validation.constraints.Min
 
@@ -46,10 +47,31 @@ class CameraController(
     }
 
     @PostMapping
+    @Transactional
     @PreAuthorize("hasAnyAuthority('camera:write')")
     fun edit(@RequestBody @Valid camera: Camera): ResponseEntity<WebResponse<Camera>> {
+        val existing = cameraRepo.findById(camera.id)
+
+        if (existing.isPresent) {
+            camera.version = existing.get().version
+        }
         cameraRepo.saveAndFlush(camera)
         return Optional.of(camera).toResponseEntity()
+    }
+
+    @PostMapping("/bulk")
+    @Transactional
+    @PreAuthorize("hasAnyAuthority('camera:write')")
+    fun bulkEdit(@RequestBody @Valid cameras: List<Camera>): ResponseEntity<WebResponse<List<Camera>>> {
+        for (camera in cameras) {
+            val existing = cameraRepo.findById(camera.id)
+
+            if (existing.isPresent) {
+                camera.version = existing.get().version
+            }
+        }
+        cameraRepo.saveAllAndFlush(cameras)
+        return Optional.of(cameras).toResponseEntity()
     }
 
     @GetMapping("/id/{id}")
