@@ -19,6 +19,7 @@ open class Persistent {
     var id: UUID = UUID.randomUUID()
 
     @Version
+    @JsonIgnore
     var version: Long? = null
 
     @CreatedDate

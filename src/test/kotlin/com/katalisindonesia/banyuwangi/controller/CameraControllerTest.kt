@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.delete
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 import java.util.UUID
@@ -23,7 +24,7 @@ class CameraControllerTest(
     @Autowired private val tokenManager: TokenManager,
     @Autowired private val cameraRepo: CameraRepo,
 
-) {
+    ) {
 
     private val mapper = jacksonObjectMapper()
 
@@ -137,15 +138,7 @@ class CameraControllerTest(
     "isTrash": false,
     "isFlood": false,
     "type": "HIKVISION",
-    "isLoginSucceeded": null,
-    "isLiveView": true,
-    "label": null,
-    "lastCaptureMethod": null,
-    "isPing": false,
-    "pingResponseTimeSec": null,
-    "pingRawData": null,
-    "pingLast": null,
-    "version": 0
+    "label": null
   }
 }"""
                 )
@@ -188,15 +181,7 @@ class CameraControllerTest(
     "isTrash": false,
     "isFlood": false,
     "type": "HIKVISION",
-    "isLoginSucceeded": null,
-    "isLiveView": true,
-    "label": null,
-    "lastCaptureMethod": null,
-    "isPing": false,
-    "pingResponseTimeSec": null,
-    "pingRawData": null,
-    "pingLast": null,
-    "version": 0
+    "label": null
   }
 }"""
                 )
@@ -241,14 +226,7 @@ class CameraControllerTest(
         "isTrash": false,
         "isFlood": false,
         "type": "HIKVISION",
-        "isLoginSucceeded": null,
-        "isLiveView": true,
-        "label": null,
-        "lastCaptureMethod": null,
-        "isPing": false,
-        "pingResponseTimeSec": null,
-        "pingRawData": null,
-        "pingLast": null
+        "label": null
       }
     ],
     "pageable": {
@@ -370,14 +348,7 @@ class CameraControllerTest(
         "isTrash": false,
         "isFlood": false,
         "type": "HIKVISION",
-        "isLoginSucceeded": null,
-        "isLiveView": true,
-        "label": null,
-        "lastCaptureMethod": null,
-        "isPing": false,
-        "pingResponseTimeSec": null,
-        "pingRawData": null,
-        "pingLast": null
+        "label": null
       }
     ],
     "pageable": {
@@ -412,6 +383,156 @@ class CameraControllerTest(
             }
         }
     }
+
+    @Test
+    fun `bulk delete list`() {
+        // CREATE
+
+        val camera = Camera(
+            vmsCameraIndexCode = "00001",
+            name = "Test 01",
+            location = "01"
+        )
+        mockMvc.post("/v1/camera/bulk") {
+            content = mapper.writeValueAsString(listOf(camera))
+            headers {
+                setBearerAuth(token())
+                contentType = MediaType.APPLICATION_JSON
+                accept = listOf(MediaType.APPLICATION_JSON)
+            }
+        }.andExpect {
+            status {
+                isOk()
+            }
+            content {
+                json(
+                    """{
+  "success": true,
+  "message": "ok",
+  "data": [{
+    "vmsCameraIndexCode": "00001",
+    "vmsType": null,
+    "name": "Test 01",
+    "location": "01",
+    "latitude": 0.0,
+    "longitude": 0.0,
+    "host": "",
+    "httpPort": 80,
+    "rtspPort": 554,
+    "channel": 1,
+    "captureQualityChannel": "01",
+    "userName": "",
+    "password": "",
+    "isActive": true,
+    "isStreetvendor": false,
+    "isTraffic": false,
+    "isCrowd": false,
+    "isTrash": false,
+    "isFlood": false,
+    "type": "HIKVISION",
+    "label": null
+  }
+]}"""
+                )
+            }
+        }
+
+        // DELETE twice
+        mockMvc.delete("/v1/camera/bulk") {
+            content = mapper.writeValueAsString(listOf(camera.id))
+            headers {
+                setBearerAuth(token())
+                contentType = MediaType.APPLICATION_JSON
+                accept = listOf(MediaType.APPLICATION_JSON)
+            }
+        }.andExpect {
+            status {
+                isOk()
+            }
+            content {
+                json(
+                    """{
+  "success": true,
+  "message": "ok",
+  "data": [
+    "${camera.id}"
+  ]}"""
+                )
+            }
+        }
+
+        mockMvc.delete("/v1/camera/bulk") {
+            content = mapper.writeValueAsString(listOf(camera.id))
+            headers {
+                setBearerAuth(token())
+                contentType = MediaType.APPLICATION_JSON
+                accept = listOf(MediaType.APPLICATION_JSON)
+            }
+        }.andExpect {
+            status {
+                isOk()
+            }
+            content {
+                json(
+                    """{
+  "success": true,
+  "message": "ok",
+  "data": [
+    "${camera.id}"
+  ]}"""
+                )
+            }
+        }
+
+        // LIST
+
+        mockMvc.get("/v1/camera") {
+            headers {
+                setBearerAuth(token())
+                accept = listOf(MediaType.APPLICATION_JSON)
+            }
+        }.andExpect {
+            status { isOk() }
+            content {
+                json(
+                    """{
+  "success": true,
+  "message": "ok",
+  "data": {
+    "content": [],
+    "pageable": {
+      "sort": {
+        "empty": false,
+        "sorted": true,
+        "unsorted": false
+      },
+      "offset": 0,
+      "pageNumber": 0,
+      "pageSize": 1000,
+      "paged": true,
+      "unpaged": false
+    },
+    "last": true,
+    "totalPages": 0,
+    "totalElements": 0,
+    "first": true,
+    "size": 1000,
+    "number": 0,
+    "sort": {
+      "empty": false,
+      "sorted": true,
+      "unsorted": false
+    },
+    "numberOfElements": 0,
+    "empty": true
+  }
+}""",
+                    strict = false
+                )
+            }
+        }
+    }
+
     @Test
     fun `bulk create list bulk edit list`() {
         // DOUBLE CREATE, should be idempotent
@@ -458,15 +579,7 @@ class CameraControllerTest(
     "isTrash": false,
     "isFlood": false,
     "type": "HIKVISION",
-    "isLoginSucceeded": null,
-    "isLiveView": true,
-    "label": null,
-    "lastCaptureMethod": null,
-    "isPing": false,
-    "pingResponseTimeSec": null,
-    "pingRawData": null,
-    "pingLast": null,
-    "version": 0
+    "label": null
   }
 ]}"""
                 )
@@ -509,15 +622,7 @@ class CameraControllerTest(
     "isTrash": false,
     "isFlood": false,
     "type": "HIKVISION",
-    "isLoginSucceeded": null,
-    "isLiveView": true,
-    "label": null,
-    "lastCaptureMethod": null,
-    "isPing": false,
-    "pingResponseTimeSec": null,
-    "pingRawData": null,
-    "pingLast": null,
-    "version": 0
+    "label": null
   }
 ]}"""
                 )
@@ -562,14 +667,7 @@ class CameraControllerTest(
         "isTrash": false,
         "isFlood": false,
         "type": "HIKVISION",
-        "isLoginSucceeded": null,
-        "isLiveView": true,
-        "label": null,
-        "lastCaptureMethod": null,
-        "isPing": false,
-        "pingResponseTimeSec": null,
-        "pingRawData": null,
-        "pingLast": null
+        "label": null
       }
     ],
     "pageable": {
@@ -691,14 +789,7 @@ class CameraControllerTest(
         "isTrash": false,
         "isFlood": false,
         "type": "HIKVISION",
-        "isLoginSucceeded": null,
-        "isLiveView": true,
-        "label": null,
-        "lastCaptureMethod": null,
-        "isPing": false,
-        "pingResponseTimeSec": null,
-        "pingRawData": null,
-        "pingLast": null
+        "label": null
       }
     ],
     "pageable": {
@@ -781,15 +872,7 @@ class CameraControllerTest(
     "isTrash": false,
     "isFlood": false,
     "type": "HIKVISION",
-    "isLoginSucceeded": null,
-    "isLiveView": true,
-    "label": null,
-    "lastCaptureMethod": null,
-    "isPing": false,
-    "pingResponseTimeSec": null,
-    "pingRawData": null,
-    "pingLast": null,
-    "version": 0
+    "label": null
   }
 }"""
                 )
@@ -869,15 +952,7 @@ class CameraControllerTest(
     "isTrash": false,
     "isFlood": false,
     "type": "HIKVISION",
-    "isLoginSucceeded": null,
-    "isLiveView": true,
-    "label": null,
-    "lastCaptureMethod": null,
-    "isPing": false,
-    "pingResponseTimeSec": null,
-    "pingRawData": null,
-    "pingLast": null,
-    "version": 0
+    "label": null
   }
 }"""
                 )
@@ -921,15 +996,7 @@ class CameraControllerTest(
     "isTrash": false,
     "isFlood": false,
     "type": "HIKVISION",
-    "isLoginSucceeded": null,
-    "isLiveView": true,
-    "label": null,
-    "lastCaptureMethod": null,
-    "isPing": false,
-    "pingResponseTimeSec": null,
-    "pingRawData": null,
-    "pingLast": null,
-    "version": 0
+    "label": null
   }
 }"""
                 )
@@ -1001,15 +1068,7 @@ class CameraControllerTest(
     "isTrash": false,
     "isFlood": false,
     "type": "HIKVISION",
-    "isLoginSucceeded": null,
-    "isLiveView": true,
-    "label": null,
-    "lastCaptureMethod": null,
-    "isPing": false,
-    "pingResponseTimeSec": null,
-    "pingRawData": null,
-    "pingLast": null,
-    "version": 0
+    "label": null
   }
 }"""
                 )
@@ -1053,15 +1112,7 @@ class CameraControllerTest(
     "isTrash": false,
     "isFlood": false,
     "type": "HIKVISION",
-    "isLoginSucceeded": null,
-    "isLiveView": true,
-    "label": null,
-    "lastCaptureMethod": null,
-    "isPing": false,
-    "pingResponseTimeSec": null,
-    "pingRawData": null,
-    "pingLast": null,
-    "version": 0
+    "label": null
   }
 }"""
                 )
