@@ -1,7 +1,9 @@
 package com.katalisindonesia.banyuwangi.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import java.time.Instant
 import javax.persistence.Column
+import javax.persistence.Embeddable
 import javax.persistence.Entity
 import javax.persistence.EnumType
 import javax.persistence.Enumerated
@@ -77,9 +79,22 @@ data class Camera(
     @Enumerated(EnumType.STRING)
     var type: CameraType? = CameraType.HIKVISION,
 
+    var label: String? = null,
+
+    @JsonIgnore
+    var interior: CameraInterior? = null,
+) : Persistent() {
+
+    @Override
+    override fun toString(): String {
+        return this::class.simpleName + "(id = $id )"
+    }
+}
+
+@Embeddable
+data class CameraInterior(
     var isLoginSucceeded: Boolean? = null,
     var isLiveView: Boolean? = true,
-    val label: String? = null,
 
     @Enumerated(EnumType.STRING)
     var lastCaptureMethod: CaptureMethod? = null,
@@ -94,10 +109,5 @@ data class Camera(
     var pingRawData: String? = null,
 
     var pingLast: Instant? = null,
-) : Persistent() {
 
-    @Override
-    override fun toString(): String {
-        return this::class.simpleName + "(id = $id )"
-    }
-}
+)
