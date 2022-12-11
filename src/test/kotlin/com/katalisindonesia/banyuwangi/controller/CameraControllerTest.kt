@@ -24,7 +24,7 @@ class CameraControllerTest(
     @Autowired private val tokenManager: TokenManager,
     @Autowired private val cameraRepo: CameraRepo,
 
-    ) {
+) {
 
     private val mapper = jacksonObjectMapper()
 
