@@ -85,21 +85,33 @@ class CameraController(
     }
 
     @Operation(
-        summary = "Delete cameras with specified uuids", description = "Delete camera with specified uuids. Ignore non existing camera.",
+        summary = "Delete cameras with specified uuids",
+        description = "Delete camera with specified uuids. Ignore non existing camera.",
         security = [
-            SecurityRequirement(name = "oauth2", scopes = ["camera:write"])
+            SecurityRequirement(
+                name = "oauth2",
+                scopes = ["camera:write"],
+            )
         ],
-        tags = ["chart"]
+        tags = ["chart"],
     )
     @ApiResponses(
         value = [
-            ApiResponse(responseCode = "200", description = "Successful operation"),
+            ApiResponse(
+                responseCode = "200",
+                description = "Successful operation",
+            ),
         ]
     )
     @DeleteMapping("/bulk")
     @Transactional
     @PreAuthorize("hasAnyAuthority('camera:write')")
-    fun bulkDelete(@Parameter(description = "list of uuid", required = true) @RequestBody @Valid ids: List<UUID>): ResponseEntity<WebResponse<List<UUID>>> {
+    fun bulkDelete(
+        @Parameter(
+            description = "list of uuid",
+            required = true
+        ) @RequestBody @Valid ids: List<UUID>
+    ): ResponseEntity<WebResponse<List<UUID>>> {
         for (id in ids) {
             if (cameraRepo.existsById(id)) {
                 cameraRepo.deleteById(id)
