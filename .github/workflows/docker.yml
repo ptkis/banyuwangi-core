@@ -30,6 +30,10 @@ jobs:
       - name: Install docker
         run: |
           command docker -v || curl -fsSL get.docker.com | sudo bash
+      - name: Remove Rabbit MQ
+        run: docker rm -f rabbitmq || true
+      - name: Start Rabbit MQ
+        run: docker run -d --name=rabbitmq -p 5672:5672 -e RABBITMQ_NODE_PORT=5672 ptkis/rabbitmq-federated:10-mining-amd64
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - run: echo "$APPLICATION_SECRET_PROPERTIES" > src/test/resources/application-secret.properties
@@ -63,6 +67,9 @@ jobs:
         if: always()
       - name: Remove application-secret.properties
         run: rm -f src/test/resources/application-secret.properties || true
+        if: always()
+      - name: Remove Rabbit MQ
+        run: docker rm -f --volumes rabbitmq || true
         if: always()
       - name: Upload openapi artifacts
         uses: actions/upload-artifact@v2
