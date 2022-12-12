@@ -12,7 +12,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.delete
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 import java.util.UUID
@@ -438,7 +437,7 @@ class CameraControllerTest(
         }
 
         // DELETE twice
-        mockMvc.delete("/v1/camera/bulk") {
+        mockMvc.post("/v1/camera/bulk/delete") {
             content = mapper.writeValueAsString(listOf(camera.id))
             headers {
                 setBearerAuth(token())
@@ -461,7 +460,7 @@ class CameraControllerTest(
             }
         }
 
-        mockMvc.delete("/v1/camera/bulk") {
+        mockMvc.post("/v1/camera/bulk/delete") {
             content = mapper.writeValueAsString(listOf(camera.id))
             headers {
                 setBearerAuth(token())
