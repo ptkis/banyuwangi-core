@@ -44,9 +44,15 @@ configurations {
 }
 
 dependencies {
+    // coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
+
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-aop")
-    // implementation("org.springframework.boot:spring-boot-starter-amqp")
+    implementation("org.springframework.boot:spring-boot-starter-amqp")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -71,6 +77,11 @@ dependencies {
     val okHttpVersion = "4.10.0"
     implementation("com.squareup.okhttp3:okhttp:$okHttpVersion")
     implementation("com.squareup.okhttp3:logging-interceptor:$okHttpVersion")
+    implementation("io.github.rburgst:okhttp-digest:2.7")
+
+    implementation("com.github.03:onvif:1.0.9") {
+        exclude(group = "com.burgstaller")
+    }
 
     implementation("org.apache.commons:commons-lang3:3.12.0")
     implementation("commons-io:commons-io:2.11.0")
@@ -87,7 +98,7 @@ dependencies {
     runtimeOnly("com.mysql:mysql-connector-j")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    // testImplementation("org.springframework.amqp:spring-rabbit-test")
+    testImplementation("org.springframework.amqp:spring-rabbit-test")
     testImplementation("org.springframework.security:spring-security-test")
 
     implementation("org.keycloak:keycloak-spring-security-adapter")

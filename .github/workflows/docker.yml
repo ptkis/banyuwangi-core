@@ -32,6 +32,9 @@ jobs:
           command docker -v || curl -fsSL get.docker.com | sudo bash
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
+      - run: echo "$APPLICATION_SECRET_PROPERTIES" > src/test/resources/application-secret.properties
+        env:
+          APPLICATION_SECRET_PROPERTIES: ${{ secrets.APPLICATION_SECRET_PROPERTIES }}
       - name: Test and assemble with Gradle
         run: ./gradlew check assemble generateOpenApiDocs
         env:
@@ -57,6 +60,9 @@ jobs:
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
           junit_files: "**/build/test-results/test/TEST-*.xml"
+        if: always()
+      - name: Remove application-secret.properties
+        run: rm -f src/test/resources/application-secret.properties || true
         if: always()
       - name: Upload openapi artifacts
         uses: actions/upload-artifact@v2
