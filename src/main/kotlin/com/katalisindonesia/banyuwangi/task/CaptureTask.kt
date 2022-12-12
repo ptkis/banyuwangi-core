@@ -26,12 +26,12 @@ class CaptureTask(
         doCapture()
     }
 
-    fun doCapture() {
+    fun doCapture(): Int {
         log.info { "Begin capture task" }
         var page = 0
         var count = 0
         do {
-            val cameraPage = cameraRepo.findCameraByActiveEquals(active = true, PageRequest.of(page, pageSize))
+            val cameraPage = cameraRepo.findWithIsActive(active = true, PageRequest.of(page, pageSize))
             if (cameraPage.isEmpty) {
                 break
             }
@@ -48,5 +48,6 @@ class CaptureTask(
             page++
         } while (true)
         log.info { "End capture task with $count cameras" }
+        return count
     }
 }
