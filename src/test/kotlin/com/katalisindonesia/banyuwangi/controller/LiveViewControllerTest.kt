@@ -2,6 +2,7 @@ package com.katalisindonesia.banyuwangi.controller
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.katalisindonesia.banyuwangi.model.Camera
+import com.katalisindonesia.banyuwangi.model.CameraInterior
 import com.katalisindonesia.banyuwangi.model.CameraType
 import com.katalisindonesia.banyuwangi.repo.CameraRepo
 import com.katalisindonesia.banyuwangi.security.TokenManager
@@ -163,6 +164,61 @@ class LiveViewControllerTest(
                     isNotEmpty()
                     isString()
                 }
+            }
+        }
+    }
+    @Test
+    fun `create minimum camera and get live view url`() {
+        val camera = Camera(
+            vmsCameraIndexCode = "00001",
+            name = "Test 01",
+            location = "01",
+            interior = CameraInterior(
+                isLiveView = null,
+                lastCaptureMethod = null,
+                isPing = null,
+                pingResponseTimeSec = null,
+                pingRawData = null,
+                pingLast = null,
+                liveViewHash = null,
+                liveViewUrl = null,
+            )
+        )
+        cameraRepo.saveAndFlush(camera)
+
+        mockMvc.get("/v1/live/camera") {
+            headers {
+                setBearerAuth(token())
+                accept = listOf(MediaType.APPLICATION_JSON)
+            }
+        }.andExpect {
+            status { isOk() }
+            content {
+                json(
+                    """{
+  "success": true,
+  "message": "ok",
+  "data": [
+    {
+      "vmsCameraIndexCode": "00001",
+      "vmsType": null,
+      "name": "Test 01",
+      "location": "01",
+      "latitude": 0.0,
+      "longitude": 0.0,
+      "isActive": true,
+      "isStreetvendor": false,
+      "isTraffic": false,
+      "isCrowd": false,
+      "isTrash": false,
+      "isFlood": false,
+      "label": null,
+      "liveViewUrl": null
+    }
+  ]
+}""",
+                    strict = false
+                )
             }
         }
     }

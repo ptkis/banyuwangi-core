@@ -80,7 +80,7 @@ data class Camera(
     var label: String? = null,
 
     @JsonIgnore
-    var interior: CameraInterior = CameraInterior(),
+    var interior: CameraInterior? = CameraInterior(),
 ) : Persistent() {
 
     @Override
