@@ -1,6 +1,7 @@
 package com.katalisindonesia.banyuwangi.consumer
 
 import com.katalisindonesia.banyuwangi.model.Camera
+import com.katalisindonesia.banyuwangi.model.CameraInterior
 import com.katalisindonesia.banyuwangi.model.CameraType
 import com.katalisindonesia.banyuwangi.repo.CameraRepo
 import com.katalisindonesia.banyuwangi.streaming.StreamingRest
@@ -85,7 +86,8 @@ class StreamingConsumer(
             val camera = cameraRepo.getReferenceById(camera1.id)
             var modified = false
 
-            val interior = camera.interior
+            val interior = camera.interior ?: CameraInterior()
+            camera.interior = interior
             val url = interior.liveViewUrl ?: return false
             val res = UrlResource(url)
 
@@ -123,7 +125,8 @@ class StreamingConsumer(
                     "/${camera.httpPort}"
             val hash = calcMd5Hash(cameraUrl)
 
-            val interior = camera.interior
+            val interior = camera.interior ?: CameraInterior()
+            camera.interior = interior
             if (interior.liveViewUrl == null || hash != interior.liveViewHash) {
                 val cameraStreamingUrl = getCameraStreaming(camera) ?: return modified
                 tt.execute {

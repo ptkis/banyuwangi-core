@@ -20,5 +20,5 @@ data class LiveCamera(
     val isTrash = camera.isTrash
     val isFlood = camera.isFlood
     val label = camera.label
-    val liveViewUrl = camera.interior.liveViewUrl
+    val liveViewUrl = camera.interior?.liveViewUrl
 }

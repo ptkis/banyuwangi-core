@@ -44,7 +44,9 @@ class LiveViewController(
                 success = true,
                 message = "ok",
                 data =
-                cameraRepo.findWithIsActive(true, Pageable.unpaged()).toList().map { LiveCamera(it) }
+                cameraRepo.findWithIsActive(true, Pageable.unpaged())
+                    .toList()
+                    .map { LiveCamera(it) }
             )
         )
     }

@@ -2,6 +2,7 @@ package com.katalisindonesia.banyuwangi.controller
 
 import com.katalisindonesia.banyuwangi.consumer.MessagingProperties
 import com.katalisindonesia.banyuwangi.model.Camera
+import com.katalisindonesia.banyuwangi.model.CameraInterior
 import com.katalisindonesia.banyuwangi.repo.CameraRepo
 import com.katalisindonesia.banyuwangi.util.toResponseEntity
 import io.swagger.v3.oas.annotations.Operation
@@ -64,7 +65,7 @@ class CameraController(
         if (existing.isPresent) {
             val camera1 = existing.get()
             camera.version = camera1.version
-            camera.interior = camera1.interior.copy()
+            camera.interior = camera1.interior?.copy() ?: CameraInterior()
         }
         cameraRepo.saveAndFlush(camera)
         rabbitTemplate.convertAndSend(messagingProperties.streamingCheckQueue, "")
@@ -81,7 +82,7 @@ class CameraController(
             if (existing.isPresent) {
                 val camera1 = existing.get()
                 camera.version = camera1.version
-                camera.interior = camera1.interior.copy()
+                camera.interior = camera1.interior?.copy() ?: CameraInterior()
             }
         }
         cameraRepo.saveAllAndFlush(cameras)
