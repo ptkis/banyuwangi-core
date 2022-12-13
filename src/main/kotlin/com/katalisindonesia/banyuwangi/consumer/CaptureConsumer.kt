@@ -31,13 +31,13 @@ class CaptureConsumer(
         ]
     )
     suspend fun onCapture(request: CaptureRequest) {
-        susOnCapture(request)
+        doOnCapture(request)
     }
 
-    suspend fun susOnCapture(request: CaptureRequest): Boolean {
+    fun doOnCapture(request: CaptureRequest): Boolean {
         val operation = when (request.camera.type) {
             CameraType.HIKVISION -> captureService::hikvision
-            CameraType.ONVIF -> captureService::onvif
+            // CameraType.ONVIF -> captureService::onvif
             else -> captureService::empty
         }
         val bytesOpt = operation.invoke(request.camera)

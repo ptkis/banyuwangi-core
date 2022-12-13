@@ -1,39 +1,28 @@
 package com.katalisindonesia.banyuwangi.service
 
-import be.teletask.onvif.OnvifManager
-import be.teletask.onvif.listeners.OnvifResponseListener
-import be.teletask.onvif.models.OnvifDevice
-import be.teletask.onvif.models.OnvifMediaProfile
-import be.teletask.onvif.responses.OnvifResponse
 import com.burgstaller.okhttp.digest.Credentials
 import com.burgstaller.okhttp.digest.DigestAuthenticator
 import com.katalisindonesia.banyuwangi.AppProperties
 import com.katalisindonesia.banyuwangi.model.Camera
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import mu.KotlinLogging
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import org.springframework.stereotype.Service
-import org.springframework.web.client.RestTemplate
 import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.util.Optional
 import java.util.concurrent.TimeUnit
 import javax.imageio.ImageIO
-import kotlin.coroutines.Continuation
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 private val log = KotlinLogging.logger { }
 
 @Service
 class CaptureService(
-    private val restTemplate: RestTemplate,
     private val appProperties: AppProperties,
 ) {
-    suspend fun onvif(camera: Camera): Optional<ByteArray> {
+/*
+     suspend fun onvif(camera: Camera): Optional<ByteArray> {
         val device = OnvifDevice(
             "http://${camera.host}:${camera.httpPort}",
             camera.userName,
@@ -48,14 +37,14 @@ class CaptureService(
                 log.error { "device=$onvifDevice errorCode=$errorCode errorMessage=$errorMessage" }
             }
         })
-        val profiles = suspendCoroutine { continuation: Continuation<List<OnvifMediaProfile>> ->
+        val profiles = suspendCancellableCoroutine { continuation: Continuation<List<OnvifMediaProfile>> ->
             onvifManager.getMediaProfiles(
                 device
             ) { _, mediaProfiles -> continuation.resume(mediaProfiles) }
         }
         log.debug { "Get ${profiles.size} from device ${camera.name}" }
         for (profile in profiles) {
-            val snapshotUri = suspendCoroutine { continuation ->
+            val snapshotUri = suspendCancellableCoroutine { continuation ->
                 onvifManager.getSnapshotURI(
                     device, profile
                 ) { _, _, uri -> continuation.resume(uri) }
@@ -74,8 +63,9 @@ class CaptureService(
         }
         return Optional.empty()
     }
+*/
 
-    suspend fun hikvision(camera: Camera): Optional<ByteArray> {
+    fun hikvision(camera: Camera): Optional<ByteArray> {
         val credentials = Credentials(camera.userName, camera.password)
 
         val timeoutSeconds = appProperties.timeoutSeconds
@@ -142,7 +132,7 @@ class CaptureService(
         }
     }
 
-    suspend fun empty(camera: Camera): Optional<ByteArray> {
+    fun empty(camera: Camera): Optional<ByteArray> {
         log.debug { "empty: ${camera.name}" }
         return Optional.empty<ByteArray>()
     }

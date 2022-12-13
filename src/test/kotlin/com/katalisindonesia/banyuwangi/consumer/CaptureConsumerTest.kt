@@ -66,7 +66,7 @@ class CaptureConsumerTest(
             withContext(Dispatchers.IO) {
                 cameraRepo.saveAndFlush(camera)
             }
-            if (captureConsumer.susOnCapture(
+            if (captureConsumer.doOnCapture(
                     CaptureRequest(
                             camera = camera,
                             instant = Instant.now()
