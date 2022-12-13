@@ -16,30 +16,18 @@ class MessagingConfig(
     @Bean
     fun captureQueue() = Queue(
         messagingProperties.captureQueue,
-        true,
-        false,
-        false,
-        defaultQueueArguments()
     )
 
     @Bean
     fun detectionResultQueue() =
         Queue(
             messagingProperties.detectionResultQueue,
-            true,
-            false,
-            false,
-            defaultQueueArguments()
         )
 
     @Bean
     fun streamingCheckQueue() =
         Queue(
             messagingProperties.streamingCheckQueue,
-            true,
-            false,
-            false,
-            defaultQueueArguments()
         )
 
     @Bean
@@ -49,7 +37,4 @@ class MessagingConfig(
                 .build()
         )
     }
-
-    private fun defaultQueueArguments(): MutableMap<String, Any> =
-        hashMapOf("x-message-ttl" to messagingProperties.defaultQueueTtl)
 }
