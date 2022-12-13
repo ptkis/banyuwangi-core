@@ -34,3 +34,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+/local.properties
+/src/test/resources/application-secret.properties
+/images

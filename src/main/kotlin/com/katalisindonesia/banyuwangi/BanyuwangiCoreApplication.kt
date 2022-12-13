@@ -1,11 +1,15 @@
 package com.katalisindonesia.banyuwangi
 
+import com.katalisindonesia.banyuwangi.consumer.MessagingConfig
+import com.katalisindonesia.banyuwangi.consumer.MessagingProperties
 import com.katalisindonesia.banyuwangi.controller.HelloController
 import com.katalisindonesia.banyuwangi.model.Persistent
 import com.katalisindonesia.banyuwangi.repo.CameraRepo
 import com.katalisindonesia.banyuwangi.security.CorsProperties
 import com.katalisindonesia.banyuwangi.security.SecurityConfig
 import com.katalisindonesia.banyuwangi.security.TokenManager
+import com.katalisindonesia.banyuwangi.service.CaptureService
+import com.katalisindonesia.banyuwangi.task.CaptureTask
 import com.katalisindonesia.imageserver.controller.ImageController
 import com.katalisindonesia.imageserver.controller.ImageProperties
 import com.katalisindonesia.imageserver.service.StorageService
@@ -23,6 +27,9 @@ import org.springframework.boot.runApplication
         CameraRepo::class,
         StorageService::class,
         ImageController::class,
+        CaptureTask::class,
+        MessagingConfig::class,
+        CaptureService::class,
     ]
 )
 @EnableConfigurationProperties
@@ -30,6 +37,8 @@ import org.springframework.boot.runApplication
     basePackageClasses = [
         CorsProperties::class,
         ImageProperties::class,
+        MessagingProperties::class,
+        AppProperties::class,
     ]
 )
 @EntityScan(
