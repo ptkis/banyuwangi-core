@@ -9,6 +9,7 @@ import com.katalisindonesia.banyuwangi.security.CorsProperties
 import com.katalisindonesia.banyuwangi.security.SecurityConfig
 import com.katalisindonesia.banyuwangi.security.TokenManager
 import com.katalisindonesia.banyuwangi.service.CaptureService
+import com.katalisindonesia.banyuwangi.streaming.StreamingRest
 import com.katalisindonesia.banyuwangi.task.CaptureTask
 import com.katalisindonesia.imageserver.controller.ImageController
 import com.katalisindonesia.imageserver.controller.ImageProperties
@@ -30,6 +31,7 @@ import org.springframework.boot.runApplication
         CaptureTask::class,
         MessagingConfig::class,
         CaptureService::class,
+        StreamingRest::class,
     ]
 )
 @EnableConfigurationProperties
