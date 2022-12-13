@@ -30,7 +30,7 @@ class CaptureConsumer(
             "#{captureQueue.name}"
         ]
     )
-    suspend fun onCapture(request: CaptureRequest) {
+    fun onCapture(request: CaptureRequest) {
         doOnCapture(request)
     }
 

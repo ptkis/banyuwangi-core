@@ -1,16 +1,18 @@
 package com.katalisindonesia.banyuwangi.controller
 
+import com.katalisindonesia.banyuwangi.consumer.MessagingProperties
 import com.katalisindonesia.banyuwangi.model.Camera
 import com.katalisindonesia.banyuwangi.repo.CameraRepo
+import com.katalisindonesia.banyuwangi.util.toResponseEntity
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
@@ -30,6 +32,8 @@ import javax.validation.constraints.Min
 @RequestMapping("/v1/camera")
 class CameraController(
     private val cameraRepo: CameraRepo,
+    private val rabbitTemplate: RabbitTemplate,
+    private val messagingProperties: MessagingProperties,
 ) {
 
     @GetMapping
@@ -60,9 +64,10 @@ class CameraController(
         if (existing.isPresent) {
             val camera1 = existing.get()
             camera.version = camera1.version
-            camera.interior = camera1.interior?.copy()
+            camera.interior = camera1.interior.copy()
         }
         cameraRepo.saveAndFlush(camera)
+        rabbitTemplate.convertAndSend(messagingProperties.streamingCheckQueue, "")
         return Optional.of(camera).toResponseEntity()
     }
 
@@ -76,10 +81,11 @@ class CameraController(
             if (existing.isPresent) {
                 val camera1 = existing.get()
                 camera.version = camera1.version
-                camera.interior = camera1.interior?.copy()
+                camera.interior = camera1.interior.copy()
             }
         }
         cameraRepo.saveAllAndFlush(cameras)
+        rabbitTemplate.convertAndSend(messagingProperties.streamingCheckQueue, "")
         return Optional.of(cameras).toResponseEntity()
     }
 
@@ -129,23 +135,4 @@ class CameraController(
     fun loadByVmsCameraIndexCode(@PathVariable id: String): ResponseEntity<WebResponse<Camera>> {
         return cameraRepo.getCameraByVmsCameraIndexCode(id).toResponseEntity()
     }
-}
-
-fun <T> Optional<T>.toResponseEntity(): ResponseEntity<WebResponse<T>> {
-    if (this.isEmpty) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
-            WebResponse(
-                success = false,
-                message = "not found",
-                data = null,
-            )
-        )
-    }
-    return ResponseEntity.ok(
-        WebResponse(
-            success = true,
-            message = "ok",
-            data = this.get()
-        )
-    )
 }

@@ -122,11 +122,11 @@ complexity:
     threshold: 400
   LongParameterList:
     active: true
-    functionThreshold: 6
+    functionThreshold: 30
     constructorThreshold: 30
     ignoreDefaultParameters: false
     ignoreDataClasses: true
-    ignoreAnnotatedParameter: [org.springframework.web.bind.annotation.*]
+    ignoreAnnotatedParameter: [org.springframework.web.bind.annotation.*,retrofit2.http.*]
   MethodOverloading:
     active: false
     threshold: 6

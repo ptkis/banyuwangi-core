@@ -14,10 +14,33 @@ class MessagingConfig(
     private val messagingProperties: MessagingProperties,
 ) {
     @Bean
-    fun captureQueue() = Queue(messagingProperties.captureQueue, true, false, false, defaultQueueArguments())
+    fun captureQueue() = Queue(
+        messagingProperties.captureQueue,
+        true,
+        false,
+        false,
+        defaultQueueArguments()
+    )
 
     @Bean
-    fun detectionResultQueue() = Queue(messagingProperties.detectionResultQueue)
+    fun detectionResultQueue() =
+        Queue(
+            messagingProperties.detectionResultQueue,
+            true,
+            false,
+            false,
+            defaultQueueArguments()
+        )
+
+    @Bean
+    fun streamingCheckQueue() =
+        Queue(
+            messagingProperties.streamingCheckQueue,
+            true,
+            false,
+            false,
+            defaultQueueArguments()
+        )
 
     @Bean
     fun messageConverter(): MessageConverter {
