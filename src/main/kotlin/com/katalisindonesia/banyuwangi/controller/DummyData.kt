@@ -83,29 +83,29 @@ class: "truck", probability: 0.62682, bounds: [x=0.610, y=0.131, width=0.284, he
 fun detectionAnnotations() = listOf(
     DetectionAnnotation(
         BoundingBox(
-            x = 0.162F,
-            y = 0.357F,
-            height = 0.545F,
-            width = 0.250F,
+            x = 0.162,
+            y = 0.357,
+            height = 0.545,
+            width = 0.250,
         ),
-        confidence = 0.96922F,
+        confidence = 0.96922,
     ),
     DetectionAnnotation(
         BoundingBox(
-            x = 0.152F,
-            y = 0.249F,
-            height = 0.570F,
-            width = 0.558F,
+            x = 0.152,
+            y = 0.249,
+            height = 0.570,
+            width = 0.558,
         ),
-        confidence = 0.66656F,
+        confidence = 0.66656,
     ),
     DetectionAnnotation(
         BoundingBox(
-            x = 0.610F,
-            y = 0.131F,
-            height = 0.284F,
-            width = 0.167F,
+            x = 0.610,
+            y = 0.131,
+            height = 0.284,
+            width = 0.167,
         ),
-        confidence = 0.62682F,
+        confidence = 0.62682,
     ),
 )

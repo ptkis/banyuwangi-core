@@ -6,16 +6,15 @@ import javax.persistence.Entity
 @Entity
 data class BoundingBox(
 
-    // left is sql keyword
     @Column(nullable = false)
-    var x: Float,
+    var x: Double,
 
     @Column(nullable = false)
-    var y: Float,
+    var y: Double,
 
     @Column(nullable = false)
-    var width: Float,
+    var width: Double,
 
     @Column(nullable = false)
-    var height: Float,
+    var height: Double,
 ) : Persistent()

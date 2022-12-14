@@ -58,6 +58,7 @@ class CaptureConsumer(
             rabbitTemplate.convertAndSend(
                 messagingProperties.detectionQueue,
                 DetectionRequest(
+                    uuid = uuid,
                     imageUri = storageService.uri(uuid).toString(),
                     callbackQueue = messagingProperties.detectionResultQueue,
                 )

@@ -4,5 +4,5 @@ import com.katalisindonesia.banyuwangi.model.BoundingBox
 
 data class DetectionAnnotation(
     val boundingBox: BoundingBox,
-    val confidence: Float,
+    val confidence: Double,
 )

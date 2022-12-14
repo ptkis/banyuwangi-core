@@ -1,23 +1,22 @@
 package com.katalisindonesia.banyuwangi.model
 
-import java.util.UUID
 import javax.persistence.Column
 import javax.persistence.Entity
+import javax.persistence.EnumType
+import javax.persistence.Enumerated
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
 
 @Entity
-data class Snapshot(
-    @Column(nullable = false, unique = true, columnDefinition = "binary(16)")
-    val imageId: UUID,
-
+data class SnapshotCount(
     @ManyToOne
     @JoinColumn(nullable = false)
-    val camera: Camera,
+    var snapshot: Snapshot,
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    val length: Long,
+    var type: DetectionType,
 
-    @Column(nullable = true)
-    val isAnnotation: Boolean? = false,
+    @Column(nullable = false, name = "m_value")
+    var value: Int,
 ) : Persistent()
