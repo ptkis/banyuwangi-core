@@ -172,3 +172,7 @@ tasks.jacocoTestCoverageVerification {
         }
     }
 }
+
+openApi {
+    waitTimeInSeconds.set(120)
+}
