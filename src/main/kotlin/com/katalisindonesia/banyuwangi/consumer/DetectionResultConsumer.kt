@@ -49,10 +49,12 @@ class DetectionResultConsumer(
                     annotationRepo.save(
                         Annotation(
                             snapshot = snapshot,
+                            snapshotCreated = snapshot.created,
+                            snapshotImageId = snapshot.imageId,
                             name = className,
                             boundingBox = boundingBox.toModel(),
-                            score = probability,
-                            type = type
+                            confidence = probability,
+                            type = type,
                         )
                     )
                     count++
@@ -60,6 +62,10 @@ class DetectionResultConsumer(
                     val objCount = countMap.getOrPut(type) {
                         SnapshotCount(
                             snapshot = snapshot,
+                            snapshotCreated = snapshot.created,
+                            snapshotImageId = snapshot.imageId,
+                            snapshotCameraName = snapshot.camera.name,
+                            snapshotCameraLocation = snapshot.camera.location,
                             type = type,
                             value = 0,
                         )

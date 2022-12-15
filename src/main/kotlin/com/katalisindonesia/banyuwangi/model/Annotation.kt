@@ -1,5 +1,8 @@
 package com.katalisindonesia.banyuwangi.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import java.time.Instant
+import java.util.UUID
 import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -13,13 +16,37 @@ import javax.persistence.Table
 @Entity
 @Table(
     indexes = [
-        Index(name = "annotation_createdtype_idx", columnList = "created,type", unique = false)
+        Index(
+            name = "annotation_snapshotcreated_idx",
+            columnList = "snapshotCreated",
+            unique = false,
+        ),
+        Index(
+            name = "annotation_type_idx",
+            columnList = "type",
+            unique = false,
+        ),
+        Index(
+            name = "annotation_snapshotcameralocation_idx",
+            columnList = "snapshotCameraLocation",
+            unique = false,
+        ),
     ]
 )
 data class Annotation(
     @ManyToOne
     @JoinColumn(nullable = false)
+    @JsonIgnore
     var snapshot: Snapshot,
+
+    @Column(nullable = false)
+    var snapshotCreated: Instant = snapshot.created,
+
+    @Column(nullable = false, unique = true, columnDefinition = "binary(16)")
+    var snapshotImageId: UUID = snapshot.imageId,
+
+    @Column(nullable = false)
+    var snapshotCameraLocation: String = snapshot.camera.location,
 
     @Column(nullable = false)
     var name: String,
@@ -33,6 +60,6 @@ data class Annotation(
     var boundingBox: BoundingBox,
 
     @Column(nullable = false)
-    var score: Double,
+    var confidence: Double,
 
 ) : Persistent()

@@ -1,10 +1,15 @@
 package com.katalisindonesia.banyuwangi.controller
 
+import com.katalisindonesia.banyuwangi.model.Annotation
 import com.katalisindonesia.banyuwangi.model.BoundingBox
+import com.katalisindonesia.banyuwangi.model.Camera
+import com.katalisindonesia.banyuwangi.model.DetectionType
+import com.katalisindonesia.banyuwangi.model.Snapshot
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.util.UUID
 import java.util.concurrent.ThreadLocalRandom
 
 val desas = listOf(
@@ -80,32 +85,51 @@ class: "dog", probability: 0.96922, bounds: [x=0.162, y=0.357, width=0.250, heig
 class: "bicycle", probability: 0.66656, bounds: [x=0.152, y=0.249, width=0.570, height=0.558]
 class: "truck", probability: 0.62682, bounds: [x=0.610, y=0.131, width=0.284, height=0.167]
  */
-fun detectionAnnotations() = listOf(
-    DetectionAnnotation(
-        BoundingBox(
+fun detectionAnnotations(type: DetectionType, imageId: UUID) = listOf(
+    Annotation(
+        boundingBox = BoundingBox(
             x = 0.162,
             y = 0.357,
             height = 0.545,
             width = 0.250,
         ),
         confidence = 0.96922,
+        name = "dog",
+        snapshot = snapshot(imageId),
+        type = type,
     ),
-    DetectionAnnotation(
-        BoundingBox(
+    Annotation(
+        boundingBox = BoundingBox(
             x = 0.152,
             y = 0.249,
             height = 0.570,
             width = 0.558,
         ),
         confidence = 0.66656,
+        name = "bicycle",
+        snapshot = snapshot(imageId),
+        type = type
     ),
-    DetectionAnnotation(
-        BoundingBox(
+    Annotation(
+        boundingBox = BoundingBox(
             x = 0.610,
             y = 0.131,
             height = 0.284,
             width = 0.167,
         ),
         confidence = 0.62682,
+        name = "truck",
+        snapshot = snapshot(imageId),
+        type = type
     ),
+)
+
+private fun snapshot(imageId: UUID) = Snapshot(
+    imageId = imageId,
+    camera = Camera(
+        name = "Test",
+        location = "Test"
+    ),
+    length = 0,
+    isAnnotation = true,
 )
