@@ -21,7 +21,11 @@ class CaptureTask(
 ) {
     private val pageSize = 50
 
-    @Scheduled(fixedDelayString = "\${dashboard.task.capture.fixedDelaySeconds:999999999}", timeUnit = TimeUnit.SECONDS)
+    @Scheduled(
+        fixedDelayString = "\${dashboard.task.capture.fixedDelaySeconds:999999999}",
+        initialDelayString = "\${dashboard.task.capture.fixedDelaySeconds:999999999}",
+        timeUnit = TimeUnit.SECONDS
+    )
     fun scheduledCapture() {
         doCapture()
     }
