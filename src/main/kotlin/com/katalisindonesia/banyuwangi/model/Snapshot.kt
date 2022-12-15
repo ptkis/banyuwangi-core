@@ -8,7 +8,7 @@ import javax.persistence.ManyToOne
 
 @Entity
 data class Snapshot(
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true, columnDefinition = "binary(16)")
     val imageId: UUID,
 
     @ManyToOne
@@ -17,4 +17,7 @@ data class Snapshot(
 
     @Column(nullable = false)
     val length: Long,
+
+    @Column(nullable = true)
+    val isAnnotation: Boolean? = false,
 ) : Persistent()

@@ -1,5 +1,6 @@
 package com.katalisindonesia.banyuwangi.controller
 
+import com.katalisindonesia.banyuwangi.model.Annotation
 import com.katalisindonesia.banyuwangi.model.DetectionType
 import java.time.Instant
 import java.time.LocalDate
@@ -12,5 +13,5 @@ data class DetectionResponse(
     val type: DetectionType,
     val value: Int,
     val imageSrc: String,
-    val annotations: List<DetectionAnnotation>,
+    val annotations: List<Annotation>,
 )
