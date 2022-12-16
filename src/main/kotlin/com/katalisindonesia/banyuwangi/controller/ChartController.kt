@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.domain.Specification
+import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
@@ -51,10 +52,12 @@ class ChartController(
     fun flood(
         @Parameter(description = "Starting period, no filter if omitted") @Valid
         @RequestParam(required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         startDate: LocalDate?,
 
         @Parameter(description = "Ending period, no filter if omitted") @Valid
         @RequestParam(required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         endDate: LocalDate?,
 
         @Parameter(description = "Location of camera, no filter if omitted") @Valid
@@ -87,10 +90,12 @@ class ChartController(
     fun trash(
         @Parameter(description = "Starting period, no filter if omitted") @Valid
         @RequestParam(required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         startDate: LocalDate?,
 
         @Parameter(description = "Ending period, no filter if omitted") @Valid
         @RequestParam(required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         endDate: LocalDate?,
 
         @Parameter(description = "Location of camera, no filter if omitted") @Valid
@@ -123,10 +128,12 @@ class ChartController(
     fun streetvendor(
         @Parameter(description = "Starting period, no filter if omitted") @Valid
         @RequestParam(required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         startDate: LocalDate?,
 
         @Parameter(description = "Ending period, no filter if omitted") @Valid
         @RequestParam(required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         endDate: LocalDate?,
 
         @Parameter(description = "Location of camera, no filter if omitted") @Valid
@@ -159,10 +166,12 @@ class ChartController(
     fun crowd(
         @Parameter(description = "Starting period, no filter if omitted") @Valid
         @RequestParam(required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         startDate: LocalDate?,
 
         @Parameter(description = "Ending period, no filter if omitted") @Valid
         @RequestParam(required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         endDate: LocalDate?,
 
         @Parameter(description = "Location of camera, no filter if omitted") @Valid
@@ -195,10 +204,12 @@ class ChartController(
     fun traffic(
         @Parameter(description = "Starting period, no filter if omitted") @Valid
         @RequestParam(required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         startDate: LocalDate?,
 
         @Parameter(description = "Ending period, no filter if omitted") @Valid
         @RequestParam(required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         endDate: LocalDate?,
 
         @Parameter(description = "Location of camera, no filter if omitted") @Valid
