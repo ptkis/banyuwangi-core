@@ -253,4 +253,8 @@ class DetectionController(
             content, PageRequest.of(page, size), size * size.toLong()
         )
     }
+
+    fun resetProductionMode() {
+        productionMode.set(false)
+    }
 }

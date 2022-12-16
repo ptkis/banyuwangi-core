@@ -51,6 +51,9 @@ class DetectionControllerTest(
     @Autowired
     private val annotationRepo: AnnotationRepo,
 
+    @Autowired
+    private val detectionController: DetectionController,
+
 ) {
     @BeforeEach
     @AfterEach
@@ -59,6 +62,7 @@ class DetectionControllerTest(
         annotationRepo.deleteAll()
         snapshotRepo.deleteAll()
         cameraRepo.deleteAll()
+        detectionController.resetProductionMode()
     }
 
     @Test
