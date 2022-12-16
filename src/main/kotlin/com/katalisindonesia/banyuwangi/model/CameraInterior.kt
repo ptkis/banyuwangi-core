@@ -14,6 +14,9 @@ data class CameraInterior(
     @Enumerated(EnumType.STRING)
     var lastCaptureMethod: CaptureMethod? = null,
 
+    @Column(nullable = true)
+    var lastCaptureInstant: Instant? = null,
+
     @Column
     var isPing: Boolean? = false,
 

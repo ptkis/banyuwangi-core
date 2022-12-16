@@ -4,11 +4,8 @@ import com.katalisindonesia.banyuwangi.model.Camera
 import com.katalisindonesia.banyuwangi.model.CameraType
 import com.katalisindonesia.banyuwangi.repo.CameraRepo
 import com.katalisindonesia.banyuwangi.repo.SnapshotRepo
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.withContext
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -46,9 +43,8 @@ class CaptureConsumerTest(
         cameraRepo.deleteAll()
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun capture() = runTest {
+    fun capture() {
 
         var success = false
         for (channel in 1..16) {
@@ -63,9 +59,7 @@ class CaptureConsumerTest(
                 password = password,
                 type = CameraType.HIKVISION,
             )
-            withContext(Dispatchers.IO) {
-                cameraRepo.saveAndFlush(camera)
-            }
+            cameraRepo.saveAndFlush(camera)
             if (captureConsumer.doOnCapture(
                     CaptureRequest(
                             camera = camera,
@@ -74,6 +68,10 @@ class CaptureConsumerTest(
                 )
             ) {
                 success = true
+
+                val camera1 = cameraRepo.getReferenceById(camera.id)
+                assertNotNull(camera1.interior?.lastCaptureInstant)
+                assertNotNull(camera1.interior?.lastCaptureMethod)
                 break
             }
         }
