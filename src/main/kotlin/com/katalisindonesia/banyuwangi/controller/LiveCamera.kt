@@ -14,6 +14,7 @@ data class LiveCamera(
     val latitude = camera.latitude
     val longitude = camera.longitude
     val isActive = camera.isActive
+    val isOnline = camera.interior?.isLoginSucceeded ?: false
     val isStreetvendor = camera.isStreetvendor
     val isTraffic = camera.isTraffic
     val isCrowd = camera.isCrowd
