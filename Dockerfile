@@ -1,4 +1,4 @@
-FROM ptkis/ubuntu-ffmpeg:20.04-jdk17
+FROM ptkis/ubuntu-ffmpeg:22.04-jdk17-20221130
 
 EXPOSE 10001
 
