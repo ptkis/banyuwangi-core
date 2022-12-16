@@ -42,7 +42,7 @@ data class Annotation(
     @Column(nullable = false)
     var snapshotCreated: Instant = snapshot.created,
 
-    @Column(nullable = false, unique = true, columnDefinition = "binary(16)")
+    @Column(nullable = false, unique = false, columnDefinition = "binary(16)")
     var snapshotImageId: UUID = snapshot.imageId,
 
     @Column(nullable = false)
