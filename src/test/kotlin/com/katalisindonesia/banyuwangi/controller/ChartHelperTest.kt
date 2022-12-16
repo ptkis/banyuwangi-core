@@ -6,7 +6,6 @@ import com.katalisindonesia.banyuwangi.model.Snapshot
 import com.katalisindonesia.banyuwangi.model.SnapshotCount
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.UUID
@@ -22,10 +21,11 @@ class ChartHelperTest {
         val snapshot2 = Snapshot(imageId = UUID.randomUUID(), camera = camera0, length = 0, isAnnotation = true)
         val snapshot3 = Snapshot(imageId = UUID.randomUUID(), camera = camera1, length = 0, isAnnotation = true)
 
-        snapshot0.created = Instant.EPOCH.plusMillis(2100)
-        snapshot1.created = Instant.EPOCH.plusMillis(4100)
-        snapshot2.created = Instant.EPOCH.plusMillis(6100)
-        snapshot3.created = Instant.EPOCH.plusMillis(8100)
+        val base = ZonedDateTime.of(1970, 1,1,7,0,0,0, ZoneId.systemDefault()).toInstant()
+        snapshot0.created = base.plusMillis(2100)
+        snapshot1.created = base.plusMillis(4100)
+        snapshot2.created = base.plusMillis(6100)
+        snapshot3.created = base.plusMillis(8100)
 
         val count0 = SnapshotCount(
             snapshot = snapshot0,
