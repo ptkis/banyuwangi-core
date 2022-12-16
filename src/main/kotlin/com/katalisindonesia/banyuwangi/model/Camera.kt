@@ -1,6 +1,7 @@
 package com.katalisindonesia.banyuwangi.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import org.hibernate.envers.Audited
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.EnumType
@@ -15,6 +16,7 @@ import javax.persistence.Table
         Index(name = "camera_isliveview_idx", columnList = "isLiveView"),
     ]
 )
+@Audited
 data class Camera(
     @Column(nullable = true, unique = true)
     var vmsCameraIndexCode: String? = null,
