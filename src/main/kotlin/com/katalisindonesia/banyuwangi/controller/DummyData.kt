@@ -6,9 +6,6 @@ import com.katalisindonesia.banyuwangi.model.Camera
 import com.katalisindonesia.banyuwangi.model.DetectionType
 import com.katalisindonesia.banyuwangi.model.Snapshot
 import java.time.Instant
-import java.time.LocalDate
-import java.time.ZoneId
-import java.time.ZonedDateTime
 import java.util.UUID
 import java.util.concurrent.ThreadLocalRandom
 
@@ -33,10 +30,13 @@ val desas = listOf(
     "Tukang Kayu",
 )
 
+/*
 private const val DEFAULT_DAYS = 30L
 private const val DUMMY_RANGE = 5000L
 private const val DUMMY_MAX_VALUE = 10000L
+*/
 
+/*
 fun dummyLabels(startDate: LocalDate?, endDate: LocalDate?): List<ZonedDateTime> {
     val list = mutableListOf<ZonedDateTime>()
     val date: ZonedDateTime = startDate?.atStartOfDay(ZoneId.systemDefault()) ?: ZonedDateTime.now().minusDays(
@@ -69,6 +69,7 @@ fun <T> dummyData(seriesNames: List<String>, labels: List<T>): Map<String, List<
 
     return map
 }
+*/
 
 fun randomInstantBetween(startInclusive: Instant, endExclusive: Instant): Instant {
     val startSeconds: Long = startInclusive.epochSecond

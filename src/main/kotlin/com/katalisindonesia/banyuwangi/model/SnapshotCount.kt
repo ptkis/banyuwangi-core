@@ -35,13 +35,13 @@ data class SnapshotCount(
     var snapshot: Snapshot,
 
     @Column(nullable = false)
-    var snapshotCreated: Instant,
+    var snapshotCreated: Instant = snapshot.created,
 
     @Column(nullable = false, unique = true, columnDefinition = "binary(16)")
-    var snapshotImageId: UUID,
+    var snapshotImageId: UUID = snapshot.imageId,
 
-    var snapshotCameraName: String,
-    var snapshotCameraLocation: String,
+    var snapshotCameraName: String = snapshot.camera.name,
+    var snapshotCameraLocation: String = snapshot.camera.location,
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
