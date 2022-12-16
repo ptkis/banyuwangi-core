@@ -22,6 +22,7 @@ import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.domain.Specification
+import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
@@ -69,11 +70,13 @@ class DetectionController(
         @Parameter(description = "Starting period, no filter if omitted")
         @Valid
         @RequestParam(required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         startDate: LocalDate?,
 
         @Parameter(description = "Ending period, no filter if omitted")
         @Valid
         @RequestParam(required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
         endDate: LocalDate?,
 
         @Parameter(description = "Location of camera, no filter if omitted")
@@ -249,5 +252,9 @@ class DetectionController(
         return PageImpl(
             content, PageRequest.of(page, size), size * size.toLong()
         )
+    }
+
+    fun resetProductionMode() {
+        productionMode.set(false)
     }
 }

@@ -51,6 +51,9 @@ class DetectionControllerTest(
     @Autowired
     private val annotationRepo: AnnotationRepo,
 
+    @Autowired
+    private val detectionController: DetectionController,
+
 ) {
     @BeforeEach
     @AfterEach
@@ -59,6 +62,7 @@ class DetectionControllerTest(
         annotationRepo.deleteAll()
         snapshotRepo.deleteAll()
         cameraRepo.deleteAll()
+        detectionController.resetProductionMode()
     }
 
     @Test
@@ -301,6 +305,114 @@ class DetectionControllerTest(
     },
     "numberOfElements": 1,
     "empty": false
+  }
+}"""
+                )
+            }
+        }
+    }
+    @Test
+    fun `browse with toke and actual data full filter`() {
+        val camera = Camera(
+            vmsCameraIndexCode = "00001",
+            name = "Test 01",
+            location = "01",
+        )
+        cameraRepo.saveAndFlush(camera)
+
+        val snapshot = Snapshot(
+            imageId = UUID.randomUUID(),
+            camera = camera,
+            length = 1000000,
+        )
+        snapshotRepo.saveAndFlush(snapshot)
+
+        detectionResultConsumer.result(
+            DetectionResponse(
+                success = true,
+                message = "ok",
+                response = listOf(
+                    Detection(
+                        boundingBox = BoundingBox(
+                            corners = listOf(
+                                Corners(
+                                    x = 0.0,
+                                    y = 0.0
+                                ),
+                                Corners(
+                                    x = 1.0,
+                                    y = 0.0
+                                ),
+                                Corners(
+                                    x = 1.0,
+                                    y = 1.0
+                                ),
+                                Corners(
+                                    x = 0.0,
+                                    y = 1.0
+                                ),
+                            ),
+                            width = 1.0,
+                            height = 1.0,
+                        ),
+                        className = "person",
+                        probability = 0.8
+                    )
+                ),
+                request = DetectionRequest(
+                    uuid = snapshot.imageId,
+                    imageUri = "http://someimage",
+                    callbackQueue = "/queue"
+                )
+            )
+        )
+
+        val token = token()
+
+        mockMvc.get(
+            "/v1/detection/browse?type=TRAFFIC&page=0&size=9" +
+                "&startDate=2022-12-15" +
+                "&endDate=2022-12-16&location=DEPAN"
+        ) {
+            headers {
+                setBearerAuth(token)
+            }
+        }.andExpect {
+            status {
+                isOk()
+            }
+            content {
+                json(
+                    """{
+  "success": true,
+  "message": "ok",
+  "data": {
+    "content": [],
+    "pageable": {
+      "sort": {
+        "empty": false,
+        "unsorted": false,
+        "sorted": true
+      },
+      "offset": 0,
+      "pageNumber": 0,
+      "pageSize": 9,
+      "paged": true,
+      "unpaged": false
+    },
+    "last": true,
+    "totalElements": 0,
+    "totalPages": 0,
+    "first": true,
+    "size": 9,
+    "number": 0,
+    "sort": {
+      "empty": false,
+      "unsorted": false,
+      "sorted": true
+    },
+    "numberOfElements": 0,
+    "empty": true
   }
 }"""
                 )
