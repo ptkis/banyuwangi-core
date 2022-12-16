@@ -1,11 +1,20 @@
 package com.katalisindonesia.banyuwangi.controller
 
+import au.com.console.jpaspecificationdsl.and
+import au.com.console.jpaspecificationdsl.equal
+import au.com.console.jpaspecificationdsl.greaterThanOrEqualTo
+import au.com.console.jpaspecificationdsl.lessThan
+import com.katalisindonesia.banyuwangi.model.DetectionType
+import com.katalisindonesia.banyuwangi.model.SnapshotCount
+import com.katalisindonesia.banyuwangi.repo.SnapshotCountRepo
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
+import org.springframework.data.domain.Sort
+import org.springframework.data.jpa.domain.Specification
 import org.springframework.http.MediaType
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
@@ -13,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDate
+import java.time.ZoneId
 import java.time.ZonedDateTime
 import javax.validation.Valid
 
@@ -20,7 +30,11 @@ import javax.validation.Valid
 @RequestMapping("/v1/chart")
 @Tag(name = "chart", description = "Chart")
 @PreAuthorize("hasAuthority('chart')")
-class ChartController {
+class ChartController(
+    private val snapshotCountRepo: SnapshotCountRepo,
+) {
+    private val helper = ChartHelper()
+
     @Operation(
         summary = "Get flood chart", description = "Get flood chart data",
         security = [
@@ -47,14 +61,16 @@ class ChartController {
         @RequestParam(required = false)
         location: String?,
     ): ChartData<ZonedDateTime> {
-        val labels = dummyLabels(startDate, endDate)
-        val seriesNames = desas.filter { location == null || location == it }
-        return ChartData(
-            seriesNames = seriesNames,
-            labels = labels,
-            data = dummyData(seriesNames, labels)
+        return helper.chartData(
+            counts(
+                startDate = startDate,
+                endDate = endDate,
+                location = location,
+                type = DetectionType.FLOOD,
+            )
         )
     }
+
     @Operation(
         summary = "Get trash chart", description = "Get trash chart data",
         security = [
@@ -81,14 +97,16 @@ class ChartController {
         @RequestParam(required = false)
         location: String?,
     ): ChartData<ZonedDateTime> {
-        val labels = dummyLabels(startDate, endDate)
-        val seriesNames = desas.filter { location == null || location == it }
-        return ChartData(
-            seriesNames = seriesNames,
-            labels = labels,
-            data = dummyData(seriesNames, labels)
+        return helper.chartData(
+            counts(
+                startDate = startDate,
+                endDate = endDate,
+                location = location,
+                type = DetectionType.TRASH,
+            )
         )
     }
+
     @Operation(
         summary = "Get street vendor chart", description = "Get street vendor chart data",
         security = [
@@ -115,14 +133,16 @@ class ChartController {
         @RequestParam(required = false)
         location: String?,
     ): ChartData<ZonedDateTime> {
-        val labels = dummyLabels(startDate, endDate)
-        val seriesNames = desas.filter { location == null || location == it }
-        return ChartData(
-            seriesNames = seriesNames,
-            labels = labels,
-            data = dummyData(seriesNames, labels)
+        return helper.chartData(
+            counts(
+                startDate = startDate,
+                endDate = endDate,
+                location = location,
+                type = DetectionType.STREETVENDOR,
+            )
         )
     }
+
     @Operation(
         summary = "Get crowd chart", description = "Get crowd chart data",
         security = [
@@ -149,14 +169,16 @@ class ChartController {
         @RequestParam(required = false)
         location: String?,
     ): ChartData<ZonedDateTime> {
-        val labels = dummyLabels(startDate, endDate)
-        val seriesNames = desas.filter { location == null || location == it }
-        return ChartData(
-            seriesNames = seriesNames,
-            labels = labels,
-            data = dummyData(seriesNames, labels)
+        return helper.chartData(
+            counts(
+                startDate = startDate,
+                endDate = endDate,
+                location = location,
+                type = DetectionType.CROWD
+            )
         )
     }
+
     @Operation(
         summary = "Get traffic chart", description = "Get traffic chart data",
         security = [
@@ -183,12 +205,54 @@ class ChartController {
         @RequestParam(required = false)
         location: String?,
     ): ChartData<ZonedDateTime> {
-        val labels = dummyLabels(startDate, endDate)
-        val seriesNames = desas.filter { location == null || location == it }
-        return ChartData(
-            seriesNames = seriesNames,
-            labels = labels,
-            data = dummyData(seriesNames, labels)
+        return helper.chartData(
+            counts(
+                startDate = startDate,
+                endDate = endDate,
+                location = location,
+                type = DetectionType.TRAFFIC
+            )
         )
+    }
+
+    private fun counts(
+        startDate: LocalDate?,
+
+        endDate: LocalDate?,
+
+        location: String?,
+
+        type: DetectionType?,
+    ): List<SnapshotCount> {
+        val countSpecs = mutableListOf<Specification<SnapshotCount>>()
+
+        if (startDate != null) {
+            countSpecs.add(
+                SnapshotCount::snapshotCreated.greaterThanOrEqualTo(
+                    startDate.atStartOfDay()
+                        .atZone(ZoneId.systemDefault()).toInstant()
+                )
+            )
+        }
+        if (endDate != null) {
+            countSpecs.add(
+                SnapshotCount::snapshotCreated.lessThan(
+                    endDate.plusDays(1).atStartOfDay()
+                        .atZone(ZoneId.systemDefault()).toInstant()
+                )
+            )
+        }
+        if (type != null) {
+            countSpecs.add(
+                SnapshotCount::type.equal(type)
+            )
+        }
+        if (location != null) {
+            countSpecs.add(
+                SnapshotCount::snapshotCameraLocation.equal(location)
+            )
+        }
+
+        return snapshotCountRepo.findAll(and(countSpecs), Sort.by(SnapshotCount::snapshotCreated.name))
     }
 }
