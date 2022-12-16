@@ -21,7 +21,7 @@ class ChartHelperTest {
         val snapshot2 = Snapshot(imageId = UUID.randomUUID(), camera = camera0, length = 0, isAnnotation = true)
         val snapshot3 = Snapshot(imageId = UUID.randomUUID(), camera = camera1, length = 0, isAnnotation = true)
 
-        val base = ZonedDateTime.of(1970, 1,1,7,0,0,0, ZoneId.systemDefault()).toInstant()
+        val base = ZonedDateTime.of(1970, 1, 1, 7, 0, 0, 0, ZoneId.systemDefault()).toInstant()
         snapshot0.created = base.plusMillis(2100)
         snapshot1.created = base.plusMillis(4100)
         snapshot2.created = base.plusMillis(6100)
