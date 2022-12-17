@@ -198,7 +198,7 @@ class DetectionController(
             )
         }
         val annotationMap = annotationRepo.findAll(and(annotationSpecs)).groupBy {
-            it.snapshotImageId
+            Pair(it.snapshotImageId, it.type)
         }
 
         return counts.map {
@@ -210,7 +210,7 @@ class DetectionController(
                 type = it.type,
                 value = it.value,
                 imageSrc = storageService.uri(it.snapshotImageId).toString(),
-                annotations = annotationMap[it.snapshotImageId] ?: emptyList()
+                annotations = annotationMap[Pair(it.snapshotImageId, it.type)] ?: emptyList()
             )
         }
     }

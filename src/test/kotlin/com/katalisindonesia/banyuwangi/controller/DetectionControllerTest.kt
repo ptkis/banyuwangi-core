@@ -267,6 +267,7 @@ class DetectionControllerTest(
         "value": 1,
         "annotations": [
           {
+            "snapshotCameraLocation": "01",
             "name": "person",
             "type": "CROWD",
             "boundingBox": {
@@ -278,6 +279,34 @@ class DetectionControllerTest(
             "confidence": 0.8
           }
         ]
+      },
+      {
+        "location": "01",
+        "cameraName": "Test 01",
+        "type": "FLOOD",
+        "value": 0,
+        "annotations": []
+      },
+      {
+        "location": "01",
+        "cameraName": "Test 01",
+        "type": "STREETVENDOR",
+        "value": 0,
+        "annotations": []
+      },
+      {
+        "location": "01",
+        "cameraName": "Test 01",
+        "type": "TRAFFIC",
+        "value": 0,
+        "annotations": []
+      },
+      {
+        "location": "01",
+        "cameraName": "Test 01",
+        "type": "TRASH",
+        "value": 0,
+        "annotations": []
       }
     ],
     "pageable": {
@@ -294,7 +323,7 @@ class DetectionControllerTest(
     },
     "last": true,
     "totalPages": 1,
-    "totalElements": 1,
+    "totalElements": 5,
     "first": true,
     "size": 1000,
     "number": 0,
@@ -303,7 +332,7 @@ class DetectionControllerTest(
       "sorted": true,
       "unsorted": false
     },
-    "numberOfElements": 1,
+    "numberOfElements": 5,
     "empty": false
   }
 }"""

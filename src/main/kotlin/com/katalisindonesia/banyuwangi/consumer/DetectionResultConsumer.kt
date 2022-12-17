@@ -24,6 +24,7 @@ class DetectionResultConsumer(
 ) {
     private val tt = TransactionTemplate(transactionManager)
     private val helper = DetectionTypeHelper()
+
     @RabbitListener(
         queues = [
             "#{detectionResultQueue.name}"
@@ -58,19 +59,25 @@ class DetectionResultConsumer(
                         )
                     )
                     count++
-
-                    val objCount = countMap.getOrPut(type) {
-                        SnapshotCount(
-                            snapshot = snapshot,
-                            snapshotCreated = snapshot.created,
-                            snapshotImageId = snapshot.imageId,
-                            snapshotCameraName = snapshot.camera.name,
-                            snapshotCameraLocation = snapshot.camera.location,
-                            type = type,
-                            value = 0,
-                        )
+                    for (type1 in DetectionType.values()) {
+                        countMap.getOrPut(
+                            type1
+                        ) {
+                            SnapshotCount(
+                                snapshot = snapshot,
+                                snapshotCreated = snapshot.created,
+                                snapshotImageId = snapshot.imageId,
+                                snapshotCameraName = snapshot.camera.name,
+                                snapshotCameraLocation = snapshot.camera.location,
+                                type = type1,
+                                value = 0,
+                            )
+                        }
                     }
-                    objCount.value += 1
+
+                    countMap[type]?.let { objCount ->
+                        objCount.value += 1
+                    }
                 }
                 snapshotCountRepo.saveAll(countMap.values)
 
