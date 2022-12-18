@@ -31,4 +31,12 @@ data class CameraInterior(
     var liveViewUrl: String? = null,
 
     var liveViewHash: String? = null,
+
+    @Column(length = 512)
+    var lastCaptureErrorMessage: String? = null,
+
+    var lastCaptureErrorInstant: Instant? = null,
+
+    var nextCaptureAfterErrorInstant: Instant? = null,
+
 )

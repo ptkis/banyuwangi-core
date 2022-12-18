@@ -10,7 +10,7 @@ import okhttp3.Request
 import okhttp3.Response
 import org.springframework.stereotype.Service
 import java.io.ByteArrayInputStream
-import java.io.IOException
+import java.lang.RuntimeException
 import java.util.Optional
 import java.util.concurrent.TimeUnit
 import javax.imageio.ImageIO
@@ -98,13 +98,7 @@ class CaptureService(
         log.info("Calling $url")
 
         val req = Request.Builder().url(url).build()
-        val resp = try {
-            httpClient.newCall(req).execute()
-        } catch (e: IOException) {
-            log.info { "Cannot get $url due to ${e.message}" }
-            log.debug(e) { "Cannot get $url" }
-            return Optional.empty()
-        }
+        val resp = httpClient.newCall(req).execute()
 
         resp.use { resp1: Response ->
             val body = resp1.body
@@ -113,7 +107,7 @@ class CaptureService(
                 log.debug { "Body: $body" }
                 log.debug { "Headers: ${resp1.headers}" }
 
-                return Optional.empty()
+                throw CaptureException(message = "HTTP Error ${resp1.code}")
             } else {
                 val data = body?.bytes() ?: byteArrayOf()
 
@@ -137,3 +131,5 @@ class CaptureService(
         return Optional.empty<ByteArray>()
     }
 }
+
+class CaptureException(message: String,) : RuntimeException(message)

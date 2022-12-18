@@ -2,6 +2,7 @@ package com.katalisindonesia.banyuwangi.task
 
 import com.katalisindonesia.banyuwangi.consumer.CaptureRequest
 import com.katalisindonesia.banyuwangi.consumer.MessagingProperties
+import com.katalisindonesia.banyuwangi.model.CameraInterior
 import com.katalisindonesia.banyuwangi.repo.CameraRepo
 import mu.KotlinLogging
 import org.springframework.amqp.rabbit.core.RabbitTemplate
@@ -44,7 +45,8 @@ class CaptureTask(
                     messagingProperties.captureQueue,
                     CaptureRequest(
                         camera = camera,
-                        instant = Instant.now()
+                        cameraInterior = camera.interior ?: CameraInterior(),
+                        instant = Instant.now(),
                     )
                 )
                 count++

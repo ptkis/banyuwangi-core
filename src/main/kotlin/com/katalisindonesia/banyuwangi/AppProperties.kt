@@ -9,4 +9,5 @@ import java.net.URI
 data class AppProperties(
     val baseUri: URI,
     val timeoutSeconds: Long = 60,
+    val captureErrorBackoffSeconds: Long,
 )
