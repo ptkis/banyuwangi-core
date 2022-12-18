@@ -2,6 +2,7 @@ package com.katalisindonesia.banyuwangi.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.envers.Audited
+import org.hibernate.envers.NotAudited
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.EnumType
@@ -82,6 +83,7 @@ data class Camera(
     var label: String? = null,
 
     @JsonIgnore
+    @NotAudited
     var interior: CameraInterior? = CameraInterior(),
 ) : Persistent() {
 

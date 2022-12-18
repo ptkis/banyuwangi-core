@@ -1,5 +1,6 @@
 package com.katalisindonesia.banyuwangi.consumer
 
+import com.katalisindonesia.banyuwangi.AppProperties
 import com.katalisindonesia.banyuwangi.model.CameraInterior
 import com.katalisindonesia.banyuwangi.model.CameraType
 import com.katalisindonesia.banyuwangi.model.CaptureMethod
@@ -17,6 +18,7 @@ import org.springframework.transaction.support.TransactionTemplate
 import java.time.Instant
 
 private val log = KotlinLogging.logger { }
+
 @Service
 class CaptureConsumer(
     private val rabbitTemplate: RabbitTemplate,
@@ -25,9 +27,11 @@ class CaptureConsumer(
     private val snapshotRepo: SnapshotRepo,
     private val cameraRepo: CameraRepo,
     private val captureService: CaptureService,
+    private val appProperties: AppProperties,
     transactionManager: PlatformTransactionManager,
 ) {
     private val tt = TransactionTemplate(transactionManager)
+
     @RabbitListener(
         queues = [
             "#{captureQueue.name}"
@@ -38,46 +42,77 @@ class CaptureConsumer(
     }
 
     fun doOnCapture(request: CaptureRequest): Boolean {
+        val nextCaptureAfterErrorInstant = request.cameraInterior.nextCaptureAfterErrorInstant
+        if (nextCaptureAfterErrorInstant != null && nextCaptureAfterErrorInstant.isAfter(Instant.now())) {
+            return false
+        }
         val operation = when (request.camera.type) {
             CameraType.HIKVISION -> captureService::hikvision
             // CameraType.ONVIF -> captureService::onvif
             else -> captureService::empty
         }
-        val bytesOpt = operation.invoke(request.camera)
+        try {
+            val bytesOpt = operation.invoke(request.camera)
 
-        if (bytesOpt.isPresent) {
-            val bytes = bytesOpt.get()
-            val uuid = storageService.store(bytes)
-            tt.execute {
-                val camera = cameraRepo.getReferenceById(request.camera.id)
+            if (bytesOpt.isPresent) {
+                val bytes = bytesOpt.get()
+                val uuid = storageService.store(bytes)
+                tt.execute {
+                    val camera = cameraRepo.getReferenceById(request.camera.id)
+                    val interior = camera.interior ?: CameraInterior()
+                    camera.interior = interior
+
+                    interior.lastCaptureInstant = Instant.now()
+                    interior.lastCaptureMethod = CaptureMethod.ISAPI
+                    cameraRepo.saveAndFlush(camera)
+
+                    snapshotRepo.saveAndFlush(
+                        Snapshot(
+                            imageId = uuid,
+                            camera = camera,
+                            length = bytes.size.toLong(),
+                        )
+                    )
+                }
+                log.debug { "Saved snapshot with image id $uuid" }
+                rabbitTemplate.convertAndSend(
+                    messagingProperties.detectionQueue,
+                    DetectionRequest(
+                        uuid = uuid,
+                        imageUri = storageService.uri(uuid).toString(),
+                        callbackQueue = messagingProperties.detectionResultQueue,
+                    )
+                )
+                return true
+            } else {
+                log.debug { "Cannot get snapshot from ${request.camera.name}" }
+            }
+        } catch (expected: Exception) {
+            handleException(expected, request)
+        }
+        return false
+    }
+
+    private fun handleException(expected: Exception, request: CaptureRequest) {
+        log.debug(expected) { "Catch exception" }
+        tt.execute {
+            val cameraOpt = cameraRepo.findById(request.camera.id)
+            if (cameraOpt.isPresent) {
+                val camera = cameraOpt.get()
                 val interior = camera.interior ?: CameraInterior()
                 camera.interior = interior
 
-                interior.lastCaptureInstant = Instant.now()
-                interior.lastCaptureMethod = CaptureMethod.ISAPI
-                cameraRepo.saveAndFlush(camera)
-
-                snapshotRepo.saveAndFlush(
-                    Snapshot(
-                        imageId = uuid,
-                        camera = camera,
-                        length = bytes.size.toLong(),
+                interior.lastCaptureErrorMessage = expected.message
+                interior.lastCaptureErrorInstant = Instant.now()
+                interior.nextCaptureAfterErrorInstant = Instant.now()
+                    .plusSeconds(
+                        appProperties.captureErrorBackoffSeconds
                     )
-                )
+
+                cameraRepo.saveAndFlush(camera)
+            } else {
+                log.info { "Cannot found camera with id ${request.camera.id}" }
             }
-            log.debug { "Saved snapshot with image id $uuid" }
-            rabbitTemplate.convertAndSend(
-                messagingProperties.detectionQueue,
-                DetectionRequest(
-                    uuid = uuid,
-                    imageUri = storageService.uri(uuid).toString(),
-                    callbackQueue = messagingProperties.detectionResultQueue,
-                )
-            )
-            return true
-        } else {
-            log.debug { "Cannot get snapshot from ${request.camera.name}" }
         }
-        return false
     }
 }

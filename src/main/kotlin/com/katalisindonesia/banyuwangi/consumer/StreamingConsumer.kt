@@ -15,7 +15,6 @@ import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.support.TransactionTemplate
-import java.io.IOException
 import java.io.InputStreamReader
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
@@ -51,8 +50,8 @@ class StreamingConsumer(
     fun check() {
         try {
             doCheck()
-        } catch (e: IOException) {
-            log.error(e) { "Error while doing schedule check" }
+        } catch (expected: Exception) {
+            log.error(expected) { "Error while doing schedule check" }
         }
     }
 
@@ -103,8 +102,8 @@ class StreamingConsumer(
             }
 
             return modified
-        } catch (e: IOException) {
-            log.debug(e) { "Cannot check camera ${camera1.name}" }
+        } catch (expected: Exception) {
+            log.debug(expected) { "Cannot check camera ${camera1.name}" }
             return false
         }
     }
@@ -140,8 +139,8 @@ class StreamingConsumer(
             }
 
             return modified
-        } catch (e: IOException) {
-            log.info(e) { "Cannot init camera ${camera1.name}" }
+        } catch (expected: Exception) {
+            log.info(expected) { "Cannot init camera ${camera1.name}" }
             return false
         }
     }
