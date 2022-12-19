@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.format.annotation.DateTimeFormat
@@ -26,6 +27,8 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import javax.validation.Valid
+import javax.validation.constraints.Max
+import javax.validation.constraints.Min
 
 @RestController
 @RequestMapping("/v1/chart")
@@ -63,6 +66,17 @@ class ChartController(
         @Parameter(description = "Location of camera, no filter if omitted") @Valid
         @RequestParam(required = false)
         location: String?,
+
+        @Parameter(description = "Page number") @Valid
+        @Min(0)
+        @RequestParam(required = false, defaultValue = "0")
+        page: Int = 0,
+
+        @Parameter(description = "How many results per page") @Valid
+        @RequestParam(required = false, defaultValue = "1000")
+        @Min(0)
+        @Max(10000)
+        size: Int = 1000,
     ): ChartData<ZonedDateTime> {
         return helper.chartData(
             counts(
@@ -70,6 +84,8 @@ class ChartController(
                 endDate = endDate,
                 location = location,
                 type = DetectionType.FLOOD,
+                page = page,
+                size = size,
             )
         )
     }
@@ -101,6 +117,17 @@ class ChartController(
         @Parameter(description = "Location of camera, no filter if omitted") @Valid
         @RequestParam(required = false)
         location: String?,
+
+        @Parameter(description = "Page number") @Valid
+        @Min(0)
+        @RequestParam(required = false, defaultValue = "0")
+        page: Int = 0,
+
+        @Parameter(description = "How many results per page") @Valid
+        @RequestParam(required = false, defaultValue = "1000")
+        @Min(0)
+        @Max(10000)
+        size: Int = 1000,
     ): ChartData<ZonedDateTime> {
         return helper.chartData(
             counts(
@@ -108,6 +135,8 @@ class ChartController(
                 endDate = endDate,
                 location = location,
                 type = DetectionType.TRASH,
+                page = page,
+                size = size,
             )
         )
     }
@@ -139,6 +168,17 @@ class ChartController(
         @Parameter(description = "Location of camera, no filter if omitted") @Valid
         @RequestParam(required = false)
         location: String?,
+
+        @Parameter(description = "Page number") @Valid
+        @Min(0)
+        @RequestParam(required = false, defaultValue = "0")
+        page: Int = 0,
+
+        @Parameter(description = "How many results per page") @Valid
+        @RequestParam(required = false, defaultValue = "1000")
+        @Min(0)
+        @Max(10000)
+        size: Int = 1000,
     ): ChartData<ZonedDateTime> {
         return helper.chartData(
             counts(
@@ -146,6 +186,8 @@ class ChartController(
                 endDate = endDate,
                 location = location,
                 type = DetectionType.STREETVENDOR,
+                page = page,
+                size = size,
             )
         )
     }
@@ -177,13 +219,26 @@ class ChartController(
         @Parameter(description = "Location of camera, no filter if omitted") @Valid
         @RequestParam(required = false)
         location: String?,
+
+        @Parameter(description = "Page number") @Valid
+        @Min(0)
+        @RequestParam(required = false, defaultValue = "0")
+        page: Int = 0,
+
+        @Parameter(description = "How many results per page") @Valid
+        @RequestParam(required = false, defaultValue = "1000")
+        @Min(0)
+        @Max(10000)
+        size: Int = 1000,
     ): ChartData<ZonedDateTime> {
         return helper.chartData(
             counts(
                 startDate = startDate,
                 endDate = endDate,
                 location = location,
-                type = DetectionType.CROWD
+                type = DetectionType.CROWD,
+                page = page,
+                size = size
             )
         )
     }
@@ -215,13 +270,26 @@ class ChartController(
         @Parameter(description = "Location of camera, no filter if omitted") @Valid
         @RequestParam(required = false)
         location: String?,
+
+        @Parameter(description = "Page number") @Valid
+        @Min(0)
+        @RequestParam(required = false, defaultValue = "0")
+        page: Int = 0,
+
+        @Parameter(description = "How many results per page") @Valid
+        @RequestParam(required = false, defaultValue = "1000")
+        @Min(0)
+        @Max(10000)
+        size: Int = 1000,
     ): ChartData<ZonedDateTime> {
         return helper.chartData(
             counts(
                 startDate = startDate,
                 endDate = endDate,
                 location = location,
-                type = DetectionType.TRAFFIC
+                type = DetectionType.TRAFFIC,
+                page = page,
+                size = size
             )
         )
     }
@@ -234,6 +302,8 @@ class ChartController(
         location: String?,
 
         type: DetectionType?,
+        page: Int = 0,
+        size: Int = 1000,
     ): List<SnapshotCount> {
         val countSpecs = mutableListOf<Specification<SnapshotCount>>()
 
@@ -264,6 +334,9 @@ class ChartController(
             )
         }
 
-        return snapshotCountRepo.findAll(and(countSpecs), Sort.by(SnapshotCount::snapshotCreated.name))
+        return snapshotCountRepo.findAll(
+            and(countSpecs),
+            PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, SnapshotCount::snapshotCreated.name))
+        ).toList().reversed()
     }
 }

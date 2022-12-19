@@ -1,5 +1,9 @@
 FROM ptkis/ubuntu-ffmpeg:22.04-jdk17-20221130
 
+RUN curl --location https://www.yourkit.com/download/docker/YourKit-JavaProfiler-2022.3-docker.zip -o /tmp/YourKit-JavaProfiler.zip && \
+  unzip /tmp/YourKit-JavaProfiler.zip -d /usr/local && \
+  rm /tmp/YourKit-JavaProfiler.zip
+
 EXPOSE 10001
 
 ARG VERSION
