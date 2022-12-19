@@ -130,7 +130,7 @@ class CaptureConsumerTest(
         val interior2 = camera2.interior!!
         val nextCaptureAfterErrorInstant2 = interior2.nextCaptureAfterErrorInstant
         assertNotNull(nextCaptureAfterErrorInstant2)
-        assertNotEquals("timeout", interior2.lastCaptureErrorMessage)
+        assertNotEquals("", interior2.lastCaptureErrorMessage)
         assertEquals(nextCaptureAfterErrorInstant, nextCaptureAfterErrorInstant2)
     }
 }
