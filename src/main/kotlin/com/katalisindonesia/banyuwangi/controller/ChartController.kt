@@ -336,7 +336,7 @@ class ChartController(
 
         return snapshotCountRepo.findAll(
             and(countSpecs),
-            PageRequest.of(page, size, Sort.by(SnapshotCount::snapshotCreated.name))
-        ).toList()
+            PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, SnapshotCount::snapshotCreated.name))
+        ).toList().reversed()
     }
 }
