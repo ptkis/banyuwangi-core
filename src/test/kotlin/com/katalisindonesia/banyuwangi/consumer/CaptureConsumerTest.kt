@@ -8,6 +8,7 @@ import com.katalisindonesia.banyuwangi.repo.SnapshotRepo
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
@@ -111,7 +112,7 @@ class CaptureConsumerTest(
         val interior = camera1.interior!!
         val nextCaptureAfterErrorInstant = interior.nextCaptureAfterErrorInstant
         assertNotNull(nextCaptureAfterErrorInstant)
-        assertEquals("timeout", interior.lastCaptureErrorMessage)
+        assertNotEquals("", interior.lastCaptureErrorMessage)
         val lastCaptureErrorInstant = interior.lastCaptureErrorInstant
         assertNotNull(lastCaptureErrorInstant)
         assertTrue(Instant.now().isBefore(nextCaptureAfterErrorInstant!!))
@@ -129,7 +130,7 @@ class CaptureConsumerTest(
         val interior2 = camera2.interior!!
         val nextCaptureAfterErrorInstant2 = interior2.nextCaptureAfterErrorInstant
         assertNotNull(nextCaptureAfterErrorInstant2)
-        assertEquals("timeout", interior2.lastCaptureErrorMessage)
+        assertNotEquals("timeout", interior2.lastCaptureErrorMessage)
         assertEquals(nextCaptureAfterErrorInstant, nextCaptureAfterErrorInstant2)
     }
 }
