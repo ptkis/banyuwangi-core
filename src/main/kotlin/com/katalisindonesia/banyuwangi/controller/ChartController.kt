@@ -73,7 +73,7 @@ class ChartController(
         page: Int = 0,
 
         @Parameter(description = "How many results per page") @Valid
-        @RequestParam(required = false, defaultValue = "1000")
+        @RequestParam(required = false, defaultValue = "\${dashboard.app.defaultSize}")
         @Min(0)
         @Max(10000)
         size: Int = 1000,
@@ -124,7 +124,7 @@ class ChartController(
         page: Int = 0,
 
         @Parameter(description = "How many results per page") @Valid
-        @RequestParam(required = false, defaultValue = "1000")
+        @RequestParam(required = false, defaultValue = "\${dashboard.app.defaultSize}")
         @Min(0)
         @Max(10000)
         size: Int = 1000,
@@ -175,7 +175,7 @@ class ChartController(
         page: Int = 0,
 
         @Parameter(description = "How many results per page") @Valid
-        @RequestParam(required = false, defaultValue = "1000")
+        @RequestParam(required = false, defaultValue = "\${dashboard.app.defaultSize}")
         @Min(0)
         @Max(10000)
         size: Int = 1000,
@@ -226,7 +226,7 @@ class ChartController(
         page: Int = 0,
 
         @Parameter(description = "How many results per page") @Valid
-        @RequestParam(required = false, defaultValue = "1000")
+        @RequestParam(required = false, defaultValue = "\${dashboard.app.defaultSize}")
         @Min(0)
         @Max(10000)
         size: Int = 1000,
@@ -277,7 +277,7 @@ class ChartController(
         page: Int = 0,
 
         @Parameter(description = "How many results per page") @Valid
-        @RequestParam(required = false, defaultValue = "1000")
+        @RequestParam(required = false, defaultValue = "\${dashboard.app.defaultSize}")
         @Min(0)
         @Max(10000)
         size: Int = 1000,
