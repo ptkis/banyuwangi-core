@@ -10,4 +10,5 @@ data class AppProperties(
     val baseUri: URI,
     val timeoutSeconds: Long = 60,
     val captureErrorBackoffSeconds: Long,
+    val defaultSize: Int,
 )

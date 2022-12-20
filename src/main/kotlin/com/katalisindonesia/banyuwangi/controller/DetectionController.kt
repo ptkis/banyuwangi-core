@@ -180,8 +180,10 @@ class DetectionController(
             PageRequest.of(
                 page, size,
                 Sort.by(
-                    SnapshotCount::snapshotCreated.name,
-                    SnapshotCount::type.name,
+                    listOf(
+                        Sort.Order.desc(SnapshotCount::snapshotCreated.name),
+                        Sort.Order.asc(SnapshotCount::type.name),
+                    )
                 )
             )
         )
