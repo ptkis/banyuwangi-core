@@ -190,12 +190,12 @@ class DetectionController(
         if (!counts.isEmpty) {
             annotationSpecs.add(
                 Annotation::snapshotCreated.greaterThanOrEqualTo(
-                    counts.first().snapshotCreated
+                    counts.last().snapshotCreated
                 )
             )
             annotationSpecs.add(
                 Annotation::snapshotCreated.lessThanOrEqualTo(
-                    counts.last().snapshotCreated
+                    counts.first().snapshotCreated
                 )
             )
         }
