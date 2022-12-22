@@ -11,4 +11,5 @@ data class AppProperties(
     val timeoutSeconds: Long = 60,
     val captureErrorBackoffSeconds: Long,
     val defaultSize: Int,
+    val alarmTopic: String,
 )

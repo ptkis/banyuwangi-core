@@ -3,6 +3,7 @@ package com.katalisindonesia.banyuwangi
 import com.katalisindonesia.banyuwangi.consumer.MessagingConfig
 import com.katalisindonesia.banyuwangi.consumer.MessagingProperties
 import com.katalisindonesia.banyuwangi.controller.HelloController
+import com.katalisindonesia.banyuwangi.fcm.FirebaseConfiguration
 import com.katalisindonesia.banyuwangi.model.Persistent
 import com.katalisindonesia.banyuwangi.repo.CameraRepo
 import com.katalisindonesia.banyuwangi.security.CorsProperties
@@ -33,6 +34,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
         MessagingConfig::class,
         CaptureService::class,
         StreamingRest::class,
+        FirebaseConfiguration::class,
     ]
 )
 @EnableScheduling

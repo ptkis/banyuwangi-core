@@ -29,6 +29,11 @@ class MessagingConfig(
         Queue(
             messagingProperties.streamingCheckQueue,
         )
+    @Bean
+    fun triggerQueue() =
+        Queue(
+            messagingProperties.triggerQueue,
+        )
 
     @Bean
     fun messageConverter(): MessageConverter {

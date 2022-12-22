@@ -85,6 +85,8 @@ data class Camera(
     @JsonIgnore
     @NotAudited
     var interior: CameraInterior? = CameraInterior(),
+
+    var alarmSetting: AlarmSetting? = null,
 ) : Persistent() {
 
     @Override

@@ -8,6 +8,7 @@ import com.katalisindonesia.banyuwangi.repo.SnapshotCountRepo
 import com.katalisindonesia.banyuwangi.repo.SnapshotRepo
 import mu.KotlinLogging
 import org.springframework.amqp.rabbit.annotation.RabbitListener
+import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.stereotype.Service
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.support.TransactionTemplate
@@ -19,6 +20,8 @@ class DetectionResultConsumer(
     private val annotationRepo: AnnotationRepo,
     private val snapshotRepo: SnapshotRepo,
     private val snapshotCountRepo: SnapshotCountRepo,
+    private val rabbitTemplate: RabbitTemplate,
+    private val messagingProperties: MessagingProperties,
 
     transactionManager: PlatformTransactionManager,
 ) {
@@ -79,12 +82,15 @@ class DetectionResultConsumer(
                         objCount.value += 1
                     }
                 }
-                snapshotCountRepo.saveAll(countMap.values)
+                val counts = countMap.values
+                snapshotCountRepo.saveAll(counts)
 
                 log.info { "Saving $count detections for ${response.request.uuid}" }
 
                 snapshotRepo.flush()
                 snapshotCountRepo.flush()
+
+                rabbitTemplate.convertAndSend(messagingProperties.triggerQueue, counts.toList())
             }
         } catch (expected: Exception) {
             log.info(expected) { "Cannot process snapshot ${response.request.uuid}" }
