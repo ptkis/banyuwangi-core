@@ -1,8 +1,10 @@
 package com.katalisindonesia.banyuwangi.consumer
 
+import com.katalisindonesia.banyuwangi.model.AlarmSetting
 import com.katalisindonesia.banyuwangi.model.Camera
 import com.katalisindonesia.banyuwangi.model.DetectionType
 import com.katalisindonesia.banyuwangi.model.Snapshot
+import com.katalisindonesia.banyuwangi.repo.AlarmRepo
 import com.katalisindonesia.banyuwangi.repo.AnnotationRepo
 import com.katalisindonesia.banyuwangi.repo.CameraRepo
 import com.katalisindonesia.banyuwangi.repo.SnapshotCountRepo
@@ -13,6 +15,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.amqp.rabbit.core.RabbitAdmin
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit.jupiter.SpringExtension
@@ -35,10 +38,22 @@ class DetectionResultConsumerTest(
 
     @Autowired
     private val annotationRepo: AnnotationRepo,
+
+    @Autowired
+    private val alarmRepo: AlarmRepo,
+
+    @Autowired
+    private val rabbitAdmin: RabbitAdmin,
+
+    @Autowired
+    private val messagingProperties: MessagingProperties,
 ) {
     @BeforeEach
     @AfterEach
     fun cleanup() {
+        rabbitAdmin.purgeQueue(messagingProperties.triggerQueue, false)
+
+        alarmRepo.deleteAll()
         snapshotCountRepo.deleteAll()
         annotationRepo.deleteAll()
         snapshotRepo.deleteAll()
@@ -265,5 +280,144 @@ class DetectionResultConsumerTest(
 
         val annotations = annotationRepo.findAll()
         assertEquals(0, annotations.size)
+    }
+
+    @Test
+    fun `single response traffic alarm`() {
+        val camera = Camera(
+            vmsCameraIndexCode = "00001",
+            name = "Test 01",
+            location = "01",
+            alarmSetting = AlarmSetting(maxTraffic = 0)
+        )
+        cameraRepo.saveAndFlush(camera)
+
+        val snapshot = Snapshot(
+            imageId = UUID.randomUUID(),
+            camera = camera,
+            length = 1000000,
+        )
+        snapshotRepo.saveAndFlush(snapshot)
+
+        assertDoesNotThrow {
+            detectionResultConsumer.result(
+                DetectionResponse(
+                    success = true,
+                    message = "ok",
+                    response = listOf(
+                        Detection(
+                            boundingBox = BoundingBox(
+                                corners = listOf(
+                                    Corners(
+                                        x = 0.0,
+                                        y = 0.0
+                                    ),
+                                    Corners(
+                                        x = 1.0,
+                                        y = 0.0
+                                    ),
+                                    Corners(
+                                        x = 1.0,
+                                        y = 1.0
+                                    ),
+                                    Corners(
+                                        x = 0.0,
+                                        y = 1.0
+                                    ),
+                                ),
+                                width = 1.0,
+                                height = 1.0,
+                            ),
+                            className = "car",
+                            probability = 0.8
+                        )
+                    ),
+                    request = DetectionRequest(
+                        uuid = snapshot.imageId,
+                        imageUri = "http://someimage",
+                        callbackQueue = "/queue"
+                    )
+                )
+            )
+        }
+
+        val annotations = annotationRepo.findAll()
+        assertEquals(1, annotations.size)
+        assertEquals(DetectionType.TRAFFIC, annotations[0].type)
+
+        Thread.sleep(1000)
+        assertEquals(1, alarmRepo.count())
+
+        val alarm = alarmRepo.findAll()[0]
+
+        assertEquals(0, alarm.maxValue)
+        assertEquals(1, alarm.snapshotCount.value)
+    }
+
+    @Test
+    fun `single response traffic no alarm`() {
+        val camera = Camera(
+            vmsCameraIndexCode = "00001",
+            name = "Test 01",
+            location = "01",
+            alarmSetting = AlarmSetting(maxTraffic = 1)
+        )
+        cameraRepo.saveAndFlush(camera)
+
+        val snapshot = Snapshot(
+            imageId = UUID.randomUUID(),
+            camera = camera,
+            length = 1000000,
+        )
+        snapshotRepo.saveAndFlush(snapshot)
+
+        assertDoesNotThrow {
+            detectionResultConsumer.result(
+                DetectionResponse(
+                    success = true,
+                    message = "ok",
+                    response = listOf(
+                        Detection(
+                            boundingBox = BoundingBox(
+                                corners = listOf(
+                                    Corners(
+                                        x = 0.0,
+                                        y = 0.0
+                                    ),
+                                    Corners(
+                                        x = 1.0,
+                                        y = 0.0
+                                    ),
+                                    Corners(
+                                        x = 1.0,
+                                        y = 1.0
+                                    ),
+                                    Corners(
+                                        x = 0.0,
+                                        y = 1.0
+                                    ),
+                                ),
+                                width = 1.0,
+                                height = 1.0,
+                            ),
+                            className = "car",
+                            probability = 0.8
+                        )
+                    ),
+                    request = DetectionRequest(
+                        uuid = snapshot.imageId,
+                        imageUri = "http://someimage",
+                        callbackQueue = "/queue"
+                    )
+                )
+            )
+        }
+
+        val annotations = annotationRepo.findAll()
+        assertEquals(1, annotations.size)
+        assertEquals(DetectionType.TRAFFIC, annotations[0].type)
+
+        Thread.sleep(1000)
+        assertEquals(0, alarmRepo.count())
     }
 }

@@ -7,4 +7,14 @@ enum class DetectionType {
     CROWD,
     TRAFFIC,
     ;
+
+    fun localizedName(): String {
+        return when (this) {
+            FLOOD -> "Banjir"
+            TRASH -> "Sampah"
+            STREETVENDOR -> "PKL"
+            CROWD -> "Keramaian"
+            TRAFFIC -> "Lalu Lintas"
+        }
+    }
 }
