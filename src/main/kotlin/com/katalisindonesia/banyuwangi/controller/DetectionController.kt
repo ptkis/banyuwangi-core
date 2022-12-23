@@ -23,9 +23,11 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.format.annotation.DateTimeFormat
+import org.springframework.http.CacheControl
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -33,7 +35,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
+import java.util.UUID
 import java.util.concurrent.ThreadLocalRandom
+import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.validation.Valid
 import javax.validation.constraints.Min
@@ -105,6 +109,62 @@ class DetectionController(
         return ResponseEntity.ok(
             WebResponse(
                 success = true, message = "ok", data = content
+            )
+        )
+    }
+
+    @GetMapping("/id/{snapshotImageId}")
+    @Operation(
+        summary = "Get detection results by snapshot image ids",
+        description = "Get detection results of which we get the chart data",
+        security = [SecurityRequirement(name = "oauth2", scopes = ["detection:read"])],
+        tags = ["detection"]
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Successful operation"),
+        ]
+    )
+    @PreAuthorize("hasAuthority('detection:read')")
+    fun bySnapshotImageId(
+        @Parameter(description = "Snapshot image id, required")
+        @PathVariable snapshotImageId: UUID,
+
+        @Parameter(description = "Type of the detection, required")
+        @RequestParam type: DetectionType,
+
+        @Parameter(description = "Value of the chart data, required")
+        @RequestParam value: Int,
+    ): ResponseEntity<WebResponse<DetectionResponse>> {
+        val snapshotCountOpt = snapshotCountRepo.getBySnapshotImageIdEqualsAndTypeEqualsAndValueEquals(
+            snapshotImageId = snapshotImageId,
+            type = type,
+            value = value,
+            pageable = PageRequest.of(0, 1)
+        )
+        if (snapshotCountOpt.isEmpty) {
+            return ResponseEntity.notFound()
+                .cacheControl(CacheControl.maxAge(1, TimeUnit.HOURS))
+                .build()
+        }
+
+        val annotations = annotationRepo.findBySnapshotImageIdEquals(snapshotImageId)
+
+        val it = snapshotCountOpt.first()
+        return ResponseEntity.ok(
+            WebResponse(
+                success = true,
+                message = "ok",
+                data = DetectionResponse(
+                    date = LocalDate.ofInstant(it.snapshotCreated, ZoneId.systemDefault()),
+                    instant = it.snapshotCreated,
+                    location = it.snapshotCameraLocation,
+                    cameraName = it.snapshotCameraName,
+                    type = it.type,
+                    value = it.value,
+                    imageSrc = storageService.uri(it.snapshotImageId).toString(),
+                    annotations = annotations
+                )
             )
         )
     }

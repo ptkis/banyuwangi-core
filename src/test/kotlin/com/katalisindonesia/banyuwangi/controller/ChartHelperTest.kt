@@ -63,6 +63,20 @@ class ChartHelperTest {
                 data = mapOf(
                     "camera0" to listOf(1L, 2L, 3L, 0),
                     "camera1" to listOf(0L, 0L, 0L, 4L),
+                ),
+                snapshotIds = mapOf(
+                    "camera0" to listOf(
+                        "${count0.snapshotImageId}",
+                        "${count1.snapshotImageId}",
+                        "${count2.snapshotImageId}",
+                        "",
+                    ),
+                    "camera1" to listOf(
+                        "",
+                        "",
+                        "",
+                        "${count3.snapshotImageId}",
+                    ),
                 )
             ),
             cd
