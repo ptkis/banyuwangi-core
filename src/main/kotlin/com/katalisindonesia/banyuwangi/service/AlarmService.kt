@@ -3,6 +3,7 @@ package com.katalisindonesia.banyuwangi.service
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.Message
+import com.google.firebase.messaging.Notification
 import com.katalisindonesia.banyuwangi.AppProperties
 import com.katalisindonesia.banyuwangi.model.Alarm
 import com.katalisindonesia.banyuwangi.model.FcmToken
@@ -25,16 +26,26 @@ class AlarmService(
     }
 
     fun sendAlarm(alarm: Alarm) {
+        val title = "${alarm.snapshotCount.type.localizedName()} di ${alarm.snapshotCount.snapshotCameraName}"
+        val body = "Nilai ${alarm.snapshotCount.value} di atas ambang ${alarm.maxValue}"
+        val imageUrl = storageService.uri(alarm.snapshotCount.snapshotImageId).toString()
         firebaseMessaging.send(
             Message.builder()
                 .setTopic(appProperties.alarmTopic)
+                .setNotification(
+                    Notification.builder()
+                        .setTitle(title)
+                        .setBody(body)
+                        .setImage(imageUrl)
+                        .build()
+                )
                 .putData("alarm", mapper.writeValueAsString(alarm))
                 .putData(
                     "message",
-                    "${alarm.snapshotCount.type.localizedName()} di ${alarm.snapshotCount.snapshotCameraName}"
+                    title
                 )
-                .putData("messageDetail", "Nilai ${alarm.snapshotCount.value} di atas ambang ${alarm.maxValue}")
-                .putData("imageSrc", storageService.uri(alarm.snapshotCount.snapshotImageId).toString())
+                .putData("messageDetail", body)
+                .putData("imageSrc", imageUrl)
                 .build()
         )
     }
