@@ -7,6 +7,7 @@ import com.katalisindonesia.banyuwangi.consumer.DetectionRequest
 import com.katalisindonesia.banyuwangi.consumer.DetectionResponse
 import com.katalisindonesia.banyuwangi.consumer.DetectionResultConsumer
 import com.katalisindonesia.banyuwangi.model.Camera
+import com.katalisindonesia.banyuwangi.model.DetectionType
 import com.katalisindonesia.banyuwangi.model.Snapshot
 import com.katalisindonesia.banyuwangi.repo.AnnotationRepo
 import com.katalisindonesia.banyuwangi.repo.CameraRepo
@@ -94,6 +95,7 @@ class DetectionControllerTest(
             }
         }
     }
+
     @Test
     fun `browse with token with size 1`() {
 
@@ -188,7 +190,7 @@ class DetectionControllerTest(
     }
 
     @Test
-    fun `browse with toke and actual data`() {
+    fun `browse with token and actual data`() {
         val camera = Camera(
             vmsCameraIndexCode = "00001",
             name = "Test 01",
@@ -340,6 +342,7 @@ class DetectionControllerTest(
             }
         }
     }
+
     @Test
     fun `browse with toke and actual data full filter`() {
         val camera = Camera(
@@ -443,6 +446,105 @@ class DetectionControllerTest(
     "numberOfElements": 0,
     "empty": true
   }
+}"""
+                )
+            }
+        }
+    }
+
+    @Test
+    fun `bySnapshotImageId with token and actual data`() {
+        val camera = Camera(
+            vmsCameraIndexCode = "00001",
+            name = "Test 01",
+            location = "01",
+        )
+        cameraRepo.saveAndFlush(camera)
+
+        val snapshot = Snapshot(
+            imageId = UUID.randomUUID(),
+            camera = camera,
+            length = 1000000,
+        )
+        snapshotRepo.saveAndFlush(snapshot)
+
+        detectionResultConsumer.result(
+            DetectionResponse(
+                success = true,
+                message = "ok",
+                response = listOf(
+                    Detection(
+                        boundingBox = BoundingBox(
+                            corners = listOf(
+                                Corners(
+                                    x = 0.0,
+                                    y = 0.0
+                                ),
+                                Corners(
+                                    x = 1.0,
+                                    y = 0.0
+                                ),
+                                Corners(
+                                    x = 1.0,
+                                    y = 1.0
+                                ),
+                                Corners(
+                                    x = 0.0,
+                                    y = 1.0
+                                ),
+                            ),
+                            width = 1.0,
+                            height = 1.0,
+                        ),
+                        className = "person",
+                        probability = 0.8
+                    )
+                ),
+                request = DetectionRequest(
+                    uuid = snapshot.imageId,
+                    imageUri = "http://someimage",
+                    callbackQueue = "/queue"
+                )
+            )
+        )
+
+        val token = token()
+
+        mockMvc.get("/v1/detection/id/${snapshot.imageId}") {
+            param("type", DetectionType.CROWD.name)
+            param("value", "1")
+            headers {
+                setBearerAuth(token)
+            }
+        }.andExpect {
+            status {
+                isOk()
+            }
+            content {
+                json(
+                    """{
+  "success": true,
+  "message": "ok",
+  "data": {
+        "location": "01",
+        "cameraName": "Test 01",
+        "type": "CROWD",
+        "value": 1,
+        "annotations": [
+          {
+            "snapshotCameraLocation": "01",
+            "name": "person",
+            "type": "CROWD",
+            "boundingBox": {
+              "x": 0.0,
+              "y": 0.0,
+              "width": 1.0,
+              "height": 1.0
+            },
+            "confidence": 0.8
+          }
+        ]
+      }
 }"""
                 )
             }
