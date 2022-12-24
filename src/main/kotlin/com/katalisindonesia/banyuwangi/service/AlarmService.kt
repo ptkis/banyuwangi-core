@@ -3,8 +3,6 @@ package com.katalisindonesia.banyuwangi.service
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.google.firebase.messaging.AndroidConfig
 import com.google.firebase.messaging.AndroidNotification
-import com.google.firebase.messaging.ApnsConfig
-import com.google.firebase.messaging.ApnsFcmOptions
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.Message
 import com.google.firebase.messaging.Notification
@@ -51,14 +49,6 @@ class AlarmService(
                             appProperties.alarmTopic
                         )
                         .build()
-                )
-                .setApnsConfig(
-                    ApnsConfig.builder()
-                        .setFcmOptions(
-                            ApnsFcmOptions.builder()
-                                .setImage(imageUrl)
-                                .build()
-                        ).build()
                 )
                 .setWebpushConfig(
                     WebpushConfig.builder()
