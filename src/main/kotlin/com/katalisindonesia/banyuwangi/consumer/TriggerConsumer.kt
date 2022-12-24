@@ -1,7 +1,6 @@
 package com.katalisindonesia.banyuwangi.consumer
 
 import com.katalisindonesia.banyuwangi.model.Alarm
-import com.katalisindonesia.banyuwangi.model.DetectionType
 import com.katalisindonesia.banyuwangi.model.SnapshotCount
 import com.katalisindonesia.banyuwangi.repo.AlarmRepo
 import com.katalisindonesia.banyuwangi.repo.SnapshotCountRepo
@@ -30,15 +29,7 @@ class TriggerConsumer(
         for (count in counts) {
             val alarmSetting = count.snapshot.camera.alarmSetting
             if (alarmSetting != null) {
-                val maxFun = when (count.type) {
-                    DetectionType.FLOOD -> alarmSetting::maxFlood
-                    DetectionType.TRASH -> alarmSetting::maxTrash
-                    DetectionType.STREETVENDOR -> alarmSetting::maxStreetvendor
-                    DetectionType.CROWD -> alarmSetting::maxCrowd
-                    DetectionType.TRAFFIC -> alarmSetting::maxTraffic
-                }
-
-                val max = maxFun.get()
+                val max = alarmSetting.max(count.type)
                 if (max != null && count.value > max) {
                     val alarm = tt.execute {
                         val alarm1 = Alarm(

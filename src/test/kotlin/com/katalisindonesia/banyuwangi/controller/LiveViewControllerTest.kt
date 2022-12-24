@@ -1,6 +1,7 @@
 package com.katalisindonesia.banyuwangi.controller
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.katalisindonesia.banyuwangi.consumer.MessagingProperties
 import com.katalisindonesia.banyuwangi.model.Camera
 import com.katalisindonesia.banyuwangi.model.CameraInterior
 import com.katalisindonesia.banyuwangi.model.CameraType
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.amqp.rabbit.core.RabbitAdmin
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -26,6 +28,8 @@ class LiveViewControllerTest(
     @Autowired private val mockMvc: MockMvc,
     @Autowired private val tokenManager: TokenManager,
     @Autowired private val cameraRepo: CameraRepo,
+    @Autowired private val rabbitAdmin: RabbitAdmin,
+    @Autowired private val messagingProperties: MessagingProperties,
 
 ) {
     private val mapper = jacksonObjectMapper()
@@ -33,6 +37,7 @@ class LiveViewControllerTest(
     @BeforeEach
     @AfterEach
     fun cleanup() {
+        rabbitAdmin.purgeQueue(messagingProperties.streamingCheckQueue, false)
         cameraRepo.deleteAll()
     }
 

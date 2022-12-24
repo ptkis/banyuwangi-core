@@ -21,6 +21,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
+import org.springframework.data.domain.Sort.Direction
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.CacheControl
@@ -165,6 +166,115 @@ class DetectionController(
                     imageSrc = storageService.uri(it.snapshotImageId).toString(),
                     annotations = annotations
                 )
+            )
+        )
+    }
+
+    @Operation(
+        summary = "Get detection results",
+        description = "Get detection results of which we get the chart data",
+        security = [SecurityRequirement(name = "oauth2", scopes = ["detection:read"])],
+        tags = ["detection"]
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Successful operation"),
+        ]
+    )
+    @GetMapping("/counts")
+    @PreAuthorize("hasAuthority('detection:read')")
+    fun counts(
+        @Parameter(description = "Detection type, no filter if omitted")
+        @Valid
+        @RequestParam(required = false)
+        type: DetectionType?,
+
+        @Parameter(description = "Starting period, no filter if omitted")
+        @Valid
+        @RequestParam(required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        startDate: LocalDate?,
+
+        @Parameter(description = "Ending period, no filter if omitted")
+        @Valid
+        @RequestParam(required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        endDate: LocalDate?,
+
+        @Parameter(description = "Name of camera, no filter if omitted")
+        @Valid
+        @RequestParam(required = false)
+        cameraName: String?,
+
+        @Parameter(description = "Location of camera, no filter if omitted")
+        @Valid
+        @RequestParam(required = false)
+        location: String?,
+
+        @Parameter(description = "Page of results") @Valid @RequestParam(
+            required = false,
+            defaultValue = "0"
+        )
+        @Min(0)
+        page: Int,
+
+        @Parameter(description = "Size of results per page") @Valid
+        @RequestParam(
+            required = false,
+            defaultValue = "1000"
+        )
+        @Min(1)
+
+        size: Int,
+
+        @Parameter(description = "Sort by")
+        @RequestParam(required = false, defaultValue = "SNAPSHOT_CREATED")
+        sort: SnapshotCountSort,
+
+        @Parameter(description = "Direction of sort")
+        @RequestParam(required = false, defaultValue = "DESC")
+        direction: Direction,
+
+    ): ResponseEntity<WebResponse<Page<SnapshotCount>>> {
+        val specs = mutableListOf<Specification<SnapshotCount>>()
+        if (type != null) {
+            specs.add(SnapshotCount::type.equal(type))
+        }
+        if (startDate != null) {
+            specs.add(
+                SnapshotCount::snapshotCreated.greaterThanOrEqualTo(
+                    startDate.atStartOfDay(ZoneId.systemDefault()).toInstant()
+                )
+            )
+        }
+        if (endDate != null) {
+            specs.add(
+                SnapshotCount::snapshotCreated.lessThan(
+                    endDate.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant()
+                )
+            )
+        }
+        if (cameraName != null) {
+            specs.add(SnapshotCount::snapshotCameraName.equal(cameraName))
+        }
+        if (location != null) {
+            specs.add(SnapshotCount::snapshotCameraLocation.equal(location))
+        }
+
+        val page1 = snapshotCountRepo.findAll(
+            and(specs),
+            PageRequest.of(
+                page, size,
+                Sort.by(
+                    direction, sort.asPropertyName()
+                )
+            )
+        )
+        return ResponseEntity.ok(
+            WebResponse(
+                success = true,
+                message = "ok",
+                data = page1
             )
         )
     }

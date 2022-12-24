@@ -61,9 +61,9 @@ jobs:
         env:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
       - name: Publish Test Report
-        uses: EnricoMi/publish-unit-test-result-action@v2
+        uses: mikepenz/action-junit-report@v3
         with:
-          junit_files: "**/build/test-results/test/TEST-*.xml"
+          report_paths: '**/build/test-results/test/TEST-*.xml'
         if: always()
       - name: Remove application-secret.properties
         run: rm -f src/test/resources/application-secret.properties || true
