@@ -9,4 +9,12 @@ data class AlarmSetting(
     var maxStreetvendor: Int? = null,
     var maxCrowd: Int? = null,
     var maxTraffic: Int? = null,
-)
+) {
+    fun max(type: DetectionType) = when (type) {
+        DetectionType.FLOOD -> maxFlood
+        DetectionType.TRASH -> maxTrash
+        DetectionType.STREETVENDOR -> maxStreetvendor
+        DetectionType.CROWD -> maxCrowd
+        DetectionType.TRAFFIC -> maxTraffic
+    }
+}
