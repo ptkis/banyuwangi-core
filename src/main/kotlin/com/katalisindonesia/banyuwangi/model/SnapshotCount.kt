@@ -40,8 +40,13 @@ data class SnapshotCount(
     @Column(nullable = false, unique = false, columnDefinition = "binary(16)")
     var snapshotImageId: UUID = snapshot.imageId,
 
+    @Column(nullable = false)
     var snapshotCameraName: String = snapshot.camera.name,
+    @Column(nullable = false)
     var snapshotCameraLocation: String = snapshot.camera.location,
+
+    var snapshotCameraLongitude: Float? = snapshot.camera.longitude,
+    var snapshotCameraLatitude: Float? = snapshot.camera.latitude,
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -49,4 +54,6 @@ data class SnapshotCount(
 
     @Column(nullable = false, name = "m_value")
     var value: Int,
+
+    var maxValue: Int? = snapshot.camera.alarmSetting?.max(type),
 ) : Persistent()
