@@ -1,9 +1,15 @@
 package com.katalisindonesia.banyuwangi.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.google.firebase.messaging.AndroidConfig
+import com.google.firebase.messaging.AndroidNotification
+import com.google.firebase.messaging.ApnsConfig
+import com.google.firebase.messaging.ApnsFcmOptions
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.Message
 import com.google.firebase.messaging.Notification
+import com.google.firebase.messaging.WebpushConfig
+import com.google.firebase.messaging.WebpushNotification
 import com.katalisindonesia.banyuwangi.AppProperties
 import com.katalisindonesia.banyuwangi.model.Alarm
 import com.katalisindonesia.banyuwangi.model.FcmToken
@@ -31,6 +37,40 @@ class AlarmService(
         val imageUrl = storageService.uri(alarm.snapshotCount.snapshotImageId).toString()
         firebaseMessaging.send(
             Message.builder()
+                .setAndroidConfig(
+                    AndroidConfig.builder()
+                        .setNotification(
+                            AndroidNotification.builder()
+                                .setBody(body)
+                                .setTitle(title)
+                                .setImage(imageUrl)
+                                .setDefaultSound(true)
+                                .build()
+                        )
+                        .setCollapseKey(
+                            appProperties.alarmTopic
+                        )
+                        .build()
+                )
+                .setApnsConfig(
+                    ApnsConfig.builder()
+                        .setFcmOptions(
+                            ApnsFcmOptions.builder()
+                                .setImage(imageUrl)
+                                .build()
+                        ).build()
+                )
+                .setWebpushConfig(
+                    WebpushConfig.builder()
+                        .setNotification(
+                            WebpushNotification.builder()
+                                .setBody(body)
+                                .setTitle(title)
+                                .setImage(imageUrl)
+                                .build()
+                        )
+                        .build()
+                )
                 .setTopic(appProperties.alarmTopic)
                 .setNotification(
                     Notification.builder()
