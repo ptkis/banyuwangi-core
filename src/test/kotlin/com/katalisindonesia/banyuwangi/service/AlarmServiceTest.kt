@@ -25,8 +25,8 @@ class AlarmServiceTest(
     @Test
     fun sendAlarm() {
         val registrationToken =
-            "fvGlRsqfxoTcuIYOevTdOg:APA91bGXWNKM_lq0GWmA9GMJ_SL9rLcw6C-DXTEM5g_aa4nixi38QArg0JjWe1UXb" +
-                "NlKqKpm06cg_-G6ZWptQAcDzUAvgu8qjDEhtc50UpND0n2JTL0ZsUw2rAphh3P9b-gj5uHndDg_"
+            "fvGlRsqfxoTcuIYOevTdOg:APA91bEmFT2VQkEPY0bgF98RBhTOH-QH-TIpbILkaoyPiNL84uNGqVdNd9" +
+                "Mk-TmYyO8fsvYFI_nN5Z3bQg10fv1v3Yg7PYylL-tRKUgW2CXpG8MUO8g3OvKofvuEkKtub5uddPB4pfvZ"
         alarmService.subscribe(
             listOf(
                 FcmToken(
