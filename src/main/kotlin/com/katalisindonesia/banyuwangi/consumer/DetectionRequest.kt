@@ -6,4 +6,5 @@ data class DetectionRequest(
     val uuid: UUID,
     val imageUri: String,
     val callbackQueue: String,
+    val dataset: Dataset? = null,
 )
