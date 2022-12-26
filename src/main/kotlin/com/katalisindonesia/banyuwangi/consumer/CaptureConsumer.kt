@@ -46,19 +46,20 @@ class CaptureConsumer(
         if (nextCaptureAfterErrorInstant != null && nextCaptureAfterErrorInstant.isAfter(Instant.now())) {
             return false
         }
-        val operation = when (request.camera.type) {
+        val camera1 = request.camera
+        val operation = when (camera1.type) {
             CameraType.HIKVISION -> captureService::hikvision
             // CameraType.ONVIF -> captureService::onvif
             else -> captureService::empty
         }
         try {
-            val bytesOpt = operation.invoke(request.camera)
+            val bytesOpt = operation.invoke(camera1)
 
             if (bytesOpt.isPresent) {
                 val bytes = bytesOpt.get()
                 val uuid = storageService.store(bytes)
                 tt.execute {
-                    val camera = cameraRepo.getReferenceById(request.camera.id)
+                    val camera = cameraRepo.getReferenceById(camera1.id)
                     val interior = camera.interior ?: CameraInterior()
                     camera.interior = interior
 
@@ -81,11 +82,17 @@ class CaptureConsumer(
                         uuid = uuid,
                         imageUri = storageService.uri(uuid).toString(),
                         callbackQueue = messagingProperties.detectionResultQueue,
+                        dataset = Dataset(
+                            coco = camera1.isCrowd || camera1.isTraffic,
+                            streetvendor = camera1.isStreetvendor,
+                            garbage = camera1.isTrash,
+                            flood = camera1.isFlood,
+                        )
                     )
                 )
                 return true
             } else {
-                log.debug { "Cannot get snapshot from ${request.camera.name}" }
+                log.debug { "Cannot get snapshot from ${camera1.name}" }
             }
         } catch (expected: Exception) {
             handleException(expected, request)

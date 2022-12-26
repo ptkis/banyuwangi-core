@@ -9,8 +9,18 @@ class DetectionTypeHelper {
         DetectionType.CROWD to setOf("person"),
         DetectionType.TRAFFIC to setOf("bus", "car", "motorcycle", "truck"),
         DetectionType.STREETVENDOR to setOf("streetvendor"),
-        DetectionType.FLOOD to setOf("flood"),
-        DetectionType.TRASH to setOf("trash"),
+        DetectionType.FLOOD to setOf(
+            "flood-puddle",
+            "flood-flood",
+        ),
+        DetectionType.TRASH to setOf(
+            "garbage-biodegradable",
+            "garbage-cardboard",
+            "garbage-glass",
+            "garbage-metal",
+            "garbage-paper",
+            "garbage-plastic"
+        ),
     )
 
     val map: Map<String, DetectionType> = calc()

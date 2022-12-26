@@ -420,4 +420,419 @@ class DetectionResultConsumerTest(
         Thread.sleep(1000)
         assertEquals(0, alarmRepo.count())
     }
+
+    @Test
+    fun `single response streetvendor alarm`() {
+        val camera = Camera(
+            vmsCameraIndexCode = "00001",
+            name = "Test 01",
+            location = "01",
+            alarmSetting = AlarmSetting(maxStreetvendor = 0)
+        )
+        cameraRepo.saveAndFlush(camera)
+
+        val snapshot = Snapshot(
+            imageId = UUID.randomUUID(),
+            camera = camera,
+            length = 1000000,
+        )
+        snapshotRepo.saveAndFlush(snapshot)
+
+        assertDoesNotThrow {
+            detectionResultConsumer.result(
+                DetectionResponse(
+                    success = true,
+                    message = "ok",
+                    response = listOf(
+                        Detection(
+                            boundingBox = BoundingBox(
+                                corners = listOf(
+                                    Corners(
+                                        x = 0.0,
+                                        y = 0.0
+                                    ),
+                                    Corners(
+                                        x = 1.0,
+                                        y = 0.0
+                                    ),
+                                    Corners(
+                                        x = 1.0,
+                                        y = 1.0
+                                    ),
+                                    Corners(
+                                        x = 0.0,
+                                        y = 1.0
+                                    ),
+                                ),
+                                width = 1.0,
+                                height = 1.0,
+                            ),
+                            className = "streetvendor",
+                            probability = 0.8
+                        )
+                    ),
+                    request = DetectionRequest(
+                        uuid = snapshot.imageId,
+                        imageUri = "http://someimage",
+                        callbackQueue = "/queue"
+                    )
+                )
+            )
+        }
+
+        val annotations = annotationRepo.findAll()
+        assertEquals(1, annotations.size)
+        assertEquals(DetectionType.STREETVENDOR, annotations[0].type)
+
+        Thread.sleep(1000)
+        assertEquals(1, alarmRepo.count())
+
+        val alarm = alarmRepo.findAll()[0]
+
+        assertEquals(0, alarm.maxValue)
+        assertEquals(1, alarm.snapshotCount.value)
+    }
+
+    @Test
+    fun `single response streetvendor no alarm`() {
+        val camera = Camera(
+            vmsCameraIndexCode = "00001",
+            name = "Test 01",
+            location = "01",
+            alarmSetting = AlarmSetting(maxStreetvendor = 1)
+        )
+        cameraRepo.saveAndFlush(camera)
+
+        val snapshot = Snapshot(
+            imageId = UUID.randomUUID(),
+            camera = camera,
+            length = 1000000,
+        )
+        snapshotRepo.saveAndFlush(snapshot)
+
+        assertDoesNotThrow {
+            detectionResultConsumer.result(
+                DetectionResponse(
+                    success = true,
+                    message = "ok",
+                    response = listOf(
+                        Detection(
+                            boundingBox = BoundingBox(
+                                corners = listOf(
+                                    Corners(
+                                        x = 0.0,
+                                        y = 0.0
+                                    ),
+                                    Corners(
+                                        x = 1.0,
+                                        y = 0.0
+                                    ),
+                                    Corners(
+                                        x = 1.0,
+                                        y = 1.0
+                                    ),
+                                    Corners(
+                                        x = 0.0,
+                                        y = 1.0
+                                    ),
+                                ),
+                                width = 1.0,
+                                height = 1.0,
+                            ),
+                            className = "streetvendor",
+                            probability = 0.8
+                        )
+                    ),
+                    request = DetectionRequest(
+                        uuid = snapshot.imageId,
+                        imageUri = "http://someimage",
+                        callbackQueue = "/queue"
+                    )
+                )
+            )
+        }
+
+        val annotations = annotationRepo.findAll()
+        assertEquals(1, annotations.size)
+        assertEquals(DetectionType.STREETVENDOR, annotations[0].type)
+
+        Thread.sleep(1000)
+        assertEquals(0, alarmRepo.count())
+    }
+    @Test
+    fun `single response flood alarm`() {
+        val camera = Camera(
+            vmsCameraIndexCode = "00001",
+            name = "Test 01",
+            location = "01",
+            alarmSetting = AlarmSetting(maxFlood = 0)
+        )
+        cameraRepo.saveAndFlush(camera)
+
+        val snapshot = Snapshot(
+            imageId = UUID.randomUUID(),
+            camera = camera,
+            length = 1000000,
+        )
+        snapshotRepo.saveAndFlush(snapshot)
+
+        assertDoesNotThrow {
+            detectionResultConsumer.result(
+                DetectionResponse(
+                    success = true,
+                    message = "ok",
+                    response = listOf(
+                        Detection(
+                            boundingBox = BoundingBox(
+                                corners = listOf(
+                                    Corners(
+                                        x = 0.0,
+                                        y = 0.0
+                                    ),
+                                    Corners(
+                                        x = 1.0,
+                                        y = 0.0
+                                    ),
+                                    Corners(
+                                        x = 1.0,
+                                        y = 1.0
+                                    ),
+                                    Corners(
+                                        x = 0.0,
+                                        y = 1.0
+                                    ),
+                                ),
+                                width = 1.0,
+                                height = 1.0,
+                            ),
+                            className = "flood-puddle",
+                            probability = 0.8
+                        )
+                    ),
+                    request = DetectionRequest(
+                        uuid = snapshot.imageId,
+                        imageUri = "http://someimage",
+                        callbackQueue = "/queue"
+                    )
+                )
+            )
+        }
+
+        val annotations = annotationRepo.findAll()
+        assertEquals(1, annotations.size)
+        assertEquals(DetectionType.FLOOD, annotations[0].type)
+
+        Thread.sleep(1000)
+        assertEquals(1, alarmRepo.count())
+
+        val alarm = alarmRepo.findAll()[0]
+
+        assertEquals(0, alarm.maxValue)
+        assertEquals(1, alarm.snapshotCount.value)
+    }
+
+    @Test
+    fun `single response flood no alarm`() {
+        val camera = Camera(
+            vmsCameraIndexCode = "00001",
+            name = "Test 01",
+            location = "01",
+            alarmSetting = AlarmSetting(maxFlood = 1)
+        )
+        cameraRepo.saveAndFlush(camera)
+
+        val snapshot = Snapshot(
+            imageId = UUID.randomUUID(),
+            camera = camera,
+            length = 1000000,
+        )
+        snapshotRepo.saveAndFlush(snapshot)
+
+        assertDoesNotThrow {
+            detectionResultConsumer.result(
+                DetectionResponse(
+                    success = true,
+                    message = "ok",
+                    response = listOf(
+                        Detection(
+                            boundingBox = BoundingBox(
+                                corners = listOf(
+                                    Corners(
+                                        x = 0.0,
+                                        y = 0.0
+                                    ),
+                                    Corners(
+                                        x = 1.0,
+                                        y = 0.0
+                                    ),
+                                    Corners(
+                                        x = 1.0,
+                                        y = 1.0
+                                    ),
+                                    Corners(
+                                        x = 0.0,
+                                        y = 1.0
+                                    ),
+                                ),
+                                width = 1.0,
+                                height = 1.0,
+                            ),
+                            className = "flood-puddle",
+                            probability = 0.8
+                        )
+                    ),
+                    request = DetectionRequest(
+                        uuid = snapshot.imageId,
+                        imageUri = "http://someimage",
+                        callbackQueue = "/queue"
+                    )
+                )
+            )
+        }
+
+        val annotations = annotationRepo.findAll()
+        assertEquals(1, annotations.size)
+        assertEquals(DetectionType.FLOOD, annotations[0].type)
+
+        Thread.sleep(1000)
+        assertEquals(0, alarmRepo.count())
+    }
+    @Test
+    fun `single response garbage alarm`() {
+        val camera = Camera(
+            vmsCameraIndexCode = "00001",
+            name = "Test 01",
+            location = "01",
+            alarmSetting = AlarmSetting(maxTrash = 0)
+        )
+        cameraRepo.saveAndFlush(camera)
+
+        val snapshot = Snapshot(
+            imageId = UUID.randomUUID(),
+            camera = camera,
+            length = 1000000,
+        )
+        snapshotRepo.saveAndFlush(snapshot)
+
+        assertDoesNotThrow {
+            detectionResultConsumer.result(
+                DetectionResponse(
+                    success = true,
+                    message = "ok",
+                    response = listOf(
+                        Detection(
+                            boundingBox = BoundingBox(
+                                corners = listOf(
+                                    Corners(
+                                        x = 0.0,
+                                        y = 0.0
+                                    ),
+                                    Corners(
+                                        x = 1.0,
+                                        y = 0.0
+                                    ),
+                                    Corners(
+                                        x = 1.0,
+                                        y = 1.0
+                                    ),
+                                    Corners(
+                                        x = 0.0,
+                                        y = 1.0
+                                    ),
+                                ),
+                                width = 1.0,
+                                height = 1.0,
+                            ),
+                            className = "garbage-metal",
+                            probability = 0.8
+                        )
+                    ),
+                    request = DetectionRequest(
+                        uuid = snapshot.imageId,
+                        imageUri = "http://someimage",
+                        callbackQueue = "/queue"
+                    )
+                )
+            )
+        }
+
+        val annotations = annotationRepo.findAll()
+        assertEquals(1, annotations.size)
+        assertEquals(DetectionType.TRASH, annotations[0].type)
+
+        Thread.sleep(1000)
+        assertEquals(1, alarmRepo.count())
+
+        val alarm = alarmRepo.findAll()[0]
+
+        assertEquals(0, alarm.maxValue)
+        assertEquals(1, alarm.snapshotCount.value)
+    }
+
+    @Test
+    fun `single response garbage no alarm`() {
+        val camera = Camera(
+            vmsCameraIndexCode = "00001",
+            name = "Test 01",
+            location = "01",
+            alarmSetting = AlarmSetting(maxTrash = 1)
+        )
+        cameraRepo.saveAndFlush(camera)
+
+        val snapshot = Snapshot(
+            imageId = UUID.randomUUID(),
+            camera = camera,
+            length = 1000000,
+        )
+        snapshotRepo.saveAndFlush(snapshot)
+
+        assertDoesNotThrow {
+            detectionResultConsumer.result(
+                DetectionResponse(
+                    success = true,
+                    message = "ok",
+                    response = listOf(
+                        Detection(
+                            boundingBox = BoundingBox(
+                                corners = listOf(
+                                    Corners(
+                                        x = 0.0,
+                                        y = 0.0
+                                    ),
+                                    Corners(
+                                        x = 1.0,
+                                        y = 0.0
+                                    ),
+                                    Corners(
+                                        x = 1.0,
+                                        y = 1.0
+                                    ),
+                                    Corners(
+                                        x = 0.0,
+                                        y = 1.0
+                                    ),
+                                ),
+                                width = 1.0,
+                                height = 1.0,
+                            ),
+                            className = "garbage-metal",
+                            probability = 0.8
+                        )
+                    ),
+                    request = DetectionRequest(
+                        uuid = snapshot.imageId,
+                        imageUri = "http://someimage",
+                        callbackQueue = "/queue"
+                    )
+                )
+            )
+        }
+
+        val annotations = annotationRepo.findAll()
+        assertEquals(1, annotations.size)
+        assertEquals(DetectionType.TRASH, annotations[0].type)
+
+        Thread.sleep(1000)
+        assertEquals(0, alarmRepo.count())
+    }
 }
