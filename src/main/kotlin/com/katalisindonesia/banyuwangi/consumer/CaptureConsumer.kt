@@ -46,6 +46,12 @@ class CaptureConsumer(
         if (nextCaptureAfterErrorInstant != null && nextCaptureAfterErrorInstant.isAfter(Instant.now())) {
             return false
         }
+        val nextCaptureInstant = request.cameraInterior.lastCaptureInstant?.plusSeconds(
+            appProperties.captureDelaySeconds
+        )
+        if (nextCaptureInstant != null && nextCaptureInstant.isAfter(Instant.now())) {
+            return false
+        }
         val camera1 = request.camera
         val operation = when (camera1.type) {
             CameraType.HIKVISION -> captureService::hikvision
