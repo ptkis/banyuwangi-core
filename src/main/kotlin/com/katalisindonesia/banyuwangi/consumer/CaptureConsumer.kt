@@ -46,7 +46,9 @@ class CaptureConsumer(
         if (nextCaptureAfterErrorInstant != null && nextCaptureAfterErrorInstant.isAfter(Instant.now())) {
             return false
         }
-        val nextCaptureInstant = request.cameraInterior.lastCaptureInstant?.plusSeconds(appProperties.captureDelaySeconds)
+        val nextCaptureInstant = request.cameraInterior.lastCaptureInstant?.plusSeconds(
+            appProperties.captureDelaySeconds
+        )
         if (nextCaptureInstant != null && nextCaptureInstant.isAfter(Instant.now())) {
             return false
         }
