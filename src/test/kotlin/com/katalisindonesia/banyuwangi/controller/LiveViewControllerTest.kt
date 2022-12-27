@@ -132,7 +132,7 @@ class LiveViewControllerTest(
             }
         }
 
-        Thread.sleep(3000L) // wait for streamCheckQueue
+        Thread.sleep(5000L) // wait for streamCheckQueue
         mockMvc.get("/v1/live/camera") {
             headers {
                 setBearerAuth(token())
