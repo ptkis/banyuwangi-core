@@ -57,7 +57,7 @@ class CaptureConsumer(
         }
         val lastCaptureInstant = lastCaptureMap[request.camera.id]
         if (lastCaptureInstant != null && lastCaptureInstant.plusSeconds(appProperties.captureDelaySeconds)
-                .isAfter(Instant.now())
+            .isAfter(Instant.now())
         ) {
             return false
         }
