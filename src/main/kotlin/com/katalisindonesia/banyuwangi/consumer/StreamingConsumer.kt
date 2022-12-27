@@ -110,7 +110,7 @@ class StreamingConsumer(
 
     private fun initCameraUrl(camera1: Camera): Boolean {
         try {
-            val camera = cameraRepo.getReferenceById(camera1.id)
+            val camera = cameraRepo.getAndLockById(camera1.id).get()
             var modified = false
             val cameraUrl =
                 streamingBaseUrl +

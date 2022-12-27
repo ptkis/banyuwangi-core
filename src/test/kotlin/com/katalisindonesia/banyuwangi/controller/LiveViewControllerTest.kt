@@ -2,6 +2,7 @@ package com.katalisindonesia.banyuwangi.controller
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.katalisindonesia.banyuwangi.consumer.MessagingProperties
+import com.katalisindonesia.banyuwangi.consumer.StreamingConsumer
 import com.katalisindonesia.banyuwangi.model.Camera
 import com.katalisindonesia.banyuwangi.model.CameraInterior
 import com.katalisindonesia.banyuwangi.model.CameraType
@@ -30,6 +31,7 @@ class LiveViewControllerTest(
     @Autowired private val cameraRepo: CameraRepo,
     @Autowired private val rabbitAdmin: RabbitAdmin,
     @Autowired private val messagingProperties: MessagingProperties,
+    @Autowired private val streamingConsumer: StreamingConsumer,
 
 ) {
     private val mapper = jacksonObjectMapper()
@@ -132,7 +134,7 @@ class LiveViewControllerTest(
             }
         }
 
-        Thread.sleep(5000L) // wait for streamCheckQueue
+        streamingConsumer.doCheck()
         mockMvc.get("/v1/live/camera") {
             headers {
                 setBearerAuth(token())
