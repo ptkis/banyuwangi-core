@@ -13,4 +13,5 @@ data class AppProperties(
     val captureDelaySeconds: Long,
     val defaultSize: Int,
     val alarmTopic: String,
+    val snapshotCountZeroDelaySeconds: Long,
 )

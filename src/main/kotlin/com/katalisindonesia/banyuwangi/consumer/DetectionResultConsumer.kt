@@ -1,5 +1,6 @@
 package com.katalisindonesia.banyuwangi.consumer
 
+import com.katalisindonesia.banyuwangi.AppProperties
 import com.katalisindonesia.banyuwangi.model.Annotation
 import com.katalisindonesia.banyuwangi.model.DetectionType
 import com.katalisindonesia.banyuwangi.model.SnapshotCount
@@ -22,11 +23,13 @@ class DetectionResultConsumer(
     private val snapshotCountRepo: SnapshotCountRepo,
     private val rabbitTemplate: RabbitTemplate,
     private val messagingProperties: MessagingProperties,
+    private val appProperties: AppProperties,
 
     transactionManager: PlatformTransactionManager,
 ) {
     private val tt = TransactionTemplate(transactionManager)
     private val helper = DetectionTypeHelper()
+    private val snapshotCountZeroHelper = SnapshotCountZeroHelper()
 
     @RabbitListener(
         queues = [
@@ -44,12 +47,12 @@ class DetectionResultConsumer(
 
                 var count = 0
                 val countMap = mutableMapOf<DetectionType, SnapshotCount>()
+                val snapshot = snapshotOpt.get()
                 for (detection in response.response) {
                     val boundingBox = detection.boundingBox ?: continue
                     val className = detection.className ?: continue
                     val probability = detection.probability ?: continue
                     val type = helper.map[className] ?: continue
-                    val snapshot = snapshotOpt.get()
                     annotationRepo.save(
                         Annotation(
                             snapshot = snapshot,
@@ -82,6 +85,11 @@ class DetectionResultConsumer(
                         objCount.value += 1
                     }
                 }
+                snapshotCountZeroHelper.removeZeros(
+                    cameraId = snapshot.camera.id,
+                    map = countMap,
+                    delaySeconds = appProperties.snapshotCountZeroDelaySeconds,
+                )
                 val counts = countMap.values
                 snapshotCountRepo.saveAll(counts)
 
