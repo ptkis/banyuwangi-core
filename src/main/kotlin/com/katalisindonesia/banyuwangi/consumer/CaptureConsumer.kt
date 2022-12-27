@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.support.TransactionTemplate
 import java.time.Instant
+import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 
 private val log = KotlinLogging.logger { }
 
@@ -31,6 +33,7 @@ class CaptureConsumer(
     transactionManager: PlatformTransactionManager,
 ) {
     private val tt = TransactionTemplate(transactionManager)
+    private val lastCaptureMap = ConcurrentHashMap<UUID, Instant>()
 
     @RabbitListener(
         queues = [
@@ -50,6 +53,12 @@ class CaptureConsumer(
             appProperties.captureDelaySeconds
         )
         if (nextCaptureInstant != null && nextCaptureInstant.isAfter(Instant.now())) {
+            return false
+        }
+        val lastCaptureInstant = lastCaptureMap[request.camera.id]
+        if (lastCaptureInstant != null && lastCaptureInstant.plusSeconds(appProperties.captureDelaySeconds)
+            .isAfter(Instant.now())
+        ) {
             return false
         }
         val camera1 = request.camera
@@ -81,6 +90,7 @@ class CaptureConsumer(
                         )
                     )
                 }
+                lastCaptureMap[camera1.id] = Instant.now()
                 log.debug { "Saved snapshot with image id $uuid" }
                 rabbitTemplate.convertAndSend(
                     messagingProperties.detectionQueue,
