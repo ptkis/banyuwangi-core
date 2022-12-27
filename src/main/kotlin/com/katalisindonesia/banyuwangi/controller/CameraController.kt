@@ -60,7 +60,7 @@ class CameraController(
     @Transactional
     @PreAuthorize("hasAnyAuthority('camera:write')")
     fun edit(@RequestBody @Valid camera: Camera): ResponseEntity<WebResponse<Camera>> {
-        val existing = cameraRepo.findById(camera.id)
+        val existing = cameraRepo.getAndLockById(camera.id)
 
         if (existing.isPresent) {
             val camera1 = existing.get()
@@ -77,7 +77,7 @@ class CameraController(
     @PreAuthorize("hasAnyAuthority('camera:write')")
     fun bulkEdit(@RequestBody @Valid cameras: List<Camera>): ResponseEntity<WebResponse<List<Camera>>> {
         for (camera in cameras) {
-            val existing = cameraRepo.findById(camera.id)
+            val existing = cameraRepo.getAndLockById(camera.id)
 
             if (existing.isPresent) {
                 val camera1 = existing.get()
