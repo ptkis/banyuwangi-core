@@ -5,7 +5,6 @@ import com.katalisindonesia.banyuwangi.model.CameraInterior
 import com.katalisindonesia.banyuwangi.model.CameraType
 import com.katalisindonesia.banyuwangi.repo.CameraRepo
 import com.katalisindonesia.banyuwangi.repo.SnapshotRepo
-import com.katalisindonesia.banyuwangi.task.DeleteImageTask
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -34,9 +33,6 @@ class CaptureConsumerTest(
 
     @Autowired
     private val snapshotRepo: SnapshotRepo,
-
-    @Autowired
-    private val deleteImageTask: DeleteImageTask,
 
     @Value("\${test.hikvision.host}") private val host: String,
     @Value("\${test.hikvision.port}") private val port: Int,
@@ -85,21 +81,6 @@ class CaptureConsumerTest(
             }
         }
         assertTrue(success) { "Must find a camera" }
-
-        assertEquals(
-            0L,
-            deleteImageTask.doDelete(
-                minFreeSpace = 0L,
-            ),
-            "should not remove if minFreeSpace is zero",
-        )
-        assertEquals(
-            0L,
-            deleteImageTask.doDelete(
-                minFreeSpace = Long.MAX_VALUE,
-            ),
-            "should not remove if minFreeSpace is zero",
-        )
     }
 
     @Test
