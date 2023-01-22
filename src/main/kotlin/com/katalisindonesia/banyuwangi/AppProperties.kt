@@ -14,4 +14,9 @@ data class AppProperties(
     val defaultSize: Int,
     val alarmTopic: String,
     val snapshotCountZeroDelaySeconds: Long,
+    /**
+     * Minimum
+     */
+    val minFreeSpace: Long,
+    val batchSize: Int,
 )

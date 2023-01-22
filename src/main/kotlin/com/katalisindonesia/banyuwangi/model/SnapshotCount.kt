@@ -27,6 +27,11 @@ import javax.persistence.Table
             columnList = "snapshotCameraLocation",
             unique = false,
         ),
+        Index(
+            name = "snapshotcount_isimageDeleted_idx",
+            columnList = "isImageDeleted",
+            unique = false,
+        ),
     ]
 )
 data class SnapshotCount(
@@ -56,4 +61,6 @@ data class SnapshotCount(
     var value: Int,
 
     var maxValue: Int? = snapshot.camera.alarmSetting?.max(type),
+
+    var isImageDeleted: Boolean? = false,
 ) : Persistent()

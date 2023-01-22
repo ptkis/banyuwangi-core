@@ -9,9 +9,11 @@ import com.katalisindonesia.banyuwangi.repo.AnnotationRepo
 import com.katalisindonesia.banyuwangi.repo.CameraRepo
 import com.katalisindonesia.banyuwangi.repo.SnapshotCountRepo
 import com.katalisindonesia.banyuwangi.repo.SnapshotRepo
+import com.katalisindonesia.banyuwangi.task.DeleteImageTask
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertDoesNotThrow
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -47,6 +49,9 @@ class DetectionResultConsumerTest(
 
     @Autowired
     private val messagingProperties: MessagingProperties,
+
+    @Autowired
+    private val deleteImageTask: DeleteImageTask,
 ) {
     @BeforeEach
     @AfterEach
@@ -834,5 +839,20 @@ class DetectionResultConsumerTest(
 
         Thread.sleep(1000)
         assertEquals(0, alarmRepo.count())
+
+        assertEquals(
+            0L,
+            deleteImageTask.doDelete(
+                minFreeSpace = 0L,
+            ),
+            "should not remove if minFreeSpace is zero",
+        )
+        assertNotEquals(
+            0L,
+            deleteImageTask.doDelete(
+                minFreeSpace = Long.MAX_VALUE,
+            ),
+            "should remove if minFreeSpace is not zero",
+        )
     }
 }

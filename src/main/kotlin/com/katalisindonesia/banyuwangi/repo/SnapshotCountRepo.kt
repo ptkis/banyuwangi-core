@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
+import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 import java.util.UUID
 
@@ -17,4 +18,7 @@ interface SnapshotCountRepo : JpaRepository<SnapshotCount, UUID>, JpaSpecificati
         value: Int,
         pageable: Pageable,
     ): Page<SnapshotCount>
+
+    @Query("select t from SnapshotCount t where t.isImageDeleted = :isImageDeleted")
+    fun findWithIsImageDeleted(isImageDeleted: Boolean, pageable: Pageable): Page<SnapshotCount>
 }
