@@ -4,9 +4,12 @@ import au.com.console.jpaspecificationdsl.and
 import au.com.console.jpaspecificationdsl.equal
 import au.com.console.jpaspecificationdsl.greaterThanOrEqualTo
 import au.com.console.jpaspecificationdsl.lessThan
+import com.katalisindonesia.banyuwangi.AppProperties
 import com.katalisindonesia.banyuwangi.model.DetectionType
 import com.katalisindonesia.banyuwangi.model.SnapshotCount
+import com.katalisindonesia.banyuwangi.model.Total
 import com.katalisindonesia.banyuwangi.repo.SnapshotCountRepo
+import com.katalisindonesia.banyuwangi.repo.TotalRepo
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.responses.ApiResponse
@@ -26,9 +29,11 @@ import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 import javax.validation.Valid
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
+import javax.validation.constraints.NotNull
 
 @RestController
 @RequestMapping("/v1/chart")
@@ -36,6 +41,8 @@ import javax.validation.constraints.Min
 @PreAuthorize("hasAuthority('chart')")
 class ChartController(
     private val snapshotCountRepo: SnapshotCountRepo,
+    private val totalRepo: TotalRepo,
+    private val appProperties: AppProperties,
 ) {
     private val helper = ChartHelper()
 
@@ -294,6 +301,58 @@ class ChartController(
         )
     }
 
+    @Operation(
+        summary = "Get total chart", description = "Get total chart data",
+        security = [
+            SecurityRequirement(name = "oauth2", scopes = ["chart:read"])
+        ],
+        tags = ["chart"]
+    )
+    @ApiResponses(
+        value = [
+            ApiResponse(responseCode = "200", description = "Successful operation"),
+        ]
+    )
+    @GetMapping("/total", produces = [MediaType.APPLICATION_JSON_VALUE])
+    fun total(
+        @Parameter(description = "Detection type, required") @Valid
+        @NotNull
+        @RequestParam(required = true)
+        type: DetectionType,
+
+        @Parameter(description = "Starting period, last midnight if omitted") @Valid
+        @RequestParam(required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        startDate: LocalDate?,
+
+        @Parameter(description = "Ending period, no filter if omitted") @Valid
+        @RequestParam(required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        endDate: LocalDate?,
+
+        @Parameter(description = "Page number") @Valid
+        @Min(0)
+        @RequestParam(required = false, defaultValue = "0")
+        page: Int = 0,
+
+        @Parameter(description = "How many results per page") @Valid
+        @RequestParam(required = false, defaultValue = "\${dashboard.app.defaultSize}")
+        @Min(0)
+        @Max(10000)
+        size: Int = 1000,
+    ): ChartData<ZonedDateTime> {
+        return helper.chartData(
+            findTotals(
+                startDate = startDate,
+                endDate = endDate,
+                type = type,
+                page = page,
+                size = size
+            ),
+            appProperties.totalPreferredProperty
+        )
+    }
+
     private fun counts(
         startDate: LocalDate?,
 
@@ -337,6 +396,45 @@ class ChartController(
         return snapshotCountRepo.findAll(
             and(countSpecs),
             PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, SnapshotCount::snapshotCreated.name))
+        ).toList().reversed()
+    }
+
+    private fun findTotals(
+        startDate: LocalDate?,
+
+        endDate: LocalDate?,
+
+        type: DetectionType?,
+        page: Int = 0,
+        size: Int = 1000,
+    ): List<Total> {
+        val countSpecs = mutableListOf<Specification<Total>>()
+
+        countSpecs.add(
+            Total::instant.greaterThanOrEqualTo(
+                startDate?.atStartOfDay()
+                    ?.atZone(ZoneId.systemDefault())?.toInstant() ?: ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS)
+                    .toInstant()
+            )
+        )
+        if (endDate != null) {
+            countSpecs.add(
+                Total::instant.lessThan(
+                    endDate.plusDays(1).atStartOfDay()
+                        .atZone(ZoneId.systemDefault()).toInstant()
+                )
+            )
+        }
+        if (type != null) {
+            countSpecs.add(
+                Total::type.equal(type)
+            )
+        }
+        countSpecs.add(Total::chronoUnit.equal(appProperties.totalTruncateChronoUnit))
+
+        return totalRepo.findAll(
+            and(countSpecs),
+            PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, Total::instant.name))
         ).toList().reversed()
     }
 }

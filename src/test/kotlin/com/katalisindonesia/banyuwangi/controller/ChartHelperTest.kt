@@ -1,13 +1,16 @@
 package com.katalisindonesia.banyuwangi.controller
 
+import com.katalisindonesia.banyuwangi.TotalPreferredProperty
 import com.katalisindonesia.banyuwangi.model.Camera
 import com.katalisindonesia.banyuwangi.model.DetectionType
 import com.katalisindonesia.banyuwangi.model.Snapshot
 import com.katalisindonesia.banyuwangi.model.SnapshotCount
+import com.katalisindonesia.banyuwangi.model.Total
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.time.ZoneId
 import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 class ChartHelperTest {
@@ -78,6 +81,58 @@ class ChartHelperTest {
                         "${count3.snapshotImageId}",
                     ),
                 )
+            ),
+            cd
+        )
+    }
+
+    @Test
+    fun `chartData from total`() {
+
+        val base = ZonedDateTime.of(1970, 1, 1, 7, 0, 0, 0, ZoneId.systemDefault()).toInstant()
+
+        val chronoUnit = ChronoUnit.HOURS
+        val count0 = Total(
+            type = DetectionType.CROWD,
+            instant = base.plusMillis(2100),
+            chronoUnit = chronoUnit,
+            countAlarmValue = 1,
+        )
+        val count1 = Total(
+            instant = base.plusMillis(4100),
+            type = DetectionType.CROWD,
+            chronoUnit = chronoUnit,
+            countAlarmValue = 2,
+        )
+        val count2 = Total(
+            instant = base.plusMillis(6100),
+            type = DetectionType.CROWD,
+            chronoUnit = chronoUnit,
+            countAlarmValue = 3,
+        )
+        val count3 = Total(
+            instant = base.plusMillis(8100),
+            type = DetectionType.CROWD,
+            chronoUnit = chronoUnit,
+            countAlarmValue = 4,
+        )
+        val chartHelper = ChartHelper()
+        val cd = chartHelper.chartData(listOf(count0, count1, count2, count3), TotalPreferredProperty.COUNT_ALARM)
+
+        println(cd)
+        assertEquals(
+            ChartData<ZonedDateTime>(
+                seriesNames = listOf("Total"),
+                labels = listOf(
+                    ZonedDateTime.of(1970, 1, 1, 7, 0, 2, 0, ZoneId.systemDefault()),
+                    ZonedDateTime.of(1970, 1, 1, 7, 0, 4, 0, ZoneId.systemDefault()),
+                    ZonedDateTime.of(1970, 1, 1, 7, 0, 6, 0, ZoneId.systemDefault()),
+                    ZonedDateTime.of(1970, 1, 1, 7, 0, 8, 0, ZoneId.systemDefault()),
+                ),
+                data = mapOf(
+                    "Total" to listOf(1L, 2L, 3L, 4L),
+                ),
+                snapshotIds = emptyMap()
             ),
             cd
         )

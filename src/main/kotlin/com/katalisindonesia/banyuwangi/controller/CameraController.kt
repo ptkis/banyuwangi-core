@@ -73,7 +73,7 @@ class CameraController(
     }
 
     @PostMapping("/bulk")
-    @Transactional
+    @Transactional()
     @PreAuthorize("hasAnyAuthority('camera:write')")
     fun bulkEdit(@RequestBody @Valid cameras: List<Camera>): ResponseEntity<WebResponse<List<Camera>>> {
         for (camera in cameras) {

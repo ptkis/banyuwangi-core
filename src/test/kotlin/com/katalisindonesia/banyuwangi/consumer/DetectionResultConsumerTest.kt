@@ -9,6 +9,7 @@ import com.katalisindonesia.banyuwangi.repo.AnnotationRepo
 import com.katalisindonesia.banyuwangi.repo.CameraRepo
 import com.katalisindonesia.banyuwangi.repo.SnapshotCountRepo
 import com.katalisindonesia.banyuwangi.repo.SnapshotRepo
+import com.katalisindonesia.banyuwangi.repo.TotalRepo
 import com.katalisindonesia.banyuwangi.task.DeleteImageTask
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertDoesNotThrow
@@ -45,6 +46,9 @@ class DetectionResultConsumerTest(
     private val alarmRepo: AlarmRepo,
 
     @Autowired
+    private val totalRepo: TotalRepo,
+
+    @Autowired
     private val rabbitAdmin: RabbitAdmin,
 
     @Autowired
@@ -57,7 +61,9 @@ class DetectionResultConsumerTest(
     @AfterEach
     fun cleanup() {
         rabbitAdmin.purgeQueue(messagingProperties.triggerQueue, false)
+        rabbitAdmin.purgeQueue(messagingProperties.totalQueue, false)
 
+        totalRepo.deleteAll()
         alarmRepo.deleteAll()
         snapshotCountRepo.deleteAll()
         annotationRepo.deleteAll()
@@ -772,6 +778,23 @@ class DetectionResultConsumerTest(
 
         assertEquals(0, alarm.maxValue)
         assertEquals(1, alarm.snapshotCount.value)
+        val totals = totalRepo.findAll()
+        assertEquals(5, totals.size)
+        for (total in totals) {
+            if (total.type == DetectionType.TRASH) {
+                assertEquals(1L, total.countAlarmValue)
+                assertEquals(1L, total.countValue)
+                assertEquals(1L, total.maxValue)
+                assertEquals(1L, total.sumValue)
+                assertEquals(1L, total.avgValue)
+            } else {
+                assertEquals(0L, total.countAlarmValue)
+                assertEquals(1L, total.countValue)
+                assertEquals(0L, total.maxValue)
+                assertEquals(0L, total.sumValue)
+                assertEquals(0L, total.avgValue)
+            }
+        }
     }
 
     @Test
@@ -854,5 +877,22 @@ class DetectionResultConsumerTest(
             ),
             "should remove if minFreeSpace is not zero",
         )
+        val totals = totalRepo.findAll()
+        assertEquals(5, totals.size)
+        for (total in totals) {
+            if (total.type == DetectionType.TRASH) {
+                assertEquals(0L, total.countAlarmValue)
+                assertEquals(1L, total.countValue)
+                assertEquals(1L, total.maxValue)
+                assertEquals(1L, total.sumValue)
+                assertEquals(1L, total.avgValue)
+            } else {
+                assertEquals(0L, total.countAlarmValue)
+                assertEquals(1L, total.countValue)
+                assertEquals(0L, total.maxValue)
+                assertEquals(0L, total.sumValue)
+                assertEquals(0L, total.avgValue)
+            }
+        }
     }
 }
