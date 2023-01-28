@@ -17,6 +17,9 @@ class StreamingCheckTask(
         timeUnit = TimeUnit.SECONDS
     )
     fun streamingCheck() {
-        rabbitTemplate.convertAndSend(messagingProperties.streamingCheckQueue, "")
+        rabbitTemplate.convertAndSend(messagingProperties.streamingCheckQueue, 0) {
+            it.messageProperties.expiration = "${messagingProperties.streamingCheckTtl}"
+            it
+        }
     }
 }

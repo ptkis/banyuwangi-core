@@ -14,4 +14,10 @@ class MessagingProperties(
     val streamingCheckQueue: String,
     val triggerQueue: String,
     val totalQueue: String,
+
+    val captureTtl: Long,
+    val detectionTtl: Long,
+    val streamingCheckTtl: Long,
+    val triggerTtl: Long,
+    val totalTtl: Long,
 )

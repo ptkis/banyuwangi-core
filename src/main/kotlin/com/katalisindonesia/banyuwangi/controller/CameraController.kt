@@ -68,7 +68,10 @@ class CameraController(
             camera.interior = camera1.interior?.copy() ?: CameraInterior()
         }
         cameraRepo.saveAndFlush(camera)
-        rabbitTemplate.convertAndSend(messagingProperties.streamingCheckQueue, "")
+        rabbitTemplate.convertAndSend(messagingProperties.streamingCheckQueue, 0) {
+            it.messageProperties.expiration = "${messagingProperties.streamingCheckTtl}"
+            it
+        }
         return Optional.of(camera).toResponseEntity()
     }
 
@@ -86,7 +89,10 @@ class CameraController(
             }
         }
         cameraRepo.saveAllAndFlush(cameras)
-        rabbitTemplate.convertAndSend(messagingProperties.streamingCheckQueue, "")
+        rabbitTemplate.convertAndSend(messagingProperties.streamingCheckQueue, 0) {
+            it.messageProperties.expiration = "${messagingProperties.streamingCheckTtl}"
+            it
+        }
         return Optional.of(cameras).toResponseEntity()
     }
 

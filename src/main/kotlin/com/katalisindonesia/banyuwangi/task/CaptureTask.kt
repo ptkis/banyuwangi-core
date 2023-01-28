@@ -48,7 +48,10 @@ class CaptureTask(
                         cameraInterior = camera.interior ?: CameraInterior(),
                         instant = Instant.now(),
                     )
-                )
+                ) {
+                    it.messageProperties.expiration = "${messagingProperties.captureTtl}"
+                    it
+                }
                 count++
             }
             page++
