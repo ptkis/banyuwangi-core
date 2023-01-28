@@ -154,7 +154,7 @@ class DetectionResultConsumerTest(
                                 height = 1.0,
                             ),
                             className = "person",
-                            probability = 0.8
+                            probability = 0.8,
                         )
                     ),
                     request = DetectionRequest(
