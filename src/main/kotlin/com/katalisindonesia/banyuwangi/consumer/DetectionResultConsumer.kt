@@ -54,8 +54,13 @@ class DetectionResultConsumer(
                     val probability = detection.probability ?: 0.0
                     val type = helper.map[className]
 
-                    if (boundingBox == null || type == null
+                    if (boundingBox == null || type == null || probability < appProperties.detectionMinConfidence
                     ) {
+                        log.info {
+                            "Discarding annotation of $type ${snapshot.camera.name} " +
+                                "because of either bounding box or type is null or too " +
+                                "low confidence $probability < ${appProperties.detectionMinConfidence}"
+                        }
                         continue
                     }
 
@@ -63,7 +68,7 @@ class DetectionResultConsumer(
                         log.info { "Discarding $type annotation of ${snapshot.camera.name} because it is not enabled" }
                         continue
                     }
-                    annotationRepo.save(
+                    annotationRepo.saveAndFlush(
                         Annotation(
                             snapshot = snapshot,
                             snapshotCreated = snapshot.created,

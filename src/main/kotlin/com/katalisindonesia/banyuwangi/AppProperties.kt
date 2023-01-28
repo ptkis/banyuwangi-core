@@ -23,4 +23,6 @@ data class AppProperties(
 
     val totalTruncateChronoUnit: ChronoUnit,
     val totalPreferredProperty: TotalPreferredProperty,
+
+    val detectionMinConfidence: Double,
 )
