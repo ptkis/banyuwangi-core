@@ -49,10 +49,20 @@ class DetectionResultConsumer(
                 val countMap = mutableMapOf<DetectionType, SnapshotCount>()
                 val snapshot = snapshotOpt.get()
                 for (detection in response.response) {
-                    val boundingBox = detection.boundingBox ?: continue
-                    val className = detection.className ?: continue
-                    val probability = detection.probability ?: continue
-                    val type = helper.map[className] ?: continue
+                    val boundingBox = detection.boundingBox
+                    val className = detection.className ?: ""
+                    val probability = detection.probability ?: 0.0
+                    val type = helper.map[className]
+
+                    if (boundingBox == null || type == null
+                    ) {
+                        continue
+                    }
+
+                    if (!snapshot.camera.isDetecting(type)) {
+                        log.info { "Discarding $type annotation of ${snapshot.camera.name} because it is not enabled" }
+                        continue
+                    }
                     annotationRepo.save(
                         Annotation(
                             snapshot = snapshot,
@@ -65,7 +75,7 @@ class DetectionResultConsumer(
                         )
                     )
                     count++
-                    for (type1 in DetectionType.values()) {
+                    for (type1 in DetectionType.values().filter { snapshot.camera.isDetecting(it) }) {
                         countMap.getOrPut(
                             type1
                         ) {
