@@ -31,7 +31,7 @@ class AlarmService(
 
     fun sendAlarm(alarm: Alarm) {
         val title = "${alarm.snapshotCount.type.localizedName()} di ${alarm.snapshotCount.snapshotCameraName}"
-        val body = "Nilai ${alarm.snapshotCount.value} di atas ambang ${alarm.maxValue}"
+        val body = appProperties.alarmMessages[alarm.snapshotCount.type] ?: ""
         val imageUrl = storageService.uri(alarm.snapshotCount.snapshotImageId).toString()
         firebaseMessaging.send(
             Message.builder()
