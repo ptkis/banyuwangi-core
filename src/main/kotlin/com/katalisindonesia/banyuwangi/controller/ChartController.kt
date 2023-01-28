@@ -10,6 +10,7 @@ import com.katalisindonesia.banyuwangi.model.SnapshotCount
 import com.katalisindonesia.banyuwangi.model.Total
 import com.katalisindonesia.banyuwangi.repo.SnapshotCountRepo
 import com.katalisindonesia.banyuwangi.repo.TotalRepo
+import com.katalisindonesia.banyuwangi.util.toCachedResponseEntity
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.responses.ApiResponse
@@ -21,6 +22,7 @@ import org.springframework.data.domain.Sort
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -84,7 +86,7 @@ class ChartController(
         @Min(0)
         @Max(10000)
         size: Int = 1000,
-    ): ChartData<ZonedDateTime> {
+    ): ResponseEntity<ChartData<ZonedDateTime>> {
         return helper.chartData(
             counts(
                 startDate = startDate,
@@ -94,7 +96,7 @@ class ChartController(
                 page = page,
                 size = size,
             )
-        )
+        ).toCachedResponseEntity(appProperties.chartCacheSeconds)
     }
 
     @Operation(
@@ -135,7 +137,7 @@ class ChartController(
         @Min(0)
         @Max(10000)
         size: Int = 1000,
-    ): ChartData<ZonedDateTime> {
+    ): ResponseEntity<ChartData<ZonedDateTime>> {
         return helper.chartData(
             counts(
                 startDate = startDate,
@@ -145,7 +147,7 @@ class ChartController(
                 page = page,
                 size = size,
             )
-        )
+        ).toCachedResponseEntity(appProperties.chartCacheSeconds)
     }
 
     @Operation(
@@ -186,7 +188,7 @@ class ChartController(
         @Min(0)
         @Max(10000)
         size: Int = 1000,
-    ): ChartData<ZonedDateTime> {
+    ): ResponseEntity<ChartData<ZonedDateTime>> {
         return helper.chartData(
             counts(
                 startDate = startDate,
@@ -196,7 +198,7 @@ class ChartController(
                 page = page,
                 size = size,
             )
-        )
+        ).toCachedResponseEntity(appProperties.chartCacheSeconds)
     }
 
     @Operation(
@@ -237,7 +239,7 @@ class ChartController(
         @Min(0)
         @Max(10000)
         size: Int = 1000,
-    ): ChartData<ZonedDateTime> {
+    ): ResponseEntity<ChartData<ZonedDateTime>> {
         return helper.chartData(
             counts(
                 startDate = startDate,
@@ -247,7 +249,7 @@ class ChartController(
                 page = page,
                 size = size
             )
-        )
+        ).toCachedResponseEntity(appProperties.chartCacheSeconds)
     }
 
     @Operation(
@@ -288,7 +290,7 @@ class ChartController(
         @Min(0)
         @Max(10000)
         size: Int = 1000,
-    ): ChartData<ZonedDateTime> {
+    ): ResponseEntity<ChartData<ZonedDateTime>> {
         return helper.chartData(
             counts(
                 startDate = startDate,
@@ -298,7 +300,7 @@ class ChartController(
                 page = page,
                 size = size
             )
-        )
+        ).toCachedResponseEntity(appProperties.chartCacheSeconds)
     }
 
     @Operation(
@@ -340,7 +342,7 @@ class ChartController(
         @Min(0)
         @Max(10000)
         size: Int = 1000,
-    ): ChartData<ZonedDateTime> {
+    ): ResponseEntity<ChartData<ZonedDateTime>> {
         return helper.chartData(
             findTotals(
                 startDate = startDate,
@@ -350,7 +352,7 @@ class ChartController(
                 size = size
             ),
             appProperties.totalPreferredProperty
-        )
+        ).toCachedResponseEntity(appProperties.chartCacheSeconds)
     }
 
     private fun counts(
