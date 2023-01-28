@@ -1,9 +1,12 @@
 package com.katalisindonesia.banyuwangi.util
 
+import com.katalisindonesia.banyuwangi.controller.ChartData
 import com.katalisindonesia.banyuwangi.controller.WebResponse
+import org.springframework.http.CacheControl
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import java.util.Optional
+import java.util.concurrent.TimeUnit
 
 fun <T> Optional<T>.toResponseEntity(): ResponseEntity<WebResponse<T>> {
     if (this.isEmpty) {
@@ -23,3 +26,7 @@ fun <T> Optional<T>.toResponseEntity(): ResponseEntity<WebResponse<T>> {
         )
     )
 }
+
+fun <T> ChartData<T>.toCachedResponseEntity(seconds: Long): ResponseEntity<ChartData<T>> = ResponseEntity.ok()
+    .cacheControl(CacheControl.maxAge(seconds, TimeUnit.SECONDS).cachePublic())
+    .body(this)
