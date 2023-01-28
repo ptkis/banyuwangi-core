@@ -98,6 +98,7 @@ class DetectionResultConsumer(
                 snapshotRepo.flush()
                 snapshotCountRepo.flush()
 
+                rabbitTemplate.convertAndSend(messagingProperties.totalQueue, counts.toList())
                 rabbitTemplate.convertAndSend(messagingProperties.triggerQueue, counts.toList())
             }
         } catch (expected: Exception) {

@@ -36,6 +36,12 @@ class MessagingConfig(
         )
 
     @Bean
+    fun totalQueue() =
+        Queue(
+            messagingProperties.totalQueue,
+        )
+
+    @Bean
     fun messageConverter(): MessageConverter {
         return Jackson2JsonMessageConverter(
             jacksonMapperBuilder().addModule(JavaTimeModule()).addModule(Jdk8Module())

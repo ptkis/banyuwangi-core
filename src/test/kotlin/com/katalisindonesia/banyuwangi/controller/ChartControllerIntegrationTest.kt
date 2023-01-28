@@ -1,5 +1,6 @@
 package com.katalisindonesia.banyuwangi.controller
 
+import com.katalisindonesia.banyuwangi.model.DetectionType
 import com.katalisindonesia.banyuwangi.security.TokenManager
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -46,6 +47,34 @@ class ChartControllerIntegrationTest(
 
         for (type in types) {
             mockMvc.get("/v1/chart/$type") {
+                headers {
+                    setBearerAuth(token)
+                    host = InetSocketAddress("localhost", 4200)
+                }
+            }.andExpect {
+                status {
+                    isOk()
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `total without token should redirect`() {
+        mockMvc.get("/v1/chart/total").andExpect {
+            status {
+                is3xxRedirection()
+            }
+        }
+    }
+
+    @Test
+    fun `total with token`() {
+
+        val token = token()
+
+        for (type in DetectionType.values()) {
+            mockMvc.get("/v1/chart/total?type=$type") {
                 headers {
                     setBearerAuth(token)
                     host = InetSocketAddress("localhost", 4200)
