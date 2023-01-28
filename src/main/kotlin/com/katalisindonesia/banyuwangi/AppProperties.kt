@@ -1,5 +1,6 @@
 package com.katalisindonesia.banyuwangi
 
+import com.katalisindonesia.banyuwangi.model.DetectionType
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.ConstructorBinding
 import java.net.URI
@@ -27,4 +28,6 @@ data class AppProperties(
     val chartCacheSeconds: Long,
 
     val detectionMinConfidence: Double,
+
+    val alarmMessages: Map<DetectionType, String>,
 )
