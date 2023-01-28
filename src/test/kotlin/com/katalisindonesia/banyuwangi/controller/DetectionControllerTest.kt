@@ -196,6 +196,11 @@ class DetectionControllerTest(
             vmsCameraIndexCode = "00001",
             name = "Test 01",
             location = "01",
+            isTrash = true,
+            isCrowd = true,
+            isTraffic = true,
+            isFlood = true,
+            isStreetvendor = true,
         )
         cameraRepo.saveAndFlush(camera)
 
@@ -350,6 +355,11 @@ class DetectionControllerTest(
             vmsCameraIndexCode = "00001",
             name = "Test 01",
             location = "01",
+            isTrash = true,
+            isCrowd = true,
+            isTraffic = true,
+            isFlood = true,
+            isStreetvendor = true,
         )
         cameraRepo.saveAndFlush(camera)
 
@@ -459,6 +469,11 @@ class DetectionControllerTest(
             vmsCameraIndexCode = "00001",
             name = "Test 01",
             location = "01",
+            isTrash = true,
+            isCrowd = true,
+            isTraffic = true,
+            isFlood = true,
+            isStreetvendor = true,
         )
         cameraRepo.saveAndFlush(camera)
 
@@ -558,6 +573,11 @@ class DetectionControllerTest(
             vmsCameraIndexCode = "00001",
             name = "Test 01",
             location = "01",
+            isTrash = true,
+            isCrowd = true,
+            isTraffic = true,
+            isFlood = true,
+            isStreetvendor = true,
         )
         cameraRepo.saveAndFlush(camera)
 
@@ -673,6 +693,11 @@ class DetectionControllerTest(
             vmsCameraIndexCode = "00001",
             name = "Test 01",
             location = "01",
+            isTrash = true,
+            isCrowd = true,
+            isTraffic = true,
+            isFlood = true,
+            isStreetvendor = true,
         )
         cameraRepo.saveAndFlush(camera)
 

@@ -93,4 +93,12 @@ data class Camera(
     override fun toString(): String {
         return this::class.simpleName + "(id = $id )"
     }
+
+    fun isDetecting(detectionType: DetectionType) = when (detectionType) {
+        DetectionType.FLOOD -> isFlood
+        DetectionType.TRASH -> isTrash
+        DetectionType.STREETVENDOR -> isStreetvendor
+        DetectionType.CROWD -> isCrowd
+        DetectionType.TRAFFIC -> isTraffic
+    }
 }

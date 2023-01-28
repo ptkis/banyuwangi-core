@@ -113,6 +113,7 @@ class DetectionResultConsumerTest(
             vmsCameraIndexCode = "00001",
             name = "Test 01",
             location = "01",
+            isCrowd = true,
         )
         cameraRepo.saveAndFlush(camera)
 
@@ -175,6 +176,7 @@ class DetectionResultConsumerTest(
             vmsCameraIndexCode = "00001",
             name = "Test 01",
             location = "01",
+            isTraffic = true,
         )
         cameraRepo.saveAndFlush(camera)
 
@@ -237,6 +239,11 @@ class DetectionResultConsumerTest(
             vmsCameraIndexCode = "00001",
             name = "Test 01",
             location = "01",
+            isTraffic = true,
+            isCrowd = true,
+            isStreetvendor = true,
+            isTrash = true,
+            isFlood = true,
         )
         cameraRepo.saveAndFlush(camera)
 
@@ -299,7 +306,8 @@ class DetectionResultConsumerTest(
             vmsCameraIndexCode = "00001",
             name = "Test 01",
             location = "01",
-            alarmSetting = AlarmSetting(maxTraffic = 0)
+            alarmSetting = AlarmSetting(maxTraffic = 0),
+            isTraffic = true,
         )
         cameraRepo.saveAndFlush(camera)
 
@@ -371,7 +379,8 @@ class DetectionResultConsumerTest(
             vmsCameraIndexCode = "00001",
             name = "Test 01",
             location = "01",
-            alarmSetting = AlarmSetting(maxTraffic = 1)
+            alarmSetting = AlarmSetting(maxTraffic = 1),
+            isTraffic = true,
         )
         cameraRepo.saveAndFlush(camera)
 
@@ -438,7 +447,8 @@ class DetectionResultConsumerTest(
             vmsCameraIndexCode = "00001",
             name = "Test 01",
             location = "01",
-            alarmSetting = AlarmSetting(maxStreetvendor = 0)
+            alarmSetting = AlarmSetting(maxStreetvendor = 0),
+            isStreetvendor = true,
         )
         cameraRepo.saveAndFlush(camera)
 
@@ -510,7 +520,8 @@ class DetectionResultConsumerTest(
             vmsCameraIndexCode = "00001",
             name = "Test 01",
             location = "01",
-            alarmSetting = AlarmSetting(maxStreetvendor = 1)
+            alarmSetting = AlarmSetting(maxStreetvendor = 1),
+            isStreetvendor = true,
         )
         cameraRepo.saveAndFlush(camera)
 
@@ -576,7 +587,8 @@ class DetectionResultConsumerTest(
             vmsCameraIndexCode = "00001",
             name = "Test 01",
             location = "01",
-            alarmSetting = AlarmSetting(maxFlood = 0)
+            alarmSetting = AlarmSetting(maxFlood = 0),
+            isFlood = true,
         )
         cameraRepo.saveAndFlush(camera)
 
@@ -648,7 +660,8 @@ class DetectionResultConsumerTest(
             vmsCameraIndexCode = "00001",
             name = "Test 01",
             location = "01",
-            alarmSetting = AlarmSetting(maxFlood = 1)
+            alarmSetting = AlarmSetting(maxFlood = 1),
+            isFlood = true,
         )
         cameraRepo.saveAndFlush(camera)
 
@@ -714,7 +727,12 @@ class DetectionResultConsumerTest(
             vmsCameraIndexCode = "00001",
             name = "Test 01",
             location = "01",
-            alarmSetting = AlarmSetting(maxTrash = 0)
+            alarmSetting = AlarmSetting(maxTrash = 0),
+            isTrash = true,
+            isCrowd = true,
+            isTraffic = true,
+            isFlood = true,
+            isStreetvendor = true,
         )
         cameraRepo.saveAndFlush(camera)
 
@@ -803,7 +821,12 @@ class DetectionResultConsumerTest(
             vmsCameraIndexCode = "00001",
             name = "Test 01",
             location = "01",
-            alarmSetting = AlarmSetting(maxTrash = 1)
+            alarmSetting = AlarmSetting(maxTrash = 1),
+            isTrash = true,
+            isCrowd = true,
+            isTraffic = true,
+            isFlood = true,
+            isStreetvendor = true,
         )
         cameraRepo.saveAndFlush(camera)
 
@@ -894,5 +917,74 @@ class DetectionResultConsumerTest(
                 assertEquals(0L, total.avgValue)
             }
         }
+    }
+    @Test
+    fun `single response garbage no detection in camera`() {
+        val camera = Camera(
+            vmsCameraIndexCode = "00001",
+            name = "Test 01",
+            location = "01",
+            alarmSetting = AlarmSetting(maxTrash = 1),
+            isTrash = false,
+        )
+        cameraRepo.saveAndFlush(camera)
+
+        val snapshot = Snapshot(
+            imageId = UUID.randomUUID(),
+            camera = camera,
+            length = 1000000,
+        )
+        snapshotRepo.saveAndFlush(snapshot)
+
+        assertDoesNotThrow {
+            detectionResultConsumer.result(
+                DetectionResponse(
+                    success = true,
+                    message = "ok",
+                    response = listOf(
+                        Detection(
+                            boundingBox = BoundingBox(
+                                corners = listOf(
+                                    Corners(
+                                        x = 0.0,
+                                        y = 0.0
+                                    ),
+                                    Corners(
+                                        x = 1.0,
+                                        y = 0.0
+                                    ),
+                                    Corners(
+                                        x = 1.0,
+                                        y = 1.0
+                                    ),
+                                    Corners(
+                                        x = 0.0,
+                                        y = 1.0
+                                    ),
+                                ),
+                                width = 1.0,
+                                height = 1.0,
+                            ),
+                            className = "garbage-metal",
+                            probability = 0.8
+                        )
+                    ),
+                    request = DetectionRequest(
+                        uuid = snapshot.imageId,
+                        imageUri = "http://someimage",
+                        callbackQueue = "/queue"
+                    )
+                )
+            )
+        }
+
+        val annotations = annotationRepo.findAll()
+        assertEquals(0, annotations.size)
+
+        Thread.sleep(1000)
+        assertEquals(0, alarmRepo.count())
+
+        val totals = totalRepo.findAll()
+        assertEquals(0, totals.size)
     }
 }
