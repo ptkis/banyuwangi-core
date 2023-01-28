@@ -27,5 +27,7 @@ data class AppProperties(
 
     val chartCacheSeconds: Long,
 
+    val detectionMinConfidence: Double,
+
     val alarmMessages: Map<DetectionType, String>,
 )
