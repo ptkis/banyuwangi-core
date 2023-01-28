@@ -108,8 +108,14 @@ class DetectionResultConsumer(
                 snapshotRepo.flush()
                 snapshotCountRepo.flush()
 
-                rabbitTemplate.convertAndSend(messagingProperties.totalQueue, counts.toList())
-                rabbitTemplate.convertAndSend(messagingProperties.triggerQueue, counts.toList())
+                rabbitTemplate.convertAndSend(messagingProperties.totalQueue, counts.toList()) {
+                    it.messageProperties.expiration = "${messagingProperties.totalTtl}"
+                    it
+                }
+                rabbitTemplate.convertAndSend(messagingProperties.triggerQueue, counts.toList()) {
+                    it.messageProperties.expiration = "${messagingProperties.triggerTtl}"
+                    it
+                }
             }
         } catch (expected: Exception) {
             log.info(expected) { "Cannot process snapshot ${response.request.uuid}" }

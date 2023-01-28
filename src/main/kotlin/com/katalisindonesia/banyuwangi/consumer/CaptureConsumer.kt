@@ -105,7 +105,10 @@ class CaptureConsumer(
                             flood = camera1.isFlood,
                         )
                     )
-                )
+                ) {
+                    it.messageProperties.expiration = "${messagingProperties.detectionTtl}"
+                    it
+                }
                 return true
             } else {
                 log.debug { "Cannot get snapshot from ${camera1.name}" }
