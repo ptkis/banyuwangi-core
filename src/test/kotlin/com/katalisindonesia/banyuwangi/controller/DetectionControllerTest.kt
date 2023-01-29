@@ -301,9 +301,6 @@ class DetectionControllerTest(
       "paged": true,
       "unpaged": false
     },
-    "last": true,
-    "totalPages": 1,
-    "totalElements": 1,
     "first": true,
     "size": 1000,
     "number": 0,
@@ -415,9 +412,6 @@ class DetectionControllerTest(
       "paged": true,
       "unpaged": false
     },
-    "last": true,
-    "totalElements": 0,
-    "totalPages": 0,
     "first": true,
     "size": 9,
     "number": 0,
@@ -636,9 +630,6 @@ class DetectionControllerTest(
       "paged": true,
       "unpaged": false
     },
-    "last": true,
-    "totalElements": 0,
-    "totalPages": 0,
     "first": true,
     "size": 9,
     "number": 0,
@@ -647,7 +638,6 @@ class DetectionControllerTest(
       "unsorted": false,
       "sorted": true
     },
-    "numberOfElements": 0,
     "empty": true
   }
 }"""
@@ -797,9 +787,6 @@ class DetectionControllerTest(
       "paged": true,
       "unpaged": false
     },
-    "last": true,
-    "totalPages": 1,
-    "totalElements": 5,
     "first": true,
     "size": 1000,
     "number": 0,

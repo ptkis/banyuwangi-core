@@ -51,7 +51,7 @@ class CameraController(
         return WebResponse(
             success = true, message = "ok",
             data = cameraRepo.findAll(
-                PageRequest.of(page, size, Sort.by(Camera::location.name, Camera::name.name))
+                PageRequest.of(page, size, Sort.by(Camera::name.name))
             )
         )
     }

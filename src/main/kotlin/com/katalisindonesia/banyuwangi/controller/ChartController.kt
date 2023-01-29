@@ -398,7 +398,7 @@ class ChartController(
         return snapshotCountRepo.findAll(
             and(countSpecs),
             PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, SnapshotCount::snapshotCreated.name))
-        ).toList().reversed()
+        ).reversed()
     }
 
     private fun findTotals(
@@ -437,6 +437,6 @@ class ChartController(
         return totalRepo.findAll(
             and(countSpecs),
             PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, Total::instant.name))
-        ).toList().reversed()
+        ).reversed()
     }
 }
