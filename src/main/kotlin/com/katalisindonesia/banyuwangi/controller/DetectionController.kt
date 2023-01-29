@@ -266,15 +266,16 @@ class DetectionController(
             specs.add(SnapshotCount::snapshotCameraLocation.equal(location))
         }
 
+        val pageable = PageRequest.of(
+            page, size,
+            Sort.by(
+                direction, sort.asPropertyName()
+            )
+        )
         return snapshotCountRepo.findAll(
             and(specs),
-            PageRequest.of(
-                page, size,
-                Sort.by(
-                    direction, sort.asPropertyName()
-                )
-            )
-        ).toCachedWebResponseEntity(appProperties.detectionCacheSeconds)
+            pageable
+        ).toCachedWebResponseEntity(appProperties.detectionCacheSeconds, pageable)
     }
 
     private fun calcDelegate() = if (productionMode.get()) {
@@ -344,19 +345,20 @@ class DetectionController(
         }
         countSpecs.add(SnapshotCount::value.greaterThan(0))
 
-        val counts = snapshotCountRepo.findAll(
-            and(countSpecs),
-            PageRequest.of(
-                page, size,
-                Sort.by(
-                    listOf(
-                        Sort.Order.desc(SnapshotCount::snapshotCreated.name),
-                        Sort.Order.asc(SnapshotCount::type.name),
-                    )
+        val pageRequest = PageRequest.of(
+            page, size,
+            Sort.by(
+                listOf(
+                    Sort.Order.desc(SnapshotCount::snapshotCreated.name),
+                    Sort.Order.asc(SnapshotCount::type.name),
                 )
             )
         )
-        if (!counts.isEmpty) {
+        val counts = snapshotCountRepo.findAll(
+            and(countSpecs),
+            pageRequest
+        )
+        if (counts.isNotEmpty()) {
             annotationSpecs.add(
                 Annotation::snapshotCreated.greaterThanOrEqualTo(
                     counts.last().snapshotCreated
@@ -372,7 +374,7 @@ class DetectionController(
             Pair(it.snapshotImageId, it.type)
         }
 
-        return counts.map {
+        val list = counts.map {
             DetectionResponse(
                 date = LocalDate.ofInstant(it.snapshotCreated, ZoneId.systemDefault()),
                 instant = it.snapshotCreated,
@@ -384,6 +386,7 @@ class DetectionController(
                 annotations = annotationMap[Pair(it.snapshotImageId, it.type)] ?: emptyList()
             )
         }
+        return PageImpl(list, pageRequest, Long.MAX_VALUE)
     }
 
     private fun dummyResponses(

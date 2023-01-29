@@ -5,6 +5,7 @@ import com.katalisindonesia.banyuwangi.consumer.MessagingProperties
 import com.katalisindonesia.banyuwangi.controller.HelloController
 import com.katalisindonesia.banyuwangi.fcm.FirebaseConfiguration
 import com.katalisindonesia.banyuwangi.model.Persistent
+import com.katalisindonesia.banyuwangi.repo.BaseRepositoryImpl
 import com.katalisindonesia.banyuwangi.repo.CameraRepo
 import com.katalisindonesia.banyuwangi.security.CorsProperties
 import com.katalisindonesia.banyuwangi.security.SecurityConfig
@@ -20,6 +21,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.runApplication
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 import org.springframework.retry.annotation.EnableRetry
 import org.springframework.scheduling.annotation.EnableScheduling
 
@@ -49,6 +51,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
         AppProperties::class,
     ]
 )
+@EnableJpaRepositories(repositoryBaseClass = BaseRepositoryImpl::class)
 @EntityScan(
     basePackageClasses = [
         Persistent::class,
