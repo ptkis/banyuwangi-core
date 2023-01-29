@@ -4,6 +4,7 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 import javax.persistence.Column
 import javax.persistence.Entity
+import javax.persistence.EnumType
 import javax.persistence.Enumerated
 import javax.persistence.Index
 import javax.persistence.Table
@@ -15,14 +16,14 @@ import javax.persistence.Table
     ]
 )
 data class Total(
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     var type: DetectionType,
 
     @Column(nullable = false)
     var instant: Instant,
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     var chronoUnit: ChronoUnit,
 
