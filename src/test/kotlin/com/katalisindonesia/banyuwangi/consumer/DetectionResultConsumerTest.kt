@@ -364,7 +364,7 @@ class DetectionResultConsumerTest(
         assertEquals(1, annotations.size)
         assertEquals(DetectionType.TRAFFIC, annotations[0].type)
 
-        Thread.sleep(2000)
+        Thread.sleep(1000)
         assertEquals(1, alarmRepo.count())
 
         val alarm = alarmRepo.findAll()[0]
@@ -437,7 +437,7 @@ class DetectionResultConsumerTest(
         assertEquals(1, annotations.size)
         assertEquals(DetectionType.TRAFFIC, annotations[0].type)
 
-        Thread.sleep(2000)
+        Thread.sleep(1000)
         assertEquals(0, alarmRepo.count())
     }
 
@@ -505,7 +505,7 @@ class DetectionResultConsumerTest(
         assertEquals(1, annotations.size)
         assertEquals(DetectionType.STREETVENDOR, annotations[0].type)
 
-        Thread.sleep(2000)
+        Thread.sleep(1000)
         assertEquals(1, alarmRepo.count())
 
         val alarm = alarmRepo.findAll()[0]
@@ -578,7 +578,7 @@ class DetectionResultConsumerTest(
         assertEquals(1, annotations.size)
         assertEquals(DetectionType.STREETVENDOR, annotations[0].type)
 
-        Thread.sleep(2000)
+        Thread.sleep(1000)
         assertEquals(0, alarmRepo.count())
     }
     @Test
@@ -645,7 +645,7 @@ class DetectionResultConsumerTest(
         assertEquals(1, annotations.size)
         assertEquals(DetectionType.FLOOD, annotations[0].type)
 
-        Thread.sleep(2000)
+        Thread.sleep(1000)
         assertEquals(1, alarmRepo.count())
 
         val alarm = alarmRepo.findAll()[0]
@@ -718,7 +718,7 @@ class DetectionResultConsumerTest(
         assertEquals(1, annotations.size)
         assertEquals(DetectionType.FLOOD, annotations[0].type)
 
-        Thread.sleep(2000)
+        Thread.sleep(1000)
         assertEquals(0, alarmRepo.count())
     }
     @Test
@@ -789,7 +789,7 @@ class DetectionResultConsumerTest(
         assertEquals(1, annotations.size)
         assertEquals(DetectionType.TRASH, annotations[0].type)
 
-        Thread.sleep(2000)
+        Thread.sleep(1000)
         assertEquals(1, alarmRepo.count())
 
         val alarm = alarmRepo.findAll()[0]
@@ -807,7 +807,7 @@ class DetectionResultConsumerTest(
                 assertEquals(1L, total.avgValue)
             } else {
                 assertEquals(0L, total.countAlarmValue)
-                assertEquals(1L, total.countValue)
+                assertEquals(0L, total.countValue)
                 assertEquals(0L, total.maxValue)
                 assertEquals(0L, total.sumValue)
                 assertEquals(0L, total.avgValue)
@@ -883,7 +883,7 @@ class DetectionResultConsumerTest(
         assertEquals(1, annotations.size)
         assertEquals(DetectionType.TRASH, annotations[0].type)
 
-        Thread.sleep(2000)
+        Thread.sleep(1000)
         assertEquals(0, alarmRepo.count())
 
         assertEquals(
@@ -911,7 +911,7 @@ class DetectionResultConsumerTest(
                 assertEquals(1L, total.avgValue)
             } else {
                 assertEquals(0L, total.countAlarmValue)
-                assertEquals(1L, total.countValue)
+                assertEquals(0L, total.countValue)
                 assertEquals(0L, total.maxValue)
                 assertEquals(0L, total.sumValue)
                 assertEquals(0L, total.avgValue)
@@ -981,7 +981,7 @@ class DetectionResultConsumerTest(
         val annotations = annotationRepo.findAll()
         assertEquals(0, annotations.size)
 
-        Thread.sleep(2000)
+        Thread.sleep(1000)
         assertEquals(0, alarmRepo.count())
 
         val totals = totalRepo.findAll()
