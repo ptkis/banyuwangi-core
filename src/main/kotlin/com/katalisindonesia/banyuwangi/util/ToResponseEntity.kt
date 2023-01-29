@@ -2,6 +2,7 @@ package com.katalisindonesia.banyuwangi.util
 
 import com.katalisindonesia.banyuwangi.controller.ChartData
 import com.katalisindonesia.banyuwangi.controller.WebResponse
+import org.springframework.data.domain.Page
 import org.springframework.http.CacheControl
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -30,3 +31,13 @@ fun <T> Optional<T>.toResponseEntity(): ResponseEntity<WebResponse<T>> {
 fun <T> ChartData<T>.toCachedResponseEntity(seconds: Long): ResponseEntity<ChartData<T>> = ResponseEntity.ok()
     .cacheControl(CacheControl.maxAge(seconds, TimeUnit.SECONDS).cachePublic())
     .body(this)
+
+fun <T> Page<T>.toCachedWebResponseEntity(seconds: Long): ResponseEntity<WebResponse<Page<T>>> = ResponseEntity.ok()
+    .cacheControl(CacheControl.maxAge(seconds, TimeUnit.SECONDS).cachePublic())
+    .body(
+        WebResponse(
+            success = true,
+            message = "ok",
+            data = this,
+        )
+    )

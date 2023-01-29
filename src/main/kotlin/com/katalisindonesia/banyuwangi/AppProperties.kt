@@ -26,6 +26,7 @@ data class AppProperties(
     val totalPreferredProperty: TotalPreferredProperty,
 
     val chartCacheSeconds: Long,
+    val detectionCacheSeconds: Long,
 
     val detectionMinConfidence: Double,
 

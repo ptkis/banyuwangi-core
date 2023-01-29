@@ -2,6 +2,7 @@ package com.katalisindonesia.banyuwangi.controller
 
 import au.com.console.jpaspecificationdsl.and
 import au.com.console.jpaspecificationdsl.equal
+import au.com.console.jpaspecificationdsl.greaterThan
 import au.com.console.jpaspecificationdsl.greaterThanOrEqualTo
 import au.com.console.jpaspecificationdsl.lessThan
 import au.com.console.jpaspecificationdsl.lessThanOrEqualTo
@@ -11,6 +12,7 @@ import com.katalisindonesia.banyuwangi.model.DetectionType
 import com.katalisindonesia.banyuwangi.model.SnapshotCount
 import com.katalisindonesia.banyuwangi.repo.AnnotationRepo
 import com.katalisindonesia.banyuwangi.repo.SnapshotCountRepo
+import com.katalisindonesia.banyuwangi.util.toCachedWebResponseEntity
 import com.katalisindonesia.imageserver.service.StorageService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -106,12 +108,14 @@ class DetectionController(
     ): ResponseEntity<WebResponse<Page<DetectionResponse>>> {
 
         val delegate = calcDelegate()
-        val content = delegate(startDate, endDate, type, location, page, size)
-        return ResponseEntity.ok(
-            WebResponse(
-                success = true, message = "ok", data = content
-            )
-        )
+        return delegate(
+            startDate,
+            endDate,
+            type,
+            location,
+            page,
+            size
+        ).toCachedWebResponseEntity(appProperties.detectionCacheSeconds)
     }
 
     @GetMapping("/id/{snapshotImageId}")
@@ -152,22 +156,23 @@ class DetectionController(
         val annotations = annotationRepo.findBySnapshotImageIdEquals(snapshotImageId)
 
         val it = snapshotCountOpt.first()
-        return ResponseEntity.ok(
-            WebResponse(
-                success = true,
-                message = "ok",
-                data = DetectionResponse(
-                    date = LocalDate.ofInstant(it.snapshotCreated, ZoneId.systemDefault()),
-                    instant = it.snapshotCreated,
-                    location = it.snapshotCameraLocation,
-                    cameraName = it.snapshotCameraName,
-                    type = it.type,
-                    value = it.value,
-                    imageSrc = storageService.uri(it.snapshotImageId).toString(),
-                    annotations = annotations
+        return ResponseEntity.ok()
+            .cacheControl(cacheControl()).body(
+                WebResponse(
+                    success = true,
+                    message = "ok",
+                    data = DetectionResponse(
+                        date = LocalDate.ofInstant(it.snapshotCreated, ZoneId.systemDefault()),
+                        instant = it.snapshotCreated,
+                        location = it.snapshotCameraLocation,
+                        cameraName = it.snapshotCameraName,
+                        type = it.type,
+                        value = it.value,
+                        imageSrc = storageService.uri(it.snapshotImageId).toString(),
+                        annotations = annotations
+                    )
                 )
             )
-        )
     }
 
     @Operation(
@@ -261,7 +266,7 @@ class DetectionController(
             specs.add(SnapshotCount::snapshotCameraLocation.equal(location))
         }
 
-        val page1 = snapshotCountRepo.findAll(
+        return snapshotCountRepo.findAll(
             and(specs),
             PageRequest.of(
                 page, size,
@@ -269,14 +274,7 @@ class DetectionController(
                     direction, sort.asPropertyName()
                 )
             )
-        )
-        return ResponseEntity.ok(
-            WebResponse(
-                success = true,
-                message = "ok",
-                data = page1
-            )
-        )
+        ).toCachedWebResponseEntity(appProperties.detectionCacheSeconds)
     }
 
     private fun calcDelegate() = if (productionMode.get()) {
@@ -344,6 +342,7 @@ class DetectionController(
                 Annotation::snapshotCameraLocation.equal(location)
             )
         }
+        countSpecs.add(SnapshotCount::value.greaterThan(0))
 
         val counts = snapshotCountRepo.findAll(
             and(countSpecs),
@@ -429,4 +428,7 @@ class DetectionController(
     fun resetProductionMode() {
         productionMode.set(false)
     }
+
+    private fun cacheControl() =
+        CacheControl.maxAge(appProperties.detectionCacheSeconds, TimeUnit.SECONDS).cachePublic()
 }
