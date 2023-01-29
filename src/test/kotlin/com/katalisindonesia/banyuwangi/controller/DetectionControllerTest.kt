@@ -287,41 +287,13 @@ class DetectionControllerTest(
             "confidence": 0.8
           }
         ]
-      },
-      {
-        "location": "01",
-        "cameraName": "Test 01",
-        "type": "FLOOD",
-        "value": 0,
-        "annotations": []
-      },
-      {
-        "location": "01",
-        "cameraName": "Test 01",
-        "type": "STREETVENDOR",
-        "value": 0,
-        "annotations": []
-      },
-      {
-        "location": "01",
-        "cameraName": "Test 01",
-        "type": "TRAFFIC",
-        "value": 0,
-        "annotations": []
-      },
-      {
-        "location": "01",
-        "cameraName": "Test 01",
-        "type": "TRASH",
-        "value": 0,
-        "annotations": []
       }
     ],
     "pageable": {
       "sort": {
         "empty": false,
-        "sorted": true,
-        "unsorted": false
+        "unsorted": false,
+        "sorted": true
       },
       "offset": 0,
       "pageNumber": 0,
@@ -331,16 +303,16 @@ class DetectionControllerTest(
     },
     "last": true,
     "totalPages": 1,
-    "totalElements": 5,
+    "totalElements": 1,
     "first": true,
     "size": 1000,
     "number": 0,
     "sort": {
       "empty": false,
-      "sorted": true,
-      "unsorted": false
+      "unsorted": false,
+      "sorted": true
     },
-    "numberOfElements": 5,
+    "numberOfElements": 1,
     "empty": false
   }
 }"""
