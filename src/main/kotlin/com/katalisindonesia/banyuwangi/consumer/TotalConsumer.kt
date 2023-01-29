@@ -43,10 +43,14 @@ class TotalConsumer(
                 total.countAlarmValue += 1
             }
 
-            total.countValue += 1
+            if (count.value > 0) {
+                total.countValue += 1
+            }
             total.maxValue = total.maxValue.coerceAtLeast(count.value.toLong())
             total.sumValue += count.value
-            total.avgValue = total.sumValue / total.countValue
+            if (total.countValue > 0) {
+                total.avgValue = total.sumValue / total.countValue
+            }
 
             totalRepo.saveAndFlush(total)
         }

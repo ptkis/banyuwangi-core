@@ -807,7 +807,7 @@ class DetectionResultConsumerTest(
                 assertEquals(1L, total.avgValue)
             } else {
                 assertEquals(0L, total.countAlarmValue)
-                assertEquals(1L, total.countValue)
+                assertEquals(0L, total.countValue)
                 assertEquals(0L, total.maxValue)
                 assertEquals(0L, total.sumValue)
                 assertEquals(0L, total.avgValue)
@@ -911,7 +911,7 @@ class DetectionResultConsumerTest(
                 assertEquals(1L, total.avgValue)
             } else {
                 assertEquals(0L, total.countAlarmValue)
-                assertEquals(1L, total.countValue)
+                assertEquals(0L, total.countValue)
                 assertEquals(0L, total.maxValue)
                 assertEquals(0L, total.sumValue)
                 assertEquals(0L, total.avgValue)
