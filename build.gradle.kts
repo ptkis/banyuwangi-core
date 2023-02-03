@@ -131,6 +131,7 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
     useJUnitPlatform()
     enableAssertions = true
+    setForkEvery(1L)
 }
 
 tasks.jacocoTestReport {
