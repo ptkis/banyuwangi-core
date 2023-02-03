@@ -1,7 +1,9 @@
 package com.katalisindonesia.banyuwangi.task
 
 import com.katalisindonesia.banyuwangi.AppProperties
+import com.katalisindonesia.banyuwangi.model.DeleteLog
 import com.katalisindonesia.banyuwangi.model.SnapshotCount
+import com.katalisindonesia.banyuwangi.repo.DeleteLogRepo
 import com.katalisindonesia.banyuwangi.repo.SnapshotCountRepo
 import com.katalisindonesia.imageserver.service.StorageService
 import mu.KotlinLogging
@@ -19,6 +21,7 @@ class DeleteImageTask(
     private val snapshotCountRepo: SnapshotCountRepo,
     private val storageService: StorageService,
     private val appProperties: AppProperties,
+    private val deleteLogRepo: DeleteLogRepo,
 
     transactionManager: PlatformTransactionManager,
 ) {
@@ -30,8 +33,18 @@ class DeleteImageTask(
     )
     fun delete() {
         try {
-            doDelete()
+            val log = doDelete()
+            deleteLogRepo.saveAndFlush(log)
         } catch (expected: Exception) {
+            deleteLogRepo.saveAndFlush(
+                DeleteLog(
+                    count = 0,
+                    freeSpaceBefore = null,
+                    freeSpaceAfter = null,
+                    deletedBytes = null,
+                    errorMessage = expected.message,
+                )
+            )
             log.error(expected) {
                 "Exception during deletion. Will retry later."
             }
@@ -43,14 +56,15 @@ class DeleteImageTask(
      *
      * @return deleted size in bytes
      */
-    internal fun doDelete(minFreeSpace: Long = appProperties.minFreeSpace): Long {
+    internal fun doDelete(minFreeSpace: Long = appProperties.minFreeSpace): DeleteLog {
         val freeSpace = storageService.freeSpace()
 
         var deleted = 0L
+        var countTotal = 0L
 
         if (minFreeSpace > freeSpace) {
             val diff = minFreeSpace - freeSpace
-            val toFree = Math.max(diff * 2, diff)
+            val toFree = (diff * 2).coerceAtLeast(diff)
 
             log.info { "Need to delete $toFree bytes of images due to free space of $freeSpace is below $minFreeSpace" }
 
@@ -72,10 +86,17 @@ class DeleteImageTask(
                         storageService.delete(count.snapshotImageId)
                         count.isImageDeleted = true
                         snapshotCountRepo.saveAndFlush(count)
+                        countTotal++
                     }
                 }
             } while (!page.isEmpty && deleted < toFree)
         }
-        return deleted
+        return DeleteLog(
+            count = countTotal,
+            freeSpaceBefore = freeSpace,
+            freeSpaceAfter = storageService.freeSpace(),
+            deletedBytes = deleted,
+            errorMessage = null,
+        )
     }
 }
