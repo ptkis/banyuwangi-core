@@ -34,6 +34,7 @@ class DeleteImageTask(
         timeUnit = TimeUnit.SECONDS,
     )
     fun delete() {
+        log.info { "Begin deletion task" }
         try {
             val log = doDelete()
             deleteLogRepo.saveAndFlush(log)
@@ -64,6 +65,8 @@ class DeleteImageTask(
         var deleted = 0L
         var countTotal = 0L
 
+        log.debug { "Freespace=$freeSpace" }
+
         if (minFreeSpace > freeSpace) {
             val diff = minFreeSpace - freeSpace
             val toFree = (diff * 2).coerceAtLeast(diff)
@@ -77,6 +80,8 @@ class DeleteImageTask(
                     PageRequest.of(0, appProperties.batchSize, Sort.by(SnapshotCount::snapshotCreated.name))
                 )
 
+                log.debug { "Found page with size=${page.size}" }
+
                 for (count in page) {
                     deleted += count.snapshot.length
 
@@ -89,8 +94,11 @@ class DeleteImageTask(
                         count.isImageDeleted = true
                         snapshotCountRepo.saveAndFlush(count)
                         countTotal++
+
+                        log.debug { "Deleted image ${count.snapshotImageId}" }
                     }
                 }
+                log.debug { "deleted=$deleted, toFree=$toFree" }
             } while (!page.isEmpty && deleted < toFree)
         }
         return DeleteLog(
