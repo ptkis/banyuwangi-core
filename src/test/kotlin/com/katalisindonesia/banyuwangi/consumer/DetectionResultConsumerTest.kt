@@ -890,14 +890,14 @@ class DetectionResultConsumerTest(
             0L,
             deleteImageTask.doDelete(
                 minFreeSpace = 0L,
-            ),
+            ).deletedBytes,
             "should not remove if minFreeSpace is zero",
         )
         assertNotEquals(
             0L,
             deleteImageTask.doDelete(
                 minFreeSpace = Long.MAX_VALUE,
-            ),
+            ).deletedBytes,
             "should remove if minFreeSpace is not zero",
         )
         val totals = totalRepo.findAll()
