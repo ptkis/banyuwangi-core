@@ -38,12 +38,7 @@ class LiveViewControllerTest(
 
     @BeforeEach
     @AfterEach
-    fun cleanupQueue() {
-        rabbitAdmin.purgeQueue(messagingProperties.streamingCheckQueue, false)
-    }
-
-    @AfterEach
-    fun cleanupDb() {
+    fun cleanup() {
         rabbitAdmin.purgeQueue(messagingProperties.streamingCheckQueue, false)
         cameraRepo.deleteAll()
     }
