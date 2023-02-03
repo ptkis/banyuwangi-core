@@ -5,7 +5,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition
 
 fun txDef(
     name: String,
-    isolationLevel: Int = TransactionDefinition.ISOLATION_SERIALIZABLE,
+    isolationLevel: Int = TransactionDefinition.ISOLATION_REPEATABLE_READ,
     propagation: Int = TransactionDefinition.PROPAGATION_REQUIRED,
 ): TransactionDefinition {
     val def = DefaultTransactionDefinition()

@@ -20,7 +20,7 @@ class TotalConsumer(
             "#{totalQueue.name}"
         ]
     )
-    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     @Retryable
     fun total(snapshotCounts: List<SnapshotCount>) {
         for (count in snapshotCounts) {

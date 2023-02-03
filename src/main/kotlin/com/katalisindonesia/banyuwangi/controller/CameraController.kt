@@ -58,7 +58,7 @@ class CameraController(
     }
 
     @PostMapping
-    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     @PreAuthorize("hasAnyAuthority('camera:write')")
     fun edit(@RequestBody @Valid camera: Camera): ResponseEntity<WebResponse<Camera>> {
         val existing = cameraRepo.findById(camera.id)
@@ -77,7 +77,7 @@ class CameraController(
     }
 
     @PostMapping("/bulk")
-    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     @PreAuthorize("hasAnyAuthority('camera:write')")
     fun bulkEdit(@RequestBody @Valid cameras: List<Camera>): ResponseEntity<WebResponse<List<Camera>>> {
         for (camera in cameras) {
