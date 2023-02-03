@@ -14,6 +14,7 @@ import org.springframework.core.io.UrlResource
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.PlatformTransactionManager
+import org.springframework.transaction.TransactionDefinition
 import org.springframework.transaction.support.TransactionTemplate
 import java.io.InputStreamReader
 import java.security.MessageDigest
@@ -40,7 +41,13 @@ class StreamingConsumer(
     private val maxDiffSeconds: Long,
     transactionManager: PlatformTransactionManager,
 ) {
-    private val tt = TransactionTemplate(transactionManager)
+    private val tt = TransactionTemplate(
+        transactionManager,
+        txDef(
+            name = "Streaming",
+            isolationLevel = TransactionDefinition.ISOLATION_SERIALIZABLE,
+        )
+    )
 
     @RabbitListener(
         queues = [
@@ -110,7 +117,7 @@ class StreamingConsumer(
 
     private fun initCameraUrl(camera1: Camera): Boolean {
         try {
-            val camera = cameraRepo.getAndLockById(camera1.id).get()
+            val camera = cameraRepo.getReferenceById(camera1.id)
             var modified = false
             val cameraUrl =
                 streamingBaseUrl +
