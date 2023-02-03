@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.UrlResource
 import org.springframework.data.domain.Pageable
+import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.TransactionDefinition
@@ -54,6 +55,7 @@ class StreamingConsumer(
             "#{streamingCheckQueue.name}"
         ]
     )
+    @Retryable
     fun check() {
         try {
             doCheck()
@@ -62,6 +64,7 @@ class StreamingConsumer(
         }
     }
 
+    @Retryable
     fun doCheck() {
         log.info { "Begin StreamingConsumer.check" }
         var countInit = 0
