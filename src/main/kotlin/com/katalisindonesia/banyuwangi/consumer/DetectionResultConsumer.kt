@@ -39,11 +39,11 @@ class DetectionResultConsumer(
     )
     fun result(response: DetectionResponse) {
         try {
-            tt.execute {
+            val counts1 = tt.execute {
                 val snapshotOpt = snapshotRepo.getWithImageId(response.request.uuid)
                 if (snapshotOpt.isEmpty) {
                     log.info { "Cannot found snapshot with image id ${response.request.uuid}" }
-                    return@execute
+                    return@execute emptyList()
                 }
 
                 var count = 0
@@ -114,14 +114,15 @@ class DetectionResultConsumer(
                 snapshotRepo.flush()
                 snapshotCountRepo.flush()
 
-                rabbitTemplate.convertAndSend(messagingProperties.totalQueue, counts.toList()) {
-                    it.messageProperties.expiration = "${messagingProperties.totalTtl}"
-                    it
-                }
-                rabbitTemplate.convertAndSend(messagingProperties.triggerQueue, counts.toList()) {
-                    it.messageProperties.expiration = "${messagingProperties.triggerTtl}"
-                    it
-                }
+                return@execute counts
+            } ?: emptyList()
+            rabbitTemplate.convertAndSend(messagingProperties.totalQueue, counts1.toList()) {
+                it.messageProperties.expiration = "${messagingProperties.totalTtl}"
+                it
+            }
+            rabbitTemplate.convertAndSend(messagingProperties.triggerQueue, counts1.toList()) {
+                it.messageProperties.expiration = "${messagingProperties.triggerTtl}"
+                it
             }
         } catch (expected: Exception) {
             log.info(expected) { "Cannot process snapshot ${response.request.uuid}" }
