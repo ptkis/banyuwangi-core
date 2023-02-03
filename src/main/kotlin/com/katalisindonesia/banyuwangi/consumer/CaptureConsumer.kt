@@ -80,6 +80,8 @@ class CaptureConsumer(
 
                     interior.lastCaptureInstant = Instant.now()
                     interior.lastCaptureMethod = CaptureMethod.ISAPI
+                    interior.lastCaptureErrorMessage = null
+                    interior.lastCaptureErrorInstant = null
                     cameraRepo.saveAndFlush(camera)
 
                     snapshotRepo.saveAndFlush(
