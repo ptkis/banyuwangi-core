@@ -38,7 +38,8 @@ class CaptureConsumer(
     @RabbitListener(
         queues = [
             "#{captureQueue.name}"
-        ]
+        ],
+        concurrency = "\${dashboard.messaging.captureQueue.concurrency}",
     )
     fun onCapture(request: CaptureRequest) {
         doOnCapture(request)
