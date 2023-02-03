@@ -13,6 +13,7 @@ import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.support.TransactionTemplate
+import java.util.concurrent.TimeUnit
 
 private val log = KotlinLogging.logger { }
 
@@ -29,7 +30,8 @@ class DeleteImageTask(
 
     @Scheduled(
         initialDelayString = "\${dashboard.task.deleteimage.fixedDelaySeconds:999999999}",
-        fixedDelayString = "\${dashboard.task.deleteimage.fixedDelaySeconds:999999999}"
+        fixedDelayString = "\${dashboard.task.deleteimage.fixedDelaySeconds:999999999}",
+        timeUnit = TimeUnit.SECONDS,
     )
     fun delete() {
         try {
