@@ -132,7 +132,7 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
     useJUnitPlatform()
     enableAssertions = true
-    setForkEvery(1L)
+    // setForkEvery(1L)
     retry {
         maxRetries.set(2)
         maxFailures.set(20)
