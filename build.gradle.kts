@@ -12,6 +12,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") version "11.0.0"
 
     id("org.springdoc.openapi-gradle-plugin") version "1.5.0"
+    id("org.gradle.test-retry") version "1.5.1"
 }
 
 val buildId = System.getenv("GITHUB_RUN_NUMBER") ?: System.getenv("BUILD_ID") ?: "1-SNAPSHOT"
@@ -132,6 +133,11 @@ tasks.withType<Test> {
     useJUnitPlatform()
     enableAssertions = true
     setForkEvery(1L)
+    retry {
+        maxRetries.set(2)
+        maxFailures.set(20)
+        failOnPassedAfterRetry.set(true)
+    }
 }
 
 tasks.jacocoTestReport {
