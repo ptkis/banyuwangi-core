@@ -46,7 +46,7 @@ class StreamingConsumer(
         transactionManager,
         txDef(
             name = "Streaming",
-            isolationLevel = TransactionDefinition.ISOLATION_SERIALIZABLE,
+            isolationLevel = TransactionDefinition.ISOLATION_REPEATABLE_READ,
         )
     )
 
