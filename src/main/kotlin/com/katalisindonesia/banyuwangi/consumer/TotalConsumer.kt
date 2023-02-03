@@ -18,7 +18,8 @@ class TotalConsumer(
     @RabbitListener(
         queues = [
             "#{totalQueue.name}"
-        ]
+        ],
+        concurrency = "\${dashboard.messaging.totalQueue.concurrency}",
     )
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     @Retryable

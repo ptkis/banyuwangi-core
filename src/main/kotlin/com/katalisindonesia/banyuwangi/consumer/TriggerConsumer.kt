@@ -23,7 +23,8 @@ class TriggerConsumer(
     @RabbitListener(
         queues = [
             "#{triggerQueue.name}"
-        ]
+        ],
+        concurrency = "\${dashboard.messaging.triggerQueue.concurrency}",
     )
     fun analyze(counts: List<SnapshotCount>) {
         for (count in counts) {

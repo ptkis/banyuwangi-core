@@ -34,7 +34,8 @@ class DetectionResultConsumer(
     @RabbitListener(
         queues = [
             "#{detectionResultQueue.name}"
-        ]
+        ],
+        concurrency = "\${dashboard.messaging.detectionResultQueue.concurrency}",
     )
     fun result(response: DetectionResponse) {
         try {

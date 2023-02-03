@@ -53,7 +53,8 @@ class StreamingConsumer(
     @RabbitListener(
         queues = [
             "#{streamingCheckQueue.name}"
-        ]
+        ],
+        concurrency = "\${dashboard.messaging.streamingCheckQueue.concurrency}",
     )
     @Retryable
     fun check() {
