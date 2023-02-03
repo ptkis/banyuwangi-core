@@ -5,7 +5,6 @@ import com.katalisindonesia.banyuwangi.model.Camera
 import com.katalisindonesia.banyuwangi.repo.CameraRepo
 import com.katalisindonesia.banyuwangi.security.TokenManager
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -27,7 +26,6 @@ class CameraControllerTest(
 
     private val mapper = jacksonObjectMapper()
 
-    @BeforeEach
     @AfterEach
     fun cleanup() {
         cameraRepo.deleteAll()
