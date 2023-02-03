@@ -138,13 +138,11 @@ class StreamingConsumer(
             camera.interior = interior
             if (interior.liveViewUrl == null || hash != interior.liveViewHash) {
                 val cameraStreamingUrl = getCameraStreaming(camera) ?: return modified
-                tt.execute {
-                    interior.liveViewUrl = streamingBaseUrl + cameraStreamingUrl
-                    interior.liveViewHash = hash
-                    cameraRepo.saveAndFlush(camera)
+                interior.liveViewUrl = streamingBaseUrl + cameraStreamingUrl
+                interior.liveViewHash = hash
+                cameraRepo.saveAndFlush(camera)
 
-                    modified = true
-                }
+                modified = true
                 log.info("curl -d \"\" $cameraUrl/html/true")
             }
 
