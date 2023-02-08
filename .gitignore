@@ -38,3 +38,7 @@ out/
 /local.properties
 /src/test/resources/application-secret.properties
 /images
+
+*.mv.db
+*.trace.db
+*.lock.db
