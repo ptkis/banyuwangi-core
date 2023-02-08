@@ -12,8 +12,10 @@ import com.katalisindonesia.imageserver.service.StorageService
 import mu.KotlinLogging
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.amqp.rabbit.core.RabbitTemplate
+import org.springframework.retry.annotation.Retryable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.PlatformTransactionManager
+import org.springframework.transaction.TransactionDefinition
 import org.springframework.transaction.support.TransactionTemplate
 import java.time.Instant
 import java.util.UUID
@@ -32,7 +34,10 @@ class CaptureConsumer(
     private val appProperties: AppProperties,
     transactionManager: PlatformTransactionManager,
 ) {
-    private val tt = TransactionTemplate(transactionManager)
+    private val tt = TransactionTemplate(transactionManager, txDef(
+        name="Capture",
+        isolationLevel = TransactionDefinition.ISOLATION_REPEATABLE_READ,
+    ))
     private val lastCaptureMap = ConcurrentHashMap<UUID, Instant>()
 
     @RabbitListener(
@@ -41,6 +46,7 @@ class CaptureConsumer(
         ],
         concurrency = "\${dashboard.messaging.captureQueue.concurrency}",
     )
+    @Retryable
     fun onCapture(request: CaptureRequest) {
         doOnCapture(request)
     }
