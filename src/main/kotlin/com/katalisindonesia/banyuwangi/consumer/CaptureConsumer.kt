@@ -34,10 +34,13 @@ class CaptureConsumer(
     private val appProperties: AppProperties,
     transactionManager: PlatformTransactionManager,
 ) {
-    private val tt = TransactionTemplate(transactionManager, txDef(
-        name="Capture",
-        isolationLevel = TransactionDefinition.ISOLATION_REPEATABLE_READ,
-    ))
+    private val tt = TransactionTemplate(
+        transactionManager,
+        txDef(
+            name = "Capture",
+            isolationLevel = TransactionDefinition.ISOLATION_REPEATABLE_READ,
+        )
+    )
     private val lastCaptureMap = ConcurrentHashMap<UUID, Instant>()
 
     @RabbitListener(
