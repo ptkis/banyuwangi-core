@@ -111,10 +111,12 @@ class CaptureConsumer(
                         imageUri = storageService.uri(uuid).toString(),
                         callbackQueue = messagingProperties.detectionResultQueue,
                         dataset = Dataset(
-                            coco = camera1.isCrowd || camera1.isTraffic,
+                            coco = false,
                             streetvendor = camera1.isStreetvendor,
                             garbage = camera1.isTrash,
                             flood = camera1.isFlood,
+                            traffic = camera1.isTraffic,
+                            crowd = camera1.isCrowd,
                         )
                     )
                 ) {

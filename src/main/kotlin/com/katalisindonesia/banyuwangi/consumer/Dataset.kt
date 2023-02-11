@@ -5,4 +5,6 @@ data class Dataset(
     val streetvendor: Boolean = false,
     val garbage: Boolean = false,
     val flood: Boolean = false,
+    val traffic: Boolean = false,
+    val crowd: Boolean = false,
 )
