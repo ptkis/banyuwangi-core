@@ -29,6 +29,7 @@ data class AppProperties(
     val detectionCacheSeconds: Long,
 
     val detectionMinConfidence: Double,
+    val detectionMinConfidences: Map<DetectionType?, Double> = emptyMap(),
 
     val alarmMessages: Map<DetectionType, String>,
 )
