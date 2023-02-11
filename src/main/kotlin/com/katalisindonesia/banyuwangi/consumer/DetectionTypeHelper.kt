@@ -24,7 +24,7 @@ class DetectionTypeHelper {
         ),
     )
 
-    val map: Map<String, DetectionType> = calc()
+    private val map: Map<String, DetectionType> = calc()
 
     private fun calc(): Map<String, DetectionType> {
         val res = mutableMapOf<String, DetectionType>()
@@ -35,5 +35,38 @@ class DetectionTypeHelper {
         }
 
         return Collections.unmodifiableMap(ConcurrentHashMap(res))
+    }
+
+    fun deduce(label: String): DetectionType? {
+        val mapVal = map[label]
+        if (mapVal != null) {
+            return mapVal
+        }
+
+        val type = when {
+            label.startsWith("garbage") -> {
+                DetectionType.TRASH
+            }
+
+            label.startsWith("flood") -> {
+                DetectionType.FLOOD
+            }
+
+            label.startsWith("traffic") -> {
+                DetectionType.TRAFFIC
+            }
+
+            label.startsWith("streetvendor") -> {
+                DetectionType.STREETVENDOR
+            }
+
+            label.startsWith("crowd") -> {
+                DetectionType.CROWD
+            }
+
+            else -> null
+        }
+
+        return type
     }
 }
