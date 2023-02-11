@@ -69,12 +69,14 @@ class DetectionResultConsumer(
             val probability = detection.probability ?: 0.0
             val type = helper.deduce(className)
 
-            if (boundingBox == null || type == null || probability < appProperties.detectionMinConfidence
+            val detectionMinConfidence = appProperties.detectionMinConfidences[type]
+                ?: appProperties.detectionMinConfidence
+            if (boundingBox == null || type == null || probability < detectionMinConfidence
             ) {
                 log.debug {
                     "Discarding annotation of $type ${snapshot.camera.name} " +
                         "because of either bounding box or type is null ($className -> $type) or too " +
-                        "low confidence $probability < ${appProperties.detectionMinConfidence}"
+                        "low confidence $probability < $detectionMinConfidence"
                 }
                 continue
             }
