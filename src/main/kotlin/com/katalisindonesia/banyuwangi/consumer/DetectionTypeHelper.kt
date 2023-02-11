@@ -19,7 +19,8 @@ class DetectionTypeHelper {
             "garbage-glass",
             "garbage-metal",
             "garbage-paper",
-            "garbage-plastic"
+            "garbage-plastic",
+            "garbage-mixed",
         ),
     )
 
