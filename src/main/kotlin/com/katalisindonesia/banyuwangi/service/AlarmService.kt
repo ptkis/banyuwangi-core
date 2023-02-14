@@ -13,6 +13,7 @@ import com.katalisindonesia.banyuwangi.model.Alarm
 import com.katalisindonesia.banyuwangi.model.FcmToken
 import com.katalisindonesia.imageserver.service.StorageService
 import org.springframework.stereotype.Service
+import java.text.MessageFormat
 
 @Service
 class AlarmService(
@@ -30,8 +31,14 @@ class AlarmService(
     }
 
     fun sendAlarm(alarm: Alarm) {
-        val title = "${alarm.snapshotCount.type.localizedName()} di ${alarm.snapshotCount.snapshotCameraName}"
-        val body = appProperties.alarmMessages[alarm.snapshotCount.type] ?: ""
+        val type = alarm.snapshotCount.type
+
+        val titleBody = titleBody(alarm)
+        val title =
+            MessageFormat.format(
+                titleBody.title ?: "", type.localizedName(), alarm.snapshotCount.snapshotCameraName
+            )
+        val body = titleBody.body ?: ""
         val imageUrl = storageService.uri(alarm.snapshotCount.snapshotImageId).toString()
         firebaseMessaging.send(
             Message.builder()
@@ -79,4 +86,26 @@ class AlarmService(
                 .build()
         )
     }
+
+    private fun titleBody(alarm: Alarm): TitleBody {
+        val type = alarm.snapshotCount.type
+        val value = alarm.snapshotCount.value
+        val minHighValue = appProperties.alarmHighMinimalValues[type]
+
+        if (minHighValue != null && value >= minHighValue) {
+            return TitleBody(
+                title = appProperties.alarmHighTitles[type] ?: appProperties.alarmTitles[type],
+                body = appProperties.alarmHighMessages[type] ?: appProperties.alarmMessages[type],
+            )
+        }
+        return TitleBody(
+            title = appProperties.alarmTitles[type],
+            body = appProperties.alarmMessages[type],
+        )
+    }
 }
+
+private data class TitleBody(
+    val title: String?,
+    val body: String?,
+)

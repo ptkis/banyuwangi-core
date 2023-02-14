@@ -98,6 +98,7 @@ fun detectionAnnotations(type: DetectionType, imageId: UUID) = listOf(
         name = "dog",
         snapshot = snapshot(imageId),
         type = type,
+        value = 1,
     ),
     Annotation(
         boundingBox = BoundingBox(
@@ -109,7 +110,8 @@ fun detectionAnnotations(type: DetectionType, imageId: UUID) = listOf(
         confidence = 0.66656,
         name = "bicycle",
         snapshot = snapshot(imageId),
-        type = type
+        type = type,
+        value = 1,
     ),
     Annotation(
         boundingBox = BoundingBox(
@@ -121,7 +123,8 @@ fun detectionAnnotations(type: DetectionType, imageId: UUID) = listOf(
         confidence = 0.62682,
         name = "truck",
         snapshot = snapshot(imageId),
-        type = type
+        type = type,
+        value = 1,
     ),
 )
 

@@ -1,27 +1,14 @@
 package com.katalisindonesia.banyuwangi.consumer
 
+import com.katalisindonesia.banyuwangi.AppProperties
 import com.katalisindonesia.banyuwangi.model.DetectionType
 import java.util.Collections
 import java.util.concurrent.ConcurrentHashMap
 
-class DetectionTypeHelper {
+class DetectionTypeHelper(private val appProperties: AppProperties) {
     private val list: Map<DetectionType, Set<String>> = mapOf(
         DetectionType.CROWD to setOf("person"),
         DetectionType.TRAFFIC to setOf("bus", "car", "motorcycle", "truck"),
-        DetectionType.STREETVENDOR to setOf("streetvendor"),
-        DetectionType.FLOOD to setOf(
-            "flood-puddle",
-            "flood-flood",
-        ),
-        DetectionType.TRASH to setOf(
-            "garbage-biodegradable",
-            "garbage-cardboard",
-            "garbage-glass",
-            "garbage-metal",
-            "garbage-paper",
-            "garbage-plastic",
-            "garbage-mixed",
-        ),
     )
 
     private val map: Map<String, DetectionType> = calc()
@@ -37,36 +24,42 @@ class DetectionTypeHelper {
         return Collections.unmodifiableMap(ConcurrentHashMap(res))
     }
 
-    fun deduce(label: String): DetectionType? {
+    fun deduce(label: String): Deduction? {
         val mapVal = map[label]
         if (mapVal != null) {
-            return mapVal
+            return Deduction(
+                type = mapVal,
+                value = 1,
+            )
         }
 
-        val type = when {
+        val deduction = when {
             label.startsWith("garbage") -> {
-                DetectionType.TRASH
+                Deduction(type = DetectionType.TRASH, value = 1)
             }
 
+            label.startsWith("flood-flood") -> {
+                Deduction(type = DetectionType.FLOOD, value = appProperties.detectionFloodFloodValue)
+            }
             label.startsWith("flood") -> {
-                DetectionType.FLOOD
+                Deduction(type = DetectionType.FLOOD, value = 1)
             }
 
             label.startsWith("traffic") -> {
-                DetectionType.TRAFFIC
+                Deduction(type = DetectionType.TRAFFIC, value = 1)
             }
 
             label.startsWith("streetvendor") -> {
-                DetectionType.STREETVENDOR
+                Deduction(type = DetectionType.STREETVENDOR, value = 1)
             }
 
             label.startsWith("crowd") -> {
-                DetectionType.CROWD
+                Deduction(type = DetectionType.CROWD, value = 1)
             }
 
             else -> null
         }
 
-        return type
+        return deduction
     }
 }

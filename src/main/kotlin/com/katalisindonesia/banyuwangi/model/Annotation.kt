@@ -62,4 +62,6 @@ data class Annotation(
     @Column(nullable = false)
     var confidence: Double,
 
+    @Column(nullable = true, name = "m_value")
+    var value: Int?,
 ) : Persistent()
