@@ -28,7 +28,7 @@ class DetectionResultConsumer(
     transactionManager: PlatformTransactionManager,
 ) {
     private val tt = TransactionTemplate(transactionManager)
-    private val helper = DetectionTypeHelper()
+    private val helper = DetectionTypeHelper(appProperties)
     private val snapshotCountZeroHelper = SnapshotCountZeroHelper()
 
     @RabbitListener(
@@ -67,7 +67,8 @@ class DetectionResultConsumer(
             val boundingBox = detection.boundingBox
             val className = detection.className ?: ""
             val probability = detection.probability ?: 0.0
-            val type = helper.deduce(className)
+            val deduction = helper.deduce(className)
+            val type = deduction?.type
 
             val detectionMinConfidence = appProperties.detectionMinConfidences[type]
                 ?: appProperties.detectionMinConfidence
@@ -94,6 +95,7 @@ class DetectionResultConsumer(
                     boundingBox = boundingBox.toModel(),
                     confidence = probability,
                     type = type,
+                    value = deduction.value,
                 )
             )
             count++
@@ -114,7 +116,7 @@ class DetectionResultConsumer(
             }
 
             countMap[type]?.let { objCount ->
-                objCount.value += 1
+                objCount.value += deduction.value
             }
         }
         snapshotCountZeroHelper.removeZeros(

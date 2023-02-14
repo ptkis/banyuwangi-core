@@ -30,6 +30,13 @@ data class AppProperties(
 
     val detectionMinConfidence: Double,
     val detectionMinConfidences: Map<DetectionType?, Double> = emptyMap(),
+    val detectionFloodFloodValue: Int,
 
+    val alarmTitles: Map<DetectionType, String>,
     val alarmMessages: Map<DetectionType, String>,
+    val alarmHighMinimalValues: Map<DetectionType, Int>,
+    val alarmHighTitles: Map<DetectionType, String>,
+    val alarmHighMessages: Map<DetectionType, String>,
+
+    val fcmRateLimit: Double,
 )
