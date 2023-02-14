@@ -1,6 +1,7 @@
 package com.katalisindonesia.banyuwangi.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.google.common.util.concurrent.RateLimiter
 import com.google.firebase.messaging.AndroidConfig
 import com.google.firebase.messaging.AndroidNotification
 import com.google.firebase.messaging.FirebaseMessaging
@@ -22,6 +23,8 @@ class AlarmService(
     private val mapper: ObjectMapper,
     private val storageService: StorageService,
 ) {
+    private val rateLimit = RateLimiter.create(appProperties.fcmRateLimit)
+
     fun subscribe(tokens: List<FcmToken>) {
         firebaseMessaging.subscribeToTopic(tokens.map { it.registrationToken }, appProperties.alarmTopic)
     }
@@ -40,51 +43,52 @@ class AlarmService(
             )
         val body = titleBody.body ?: ""
         val imageUrl = storageService.uri(alarm.snapshotCount.snapshotImageId).toString()
-        firebaseMessaging.send(
-            Message.builder()
-                .setAndroidConfig(
-                    AndroidConfig.builder()
-                        .setNotification(
-                            AndroidNotification.builder()
-                                .setBody(body)
-                                .setTitle(title)
-                                .setImage(imageUrl)
-                                .setDefaultSound(true)
-                                .build()
-                        )
-                        .setCollapseKey(
-                            appProperties.alarmTopic
-                        )
-                        .build()
-                )
-                .setWebpushConfig(
-                    WebpushConfig.builder()
-                        .setNotification(
-                            WebpushNotification.builder()
-                                .setBody(body)
-                                .setTitle(title)
-                                .setImage(imageUrl)
-                                .build()
-                        )
-                        .build()
-                )
-                .setTopic(appProperties.alarmTopic)
-                .setNotification(
-                    Notification.builder()
-                        .setTitle(title)
-                        .setBody(body)
-                        .setImage(imageUrl)
-                        .build()
-                )
-                .putData("alarm", mapper.writeValueAsString(alarm))
-                .putData(
-                    "message",
-                    title
-                )
-                .putData("messageDetail", body)
-                .putData("imageSrc", imageUrl)
-                .build()
-        )
+        val message = Message.builder()
+            .setAndroidConfig(
+                AndroidConfig.builder()
+                    .setNotification(
+                        AndroidNotification.builder()
+                            .setBody(body)
+                            .setTitle(title)
+                            .setImage(imageUrl)
+                            .setDefaultSound(true)
+                            .build()
+                    )
+                    .setCollapseKey(
+                        appProperties.alarmTopic
+                    )
+                    .build()
+            )
+            .setWebpushConfig(
+                WebpushConfig.builder()
+                    .setNotification(
+                        WebpushNotification.builder()
+                            .setBody(body)
+                            .setTitle(title)
+                            .setImage(imageUrl)
+                            .build()
+                    )
+                    .build()
+            )
+            .setTopic(appProperties.alarmTopic)
+            .setNotification(
+                Notification.builder()
+                    .setTitle(title)
+                    .setBody(body)
+                    .setImage(imageUrl)
+                    .build()
+            )
+            .putData("alarm", mapper.writeValueAsString(alarm))
+            .putData(
+                "message",
+                title
+            )
+            .putData("messageDetail", body)
+            .putData("imageSrc", imageUrl)
+            .build()
+
+        rateLimit.acquire()
+        firebaseMessaging.send(message)
     }
 
     private fun titleBody(alarm: Alarm): TitleBody {

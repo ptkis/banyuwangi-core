@@ -22,9 +22,9 @@ class AlarmServiceTest(
     private val alarmService: AlarmService,
 ) {
 
-    private val registrationToken = "fvGlRsqfxoTcuIYOevTdOg:APA91bEmFT2VQkEPY0bgF98RBhTOH" +
-        "-QH-TIpbILkaoyPiNL84uNGqVdNd9" +
-        "Mk-TmYyO8fsvYFI_nN5Z3bQg10fv1v3Yg7PYylL-tRKUgW2CXpG8MUO8g3OvKofvuEkKtub5uddPB4pfvZ"
+    private val registrationToken = "fvGlRsqfxoTcuIYOevTdOg:APA91bH38to1aR0OkBDVT4E2eI" +
+        "J5rAjLp_MSW303U7LV8d9XKO1kr8RsqwZIW0UpR_xzwWaUSYFoZqKycr" +
+        "zB2_jIwrmB_fFR0l_QGFiLPPRC-_mrVdirhioBu7_pwdxbfInbh0VqOYk5"
 
     @Test
     fun sendAlarm() {

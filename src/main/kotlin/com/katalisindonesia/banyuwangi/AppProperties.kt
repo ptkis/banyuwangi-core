@@ -37,4 +37,6 @@ data class AppProperties(
     val alarmHighMinimalValues: Map<DetectionType, Int>,
     val alarmHighTitles: Map<DetectionType, String>,
     val alarmHighMessages: Map<DetectionType, String>,
+
+    val fcmRateLimit: Double,
 )
