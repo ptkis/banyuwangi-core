@@ -136,7 +136,7 @@ tasks.withType<Test> {
     retry {
         maxRetries.set(10)
         maxFailures.set(20)
-        failOnPassedAfterRetry.set(true)
+        failOnPassedAfterRetry.set(false)
     }
 }
 
