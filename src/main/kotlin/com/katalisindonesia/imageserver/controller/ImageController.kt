@@ -1,5 +1,7 @@
 package com.katalisindonesia.imageserver.controller
 
+import com.katalisindonesia.banyuwangi.service.ProxyService
+import com.katalisindonesia.imageserver.service.ProxyRequest
 import com.katalisindonesia.imageserver.service.StorageService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -12,6 +14,8 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
@@ -20,7 +24,10 @@ import javax.validation.Valid
 
 @RestController
 @RequestMapping("/v1/image")
-class ImageController(private val storageService: StorageService) {
+class ImageController(
+    private val storageService: StorageService,
+    private val proxyService: ProxyService,
+) {
 
     @Operation(
         summary = "Get image", description = "Get detection image",
@@ -74,5 +81,33 @@ class ImageController(private val storageService: StorageService) {
                     .cachePublic()
             )
             .body(InputStreamResource(file.inputStream()))
+    }
+
+    @Operation(
+        summary = "Get image using proxy"
+    )
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping(
+        "/proxy",
+        produces = [
+            MediaType.IMAGE_JPEG_VALUE,
+        ],
+        consumes = [
+            MediaType.APPLICATION_JSON_VALUE,
+        ]
+    )
+    fun proxy(
+        @RequestBody
+        json: ProxyRequest
+    ): ResponseEntity<ByteArray> {
+        val opt = proxyService.proxy(json)
+        if (opt.isEmpty) {
+            return ResponseEntity.notFound()
+                .cacheControl(CacheControl.maxAge(1, TimeUnit.HOURS).cachePublic())
+                .build()
+        }
+        return ResponseEntity.ok()
+            .cacheControl(CacheControl.maxAge(1, TimeUnit.DAYS))
+            .body(opt.get())
     }
 }

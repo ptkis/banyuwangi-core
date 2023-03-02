@@ -134,7 +134,7 @@ tasks.withType<Test> {
     enableAssertions = true
     // setForkEvery(1L)
     retry {
-        maxRetries.set(10)
+        maxRetries.set(3)
         maxFailures.set(20)
         failOnPassedAfterRetry.set(false)
     }
