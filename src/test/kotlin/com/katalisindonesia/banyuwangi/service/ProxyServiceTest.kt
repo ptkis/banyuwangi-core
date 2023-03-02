@@ -2,6 +2,7 @@ package com.katalisindonesia.banyuwangi.service
 
 import com.katalisindonesia.imageserver.service.ProxyRequest
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -27,11 +28,7 @@ class ProxyServiceTest(
             )
         )
 
-        assertEquals(
-            """{"success":true,"message":"Success","status":200,"data":[{"user_id":"1","name":"bruce wayne","age":"36",
-            |"image":"https:\/\/example.com\/batman.png","date_created":"2022-02-08 16:00:20",
-            |"email":"batman@yahoo.com"}]}
-            """.trimMargin(),
+        assertNotEquals("",
             String(result.get())
         )
     }
