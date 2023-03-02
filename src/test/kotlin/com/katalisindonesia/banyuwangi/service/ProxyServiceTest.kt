@@ -1,7 +1,6 @@
 package com.katalisindonesia.banyuwangi.service
 
 import com.katalisindonesia.imageserver.service.ProxyRequest
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
@@ -28,7 +27,8 @@ class ProxyServiceTest(
             )
         )
 
-        assertNotEquals("",
+        assertNotEquals(
+            "",
             String(result.get())
         )
     }
