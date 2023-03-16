@@ -1,9 +1,11 @@
 package com.katalisindonesia.banyuwangi.controller
 
+import com.katalisindonesia.banyuwangi.AppProperties
 import com.katalisindonesia.banyuwangi.consumer.MessagingProperties
 import com.katalisindonesia.banyuwangi.model.Camera
 import com.katalisindonesia.banyuwangi.model.CameraInterior
 import com.katalisindonesia.banyuwangi.repo.CameraRepo
+import com.katalisindonesia.banyuwangi.util.toCachedListWebResponseEntity
 import com.katalisindonesia.banyuwangi.util.toResponseEntity
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -36,6 +38,7 @@ class CameraController(
     private val cameraRepo: CameraRepo,
     private val rabbitTemplate: RabbitTemplate,
     private val messagingProperties: MessagingProperties,
+    private val appProperties: AppProperties,
 ) {
 
     @GetMapping
@@ -142,5 +145,18 @@ class CameraController(
     @GetMapping("/cameraIndexCode/{id}")
     fun loadByVmsCameraIndexCode(@PathVariable id: String): ResponseEntity<WebResponse<Camera>> {
         return cameraRepo.getCameraByVmsCameraIndexCode(id).toResponseEntity()
+    }
+
+    @GetMapping("/cameraIndexCode")
+    fun listVmsCameraIndexCode(
+        @RequestParam(required = false)
+        face: Boolean?,
+    ): ResponseEntity<WebResponse<List<String>>> {
+        if (face == null) {
+            return cameraRepo.findVmsCameraIndexCode()
+                .toCachedListWebResponseEntity(appProperties.cameraCacheSeconds)
+        }
+        return cameraRepo.findVmsCameraIndexCodeWithFace(face)
+            .toCachedListWebResponseEntity(appProperties.cameraCacheSeconds)
     }
 }

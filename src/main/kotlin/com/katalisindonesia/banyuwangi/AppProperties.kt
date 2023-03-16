@@ -27,6 +27,7 @@ data class AppProperties(
 
     val chartCacheSeconds: Long,
     val detectionCacheSeconds: Long,
+    val cameraCacheSeconds: Long,
 
     val detectionMinConfidence: Double,
     val detectionMinConfidences: Map<DetectionType?, Double> = emptyMap(),

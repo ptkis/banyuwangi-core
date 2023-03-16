@@ -24,4 +24,18 @@ interface CameraRepo : JpaRepository<Camera, UUID>, JpaSpecificationExecutor<Cam
     @Transactional
     @Query("delete from Camera")
     fun deleteAllWithQuery()
+
+    @Query(
+        "select t.vmsCameraIndexCode from Camera t " +
+            "where t.vmsCameraIndexCode is not null " +
+            "order by t.vmsCameraIndexCode"
+    )
+    fun findVmsCameraIndexCode(): List<String>
+
+    @Query(
+        "select t.vmsCameraIndexCode from Camera t where " +
+            "t.vmsCameraIndexCode is not null and t.face is not null " +
+            "and t.face=:face order by t.vmsCameraIndexCode"
+    )
+    fun findVmsCameraIndexCodeWithFace(face: Boolean): List<String>
 }
