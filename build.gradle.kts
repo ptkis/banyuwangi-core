@@ -79,7 +79,7 @@ dependencies {
     val okHttpVersion = "4.10.0"
     implementation("com.squareup.okhttp3:okhttp:$okHttpVersion")
     implementation("com.squareup.okhttp3:logging-interceptor:$okHttpVersion")
-    implementation("io.github.rburgst:okhttp-digest:2.7")
+    implementation("io.github.rburgst:okhttp-digest:3.0.1")
 
     implementation("com.github.03:onvif:1.0.9") {
         exclude(group = "com.burgstaller")
