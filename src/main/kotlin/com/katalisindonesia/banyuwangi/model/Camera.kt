@@ -87,6 +87,8 @@ data class Camera(
     var interior: CameraInterior? = CameraInterior(),
 
     var alarmSetting: AlarmSetting? = null,
+
+    var face: Boolean? = null,
 ) : Persistent() {
 
     @Override

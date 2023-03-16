@@ -54,3 +54,13 @@ fun <T> List<T>.toCachedWebResponseEntity(seconds: Long, pageable: Pageable): Re
                 data = PageImpl(this, pageable, Long.MAX_VALUE),
             )
         )
+fun <T> List<T>.toCachedListWebResponseEntity(seconds: Long): ResponseEntity<WebResponse<List<T>>> =
+    ResponseEntity.ok()
+        .cacheControl(CacheControl.maxAge(seconds, TimeUnit.SECONDS).cachePublic())
+        .body(
+            WebResponse(
+                success = true,
+                message = "ok",
+                data = this,
+            )
+        )
