@@ -54,6 +54,7 @@ class SecurityConfig : KeycloakWebSecurityConfigurerAdapter() {
             .oauth2Client()
             .and()
             .authorizeRequests()
+            .antMatchers("/swagger/**").permitAll()
             .antMatchers("/v3/api-docs**").permitAll()
             .antMatchers("/v1/image/proxy").authenticated()
             .antMatchers("/v1/image/**").permitAll()
