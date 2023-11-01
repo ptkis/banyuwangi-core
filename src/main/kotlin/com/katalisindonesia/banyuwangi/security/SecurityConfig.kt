@@ -57,6 +57,7 @@ class SecurityConfig : KeycloakWebSecurityConfigurerAdapter() {
             .antMatchers("/actuator/**").permitAll()
             .antMatchers("/swagger/**").permitAll()
             .antMatchers("/v3/api-docs**").permitAll()
+            .antMatchers("/v3/api-docs/**").permitAll()
             .antMatchers("/v1/image/proxy").authenticated()
             .antMatchers("/v1/image/**").permitAll()
             .antMatchers("/hello/world**").authenticated()
