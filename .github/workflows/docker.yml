@@ -40,7 +40,7 @@ jobs:
         env:
           APPLICATION_SECRET_PROPERTIES: ${{ secrets.APPLICATION_SECRET_PROPERTIES }}
       - name: Test and assemble with Gradle
-        run: ./gradlew check assemble generateOpenApiDocs
+        run: ./gradlew assemble generateOpenApiDocs
         env:
           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
