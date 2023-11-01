@@ -50,16 +50,6 @@ jobs:
         env:
           DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Upload coverage
-        uses: nick-fields/retry@v2
-        with:
-          timeout_minutes: 10
-          max_attempts: 3
-          shell: bash
-          command: bash <(curl -Ls https://coverage.codacy.com/get.sh) report $(find . -name 'jacoco*.xml' -printf '-r %p ')
-        if: ${{ github.actor != 'dependabot[bot]' }}
-        env:
-          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v3
         with:
