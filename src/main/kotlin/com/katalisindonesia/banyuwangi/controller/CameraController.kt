@@ -109,7 +109,6 @@ class CameraController(
                 scopes = ["camera:write"],
             )
         ],
-        tags = ["chart"],
     )
     @ApiResponses(
         value = [

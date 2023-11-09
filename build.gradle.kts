@@ -112,6 +112,8 @@ dependencies {
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.1")
 
+    implementation("io.github.sercasti:spring-httpserver-timings:0.0.7")
+
     implementation("org.ehcache:ehcache")
     implementation("javax.cache:cache-api")
     testRuntimeOnly("io.netty:netty-resolver-dns-native-macos:4.1.84.Final:osx-aarch_64")
