@@ -56,5 +56,51 @@ class AlarmControllerTest(
         }
     }
 
+    @Test
+    fun `list and count empty with parameters`() {
+        mockMvc.get(
+            "/v1/alarm/list?beginning=2022-01-01" +
+                "&ending=2022-01-02&detectionType=TRASH"
+        ) {
+            headers {
+                setBearerAuth(token())
+                accept = listOf(MediaType.APPLICATION_JSON)
+            }
+        }.andExpect {
+            status { isOk() }
+            content {
+                json(
+                    """{
+  "success": true,
+  "message": "ok",
+  "data": []
+}""",
+                    strict = false,
+                )
+            }
+        }
+        mockMvc.get(
+            "/v1/alarm/count?beginning=2022-01-01" +
+                "&ending=2022-01-02&detectionType=TRASH"
+        ) {
+            headers {
+                setBearerAuth(token())
+                accept = listOf(MediaType.APPLICATION_JSON)
+            }
+        }.andExpect {
+            status { isOk() }
+            content {
+                json(
+                    """{
+  "success": true,
+  "message": "ok",
+  "data": 0
+}""",
+                    strict = false,
+                )
+            }
+        }
+    }
+
     private fun token(): String = tokenManager.accessToken("banyuwangi-test", "banyuwangi-test")
 }
