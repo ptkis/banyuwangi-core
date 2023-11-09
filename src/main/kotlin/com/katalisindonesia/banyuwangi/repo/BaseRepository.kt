@@ -12,4 +12,5 @@ interface BaseRepository<T, ID : Serializable?> : JpaRepository<T, ID> {
     fun findAll(spec: Specification<T>, offset: Long, maxResults: Int, sort: Sort): List<T>
     fun findAll(spec: Specification<T>, offset: Long, maxResults: Int): List<T>
     fun findAll(spec: Specification<T>, pageable: Pageable): List<T>
+    fun countAll(spec: Specification<T>): Long
 }

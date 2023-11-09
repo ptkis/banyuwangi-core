@@ -37,4 +37,8 @@ class BaseRepositoryImpl<T, ID : Serializable?> : SimpleJpaRepository<T, ID>, Ba
         query.maxResults = maxResults
         return query.resultList
     }
+
+    override fun countAll(spec: Specification<T>): Long {
+        return super.count(spec)
+    }
 }
