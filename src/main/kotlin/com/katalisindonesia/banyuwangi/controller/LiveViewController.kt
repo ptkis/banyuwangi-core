@@ -39,7 +39,6 @@ class LiveViewController(
                 scopes = ["camera:liveview"],
             )
         ],
-        tags = ["chart"],
     )
     @ApiResponses(
         value = [
