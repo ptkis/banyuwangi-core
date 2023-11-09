@@ -21,6 +21,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
+import java.util.UUID
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest
@@ -174,6 +175,139 @@ class LiveViewControllerTest(
             }
         }
     }
+    @Test
+    fun `live view parameters`() {
+        val camera = Camera(
+            vmsCameraIndexCode = "00001",
+            name = "Test 01",
+            location = "01",
+            isCrowd = true,
+            isTraffic = false,
+            interior = CameraInterior(
+                isLiveView = null,
+                lastCaptureMethod = null,
+                isPing = null,
+                pingResponseTimeSec = null,
+                pingRawData = null,
+                pingLast = null,
+                liveViewHash = null,
+                liveViewUrl = null,
+            )
+        )
+        cameraRepo.saveAndFlush(camera)
+
+        mockMvc.get("/v1/live/camera?keyword=none") {
+            headers {
+                setBearerAuth(token())
+                accept = listOf(MediaType.APPLICATION_JSON)
+            }
+        }.andExpect {
+            status { isOk() }
+            content {
+                json(
+                    """{
+  "success": true,
+  "message": "ok",
+  "data": []
+}""",
+                    strict = false
+                )
+            }
+        }
+        mockMvc.get("/v1/live/camera?location=none") {
+            headers {
+                setBearerAuth(token())
+                accept = listOf(MediaType.APPLICATION_JSON)
+            }
+        }.andExpect {
+            status { isOk() }
+            content {
+                json(
+                    """{
+  "success": true,
+  "message": "ok",
+  "data": []
+}""",
+                    strict = false
+                )
+            }
+        }
+        mockMvc.get("/v1/live/camera?type=TRAFFIC") {
+            headers {
+                setBearerAuth(token())
+                accept = listOf(MediaType.APPLICATION_JSON)
+            }
+        }.andExpect {
+            status { isOk() }
+            content {
+                json(
+                    """{
+  "success": true,
+  "message": "ok",
+  "data": []
+}""",
+                    strict = false
+                )
+            }
+        }
+        mockMvc.get("/v1/live/camera?id=${UUID.randomUUID()}") {
+            headers {
+                setBearerAuth(token())
+                accept = listOf(MediaType.APPLICATION_JSON)
+            }
+        }.andExpect {
+            status { isOk() }
+            content {
+                json(
+                    """{
+  "success": true,
+  "message": "ok",
+  "data": []
+}""",
+                    strict = false
+                )
+            }
+        }
+        mockMvc.get("/v1/live/location/list") {
+            headers {
+                setBearerAuth(token())
+                accept = listOf(MediaType.APPLICATION_JSON)
+            }
+        }.andExpect {
+            status { isOk() }
+            content {
+                json(
+                    """{
+  "success": true,
+  "message": "ok",
+  "data": [
+  "01"
+  ]
+}""",
+                    strict = false
+                )
+            }
+        }
+        mockMvc.get("/v1/live/location/list?keyword=none") {
+            headers {
+                setBearerAuth(token())
+                accept = listOf(MediaType.APPLICATION_JSON)
+            }
+        }.andExpect {
+            status { isOk() }
+            content {
+                json(
+                    """{
+  "success": true,
+  "message": "ok",
+  "data": []
+}""",
+                    strict = false
+                )
+            }
+        }
+    }
+
     @Test
     fun `create minimum camera and get live view url`() {
         val camera = Camera(
