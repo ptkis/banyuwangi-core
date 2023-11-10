@@ -50,8 +50,8 @@ data class SnapshotCount(
     @Column(nullable = false)
     var snapshotCameraLocation: String = snapshot.camera.location,
 
-    var snapshotCameraLongitude: Float? = snapshot.camera.longitude,
-    var snapshotCameraLatitude: Float? = snapshot.camera.latitude,
+    var snapshotCameraLongitude: Double? = snapshot.camera.longitude,
+    var snapshotCameraLatitude: Double? = snapshot.camera.latitude,
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

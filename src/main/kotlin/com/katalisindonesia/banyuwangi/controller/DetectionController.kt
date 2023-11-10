@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
+import java.math.BigDecimal
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
@@ -169,7 +170,9 @@ class DetectionController(
                         type = it.type,
                         value = it.value,
                         imageSrc = storageService.uri(it.snapshotImageId).toString(),
-                        annotations = annotations
+                        annotations = annotations,
+                        longitude = it.snapshot.camera.longitude.toBigDecimal(),
+                        latitude = it.snapshot.camera.latitude.toBigDecimal(),
                     )
                 )
             )
@@ -383,7 +386,9 @@ class DetectionController(
                 type = it.type,
                 value = it.value,
                 imageSrc = storageService.uri(it.snapshotImageId).toString(),
-                annotations = annotationMap[Pair(it.snapshotImageId, it.type)] ?: emptyList()
+                annotations = annotationMap[Pair(it.snapshotImageId, it.type)] ?: emptyList(),
+                longitude = it.snapshot.camera.longitude.toBigDecimal(),
+                latitude = it.snapshot.camera.latitude.toBigDecimal(),
             )
         }
         return PageImpl(list, pageRequest, Long.MAX_VALUE)
@@ -419,7 +424,9 @@ class DetectionController(
                     value = 3,
                     imageSrc = ServletUriComponentsBuilder.fromUri(appProperties.baseUri)
                         .path("/v1/image/${storageService.dummyId()}").toUriString(),
-                    annotations = annotations
+                    annotations = annotations,
+                    longitude = BigDecimal.ONE,
+                    latitude = BigDecimal.ONE,
                 )
             )
         }

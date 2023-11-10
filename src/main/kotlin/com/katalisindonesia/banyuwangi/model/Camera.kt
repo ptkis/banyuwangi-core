@@ -33,10 +33,10 @@ data class Camera(
     var location: String,
 
     @Column(nullable = false)
-    var latitude: Float = 0F,
+    var latitude: Double = 0.0,
 
     @Column(nullable = false)
-    var longitude: Float = 0F,
+    var longitude: Double = 0.0,
 
     @Column(nullable = false)
     var host: String = "",
