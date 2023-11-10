@@ -87,8 +87,8 @@ class LiveViewControllerTest(
             channel = 1,
             userName = "admin",
             password = "Password123",
-            longitude = 2F,
-            latitude = 3F,
+            longitude = 2.0,
+            latitude = 3.0,
             type = CameraType.HIKVISION,
         )
         mockMvc.post("/v1/camera") {

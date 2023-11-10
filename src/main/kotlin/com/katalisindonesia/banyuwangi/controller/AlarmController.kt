@@ -131,6 +131,8 @@ class AlarmController(
                         )
                             .toString(),
                         annotations = emptyList(),
+                        longitude = camera.longitude.toBigDecimal(),
+                        latitude = camera.latitude.toBigDecimal(),
                     )
                 }
             )
