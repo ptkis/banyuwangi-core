@@ -35,6 +35,11 @@ jobs:
     - run: echo "$APPLICATION_SECRET_PROPERTIES" > src/test/resources/application-secret.properties
       env:
         APPLICATION_SECRET_PROPERTIES: ${{ secrets.APPLICATION_SECRET_PROPERTIES }}
+    - name: Get FIREBASE_JSON from secrets
+      run: |
+        echo $FIREBASE_JSON > src/main/resources/banyuwangi-dashboard-firebase-adminsdk.json
+      env:
+        FIREBASE_JSON: ${{ secrets.FIREBASE_JSON }}
     - name: Install docker
       run: |
         command docker -v || curl -fsSL get.docker.com | sudo bash
