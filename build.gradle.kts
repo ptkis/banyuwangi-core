@@ -12,7 +12,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") version "11.0.0"
 
     id("org.springdoc.openapi-gradle-plugin") version "1.5.0"
-    id("org.gradle.test-retry") version "1.5.1"
+    id("org.gradle.test-retry") version "1.5.8"
 }
 
 val buildId = System.getenv("GITHUB_RUN_NUMBER") ?: System.getenv("BUILD_ID") ?: "1-SNAPSHOT"
