@@ -4,6 +4,7 @@ import com.katalisindonesia.banyuwangi.repo.FcmTokenRepo
 import com.katalisindonesia.banyuwangi.security.TokenManager
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,6 +21,7 @@ import org.springframework.test.web.servlet.put
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("default", "secret")
+@Disabled("Disable token base tests until foreign traffic to user's keycloak is unblocked")
 class FirebaseControllerTest(
     @Autowired private val mockMvc: MockMvc,
     @Autowired private val tokenManager: TokenManager,

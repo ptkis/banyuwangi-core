@@ -3,15 +3,19 @@ package com.katalisindonesia.banyuwangi.service
 import com.katalisindonesia.imageserver.service.ProxyRequest
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.net.URI
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest
+@ActiveProfiles("default", "secret")
+@Disabled("apingweb is down")
 class ProxyServiceTest(
     @Autowired
     private val proxyService: ProxyService,

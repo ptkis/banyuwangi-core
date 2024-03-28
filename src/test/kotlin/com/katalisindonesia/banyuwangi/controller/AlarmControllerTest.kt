@@ -4,6 +4,7 @@ import com.katalisindonesia.banyuwangi.repo.AlarmRepo
 import com.katalisindonesia.banyuwangi.security.TokenManager
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -16,6 +17,7 @@ import org.springframework.test.web.servlet.get
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @ActiveProfiles("default", "secret")
+@Disabled("Disable token base tests until foreign traffic to user's keycloak is unblocked")
 class AlarmControllerTest(
     @Autowired private val mockMvc: MockMvc,
     @Autowired private val alarmRepo: AlarmRepo,

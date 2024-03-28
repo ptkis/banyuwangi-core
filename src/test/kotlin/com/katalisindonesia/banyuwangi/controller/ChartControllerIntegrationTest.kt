@@ -2,6 +2,7 @@ package com.katalisindonesia.banyuwangi.controller
 
 import com.katalisindonesia.banyuwangi.model.DetectionType
 import com.katalisindonesia.banyuwangi.security.TokenManager
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -22,6 +23,7 @@ import java.net.InetSocketAddress
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @ActiveProfiles("default", "secret")
+@Disabled("Disable token base tests until foreign traffic to user's keycloak is unblocked")
 class ChartControllerIntegrationTest(
     @Autowired private val mockMvc: MockMvc,
     @Autowired private val tokenManager: TokenManager,

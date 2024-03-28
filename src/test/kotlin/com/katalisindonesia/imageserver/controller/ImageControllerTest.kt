@@ -4,6 +4,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.katalisindonesia.banyuwangi.BanyuwangiCoreApplication
 import com.katalisindonesia.banyuwangi.security.TokenManager
 import com.katalisindonesia.imageserver.service.ProxyRequest
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.core.io.ClassPathResource
 import org.springframework.http.MediaType
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
@@ -30,6 +32,8 @@ import java.util.UUID
     classes = [BanyuwangiCoreApplication::class]
 )
 @AutoConfigureMockMvc
+@ActiveProfiles("default", "secret")
+@Disabled("Disable token base tests until foreign traffic to user's keycloak is unblocked")
 class ImageControllerTest(
     @Autowired private val mockMvc: MockMvc,
     @Autowired private val imageProperties: ImageProperties,
