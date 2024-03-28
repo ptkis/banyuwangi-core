@@ -60,7 +60,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-undertow")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
-    implementation("org.springframework.security:spring-security-oauth2-client")
+    // implementation("org.springframework.security:spring-security-oauth2-client")
     implementation("org.bouncycastle:bcprov-jdk15on:1.70")
     implementation("org.hibernate:hibernate-envers")
 
