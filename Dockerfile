@@ -8,9 +8,9 @@ ENV ARTIFACT=$ARTIFACT
 ENV JAVA_OPTS=""
 
 COPY build/libs/$ARTIFACT-$VERSION.jar $ARTIFACT-$VERSION.jar
-COPY src/docker/entrypoint.sh entrypoint.sh
-RUN chmod +x entrypoint.sh
+COPY src/docker/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 EXPOSE 8080
 
-ENTRYPOINT set -a && ./entrypoint.sh
+ENTRYPOINT set -a && /entrypoint.sh
