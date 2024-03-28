@@ -136,9 +136,11 @@ tasks.withType<Test> {
     enableAssertions = true
     // setForkEvery(1L)
     retry {
-        maxRetries.set(3)
-        maxFailures.set(20)
-        failOnPassedAfterRetry.set(false)
+        if (!buildId.contains("SNAPSHOT")) {
+            maxRetries.set(3)
+            maxFailures.set(20)
+            failOnPassedAfterRetry.set(false)
+        }
     }
     reports {
         junitXml.apply {
