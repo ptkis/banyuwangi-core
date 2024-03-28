@@ -32,9 +32,12 @@ jobs:
       with:
         java-version: 17
         distribution: temurin
-    - run: echo "$APPLICATION_SECRET_PROPERTIES" > src/test/resources/application-secret.properties
-      env:
-        APPLICATION_SECRET_PROPERTIES: ${{ secrets.APPLICATION_SECRET_PROPERTIES }}
+    - name: Decode application secret
+      uses: timheuer/base64-to-file@v1.2
+      with:
+        encodedString: ${{ secrets.APPLICATION_SECRET_PROPERTIES }}
+        fileName: src/test/resources/application-secret.properties
+        fileDir: .
     - name: Get FIREBASE_JSON from secrets
       run: |
         echo $FIREBASE_JSON > src/main/resources/banyuwangi-dashboard-firebase-adminsdk.json
