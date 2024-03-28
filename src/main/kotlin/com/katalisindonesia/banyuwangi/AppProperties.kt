@@ -40,4 +40,7 @@ data class AppProperties(
     val alarmHighMessages: Map<DetectionType, String>,
 
     val fcmRateLimit: Double,
+
+    val streamingServer: String,
+    val streamingBaseUrl: String,
 )

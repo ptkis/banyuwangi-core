@@ -49,6 +49,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
         ImageProperties::class,
         MessagingProperties::class,
         AppProperties::class,
+        StreamingProperties::class,
     ]
 )
 @EnableJpaRepositories(repositoryBaseClass = BaseRepositoryImpl::class)

@@ -1,5 +1,6 @@
 package com.katalisindonesia.banyuwangi.consumer
 
+import com.katalisindonesia.banyuwangi.StreamingProperties
 import com.katalisindonesia.banyuwangi.model.Camera
 import com.katalisindonesia.banyuwangi.model.CameraInterior
 import com.katalisindonesia.banyuwangi.model.CameraType
@@ -32,16 +33,15 @@ class StreamingConsumer(
     private val cameraRepo: CameraRepo,
     @Autowired
     private val streamingRest: StreamingRest,
-
-    @Value("\${streaming.baseUrl}")
-    private val streamingBaseUrl: String,
-    @Value("\${streaming.streamingToken}")
-    private val streamingToken: String,
-
+    streamingProperties: StreamingProperties,
     @Value("\${cctv-analytics.streaming.maxDiffSeconds:3600}")
     private val maxDiffSeconds: Long,
     transactionManager: PlatformTransactionManager,
 ) {
+
+    private val streamingBaseUrl = streamingProperties.baseUrl
+    private val streamingServer = streamingProperties.server
+    private val streamingToken = streamingProperties.streamingToken
     private val tt = TransactionTemplate(
         transactionManager,
         txDef(
@@ -99,7 +99,15 @@ class StreamingConsumer(
             val interior = camera.interior ?: CameraInterior()
             camera.interior = interior
             val url = interior.liveViewUrl ?: return false
-            val res = UrlResource(url)
+
+            val res =
+                if (url.startsWith("/") || !url.startsWith("http")) {
+                    UrlResource(streamingServer + url)
+                } else {
+                    UrlResource(
+                        url
+                    )
+                }
 
             val content = InputStreamReader(res.inputStream).use { it.readText() }
             val dt = extractGreatestDateTimeM3u8(content)

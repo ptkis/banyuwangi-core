@@ -1,15 +1,15 @@
 package com.katalisindonesia.banyuwangi.streaming
 
+import com.katalisindonesia.banyuwangi.StreamingProperties
 import com.katalisindonesia.banyuwangi.model.CameraType
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import retrofit2.Call
 
 @Service
 class StreamingRest(
-    @Value("\${streaming.server}")
-    private val streamingServer: String,
+    streamingProperties: StreamingProperties,
 ) {
+    private val streamingServer = streamingProperties.server
 
     private val apiService = RetrofitConfig.getInstance(
         baseUrl = streamingServer
