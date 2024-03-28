@@ -8,7 +8,6 @@ echo Displaying content of build/libs
 find build/libs
 
 export version=0.0.$BUILD_ID
-echo "$DOCKER_HUB_PASSWORD" | docker login -u ptkis --password-stdin
 docker rmi "ptkis/$ARTIFACT:$version" || true
 docker build \
   --build-arg "ARTIFACT=$ARTIFACT" \
