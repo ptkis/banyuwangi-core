@@ -48,8 +48,8 @@ class SecurityConfig : KeycloakWebSecurityConfigurerAdapter() {
     override fun configure(http: HttpSecurity) {
         super.configure(http)
         http
-            .oauth2Login()
-            .and()
+            // .oauth2Login()
+            // .and()
             .csrf().disable()
             // .oauth2Client()
             // .and()
