@@ -9,7 +9,6 @@ import com.katalisindonesia.banyuwangi.repo.BaseRepositoryImpl
 import com.katalisindonesia.banyuwangi.repo.CameraRepo
 import com.katalisindonesia.banyuwangi.security.CorsProperties
 import com.katalisindonesia.banyuwangi.security.SecurityConfig
-import com.katalisindonesia.banyuwangi.security.TokenManager
 import com.katalisindonesia.banyuwangi.service.CaptureService
 import com.katalisindonesia.banyuwangi.streaming.StreamingRest
 import com.katalisindonesia.banyuwangi.task.CaptureTask
@@ -29,7 +28,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
     scanBasePackageClasses = [
         HelloController::class,
         SecurityConfig::class,
-        TokenManager::class,
+        // TokenManager::class,
         CameraRepo::class,
         StorageService::class,
         ImageController::class,
