@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #show all environment
 export
 
