@@ -49,7 +49,7 @@ jobs:
           push: true
           build-args: |
             VERSION=0.0.${{ github.run_number }}
-            ARTIFACT=${{ github.repository }}
+            ARTIFACT=banyuwangi-core
           tags: |
             ghcr.io/${{ github.repository }}:latest
             ghcr.io/${{ github.repository }}:0.0.${{ github.run_number }}
