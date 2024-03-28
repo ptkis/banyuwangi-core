@@ -47,6 +47,9 @@ jobs:
           file: Dockerfile
           platforms: linux/amd64
           push: true
+          build-args: |
+            VERSION=0.0.${{ github.run_number }}
+            ARTIFACT=${{ github.repository }}
           tags: |
             ghcr.io/${{ github.repository }}:latest
             ghcr.io/${{ github.repository }}:0.0.${{ github.run_number }}
