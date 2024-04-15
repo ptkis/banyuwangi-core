@@ -1,5 +1,8 @@
 package com.katalisindonesia.banyuwangi.consumer
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class Dataset(
     val coco: Boolean,
     val streetvendor: Boolean = false,
