@@ -112,7 +112,7 @@ dependencies {
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
 
-    implementation("io.github.sercasti:spring-httpserver-timings:0.0.7")
+    implementation("io.github.sercasti:spring-httpserver-timings:0.0.8")
 
     implementation("org.ehcache:ehcache")
     implementation("javax.cache:cache-api")
