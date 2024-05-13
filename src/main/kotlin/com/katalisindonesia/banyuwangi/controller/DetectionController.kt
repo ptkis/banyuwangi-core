@@ -2,8 +2,8 @@ package com.katalisindonesia.banyuwangi.controller
 
 import au.com.console.jpaspecificationdsl.and
 import au.com.console.jpaspecificationdsl.equal
-import au.com.console.jpaspecificationdsl.greaterThan
 import au.com.console.jpaspecificationdsl.greaterThanOrEqualTo
+import au.com.console.jpaspecificationdsl.isFalse
 import au.com.console.jpaspecificationdsl.lessThan
 import au.com.console.jpaspecificationdsl.lessThanOrEqualTo
 import com.katalisindonesia.banyuwangi.AppProperties
@@ -346,7 +346,7 @@ class DetectionController(
                 Annotation::snapshotCameraLocation.equal(location)
             )
         }
-        countSpecs.add(SnapshotCount::value.greaterThan(0))
+        countSpecs.add(SnapshotCount::zeroValue.isFalse())
 
         val pageRequest = PageRequest.of(
             page, size,

@@ -9,6 +9,8 @@ import javax.persistence.Enumerated
 import javax.persistence.Index
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
+import javax.persistence.PrePersist
+import javax.persistence.PreUpdate
 import javax.persistence.Table
 
 @Entity
@@ -63,4 +65,12 @@ data class SnapshotCount(
     var maxValue: Int? = snapshot.camera.alarmSetting?.max(type),
 
     var isImageDeleted: Boolean? = false,
-) : Persistent()
+
+    var zeroValue: Boolean?,
+) : Persistent() {
+    @PrePersist
+    @PreUpdate
+    fun recalculate() {
+        zeroValue = value <= 0
+    }
+}
