@@ -66,7 +66,7 @@ data class SnapshotCount(
 
     var isImageDeleted: Boolean? = false,
 
-    var zeroValue: Boolean?,
+    var zeroValue: Boolean? = value <= 0,
 ) : Persistent() {
     @PrePersist
     @PreUpdate
