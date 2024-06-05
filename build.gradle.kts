@@ -92,7 +92,7 @@ dependencies {
     implementation("org.slf4j:slf4j-api")
     implementation("org.slf4j:jul-to-slf4j")
 
-    implementation("io.github.microutils:kotlin-logging:3.0.4")
+    implementation("io.github.microutils:kotlin-logging:3.0.5")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
