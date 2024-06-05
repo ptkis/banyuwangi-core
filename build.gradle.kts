@@ -76,7 +76,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-jackson:$retrofitVersion")
     implementation("com.squareup.retrofit2:converter-scalars:$retrofitVersion")
 
-    val okHttpVersion = "4.10.0"
+    val okHttpVersion = "4.12.0"
     implementation("com.squareup.okhttp3:okhttp:$okHttpVersion")
     implementation("com.squareup.okhttp3:logging-interceptor:$okHttpVersion")
     implementation("io.github.rburgst:okhttp-digest:2.7")
