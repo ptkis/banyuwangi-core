@@ -118,7 +118,7 @@ dependencies {
     implementation("javax.cache:cache-api")
     testRuntimeOnly("io.netty:netty-resolver-dns-native-macos:4.1.84.Final:osx-aarch_64")
 
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.22.0")
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.6")
 
     // Firebase cloud messaging
     implementation("com.google.firebase:firebase-admin:9.1.1")
