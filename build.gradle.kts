@@ -87,7 +87,7 @@ dependencies {
 
     implementation("org.apache.commons:commons-lang3:3.14.0")
     implementation("commons-io:commons-io:2.11.0")
-    implementation("commons-codec:commons-codec:1.15")
+    implementation("commons-codec:commons-codec:1.17.0")
 
     implementation("org.slf4j:slf4j-api")
     implementation("org.slf4j:jul-to-slf4j")
