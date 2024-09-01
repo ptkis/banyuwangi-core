@@ -85,7 +85,7 @@ dependencies {
         exclude(group = "com.burgstaller")
     }
 
-    implementation("org.apache.commons:commons-lang3:3.14.0")
+    implementation("org.apache.commons:commons-lang3:3.17.0")
     implementation("commons-io:commons-io:2.11.0")
     implementation("commons-codec:commons-codec:1.15")
 
