@@ -1,7 +1,7 @@
-FROM eclipse-temurin:17.0.10_7-jdk
+FROM eclipse-temurin:17.0.14_7-jdk
 
 #Install curl for health check
-RUN apk add --no-cache curl
+RUN apt update && apt install -y curl
 
 ARG VERSION
 ARG ARTIFACT
