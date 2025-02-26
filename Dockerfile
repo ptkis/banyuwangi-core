@@ -1,4 +1,4 @@
-FROM eclipse-temurin:17.0.10_7-jdk-alpine
+FROM eclipse-temurin:17.0.10_7-jdk
 
 #Install curl for health check
 RUN apk add --no-cache curl
