@@ -121,7 +121,7 @@ dependencies {
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.22.0")
 
     // Firebase cloud messaging
-    implementation("com.google.firebase:firebase-admin:9.1.1")
+    implementation("com.google.firebase:firebase-admin:9.3.0")
 }
 
 tasks.withType<KotlinCompile> {
