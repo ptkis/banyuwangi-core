@@ -89,6 +89,8 @@ class AlarmService(
 
         rateLimit.acquire()
         firebaseMessaging.send(message)
+
+        // todo send telegram
     }
 
     private fun titleBody(alarm: Alarm): TitleBody {

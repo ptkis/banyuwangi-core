@@ -44,3 +44,5 @@ out/
 *.lock.db
 
 src/main/resources/banyuwangi-dashboard-firebase-adminsdk.json
+.env
+.env.*
