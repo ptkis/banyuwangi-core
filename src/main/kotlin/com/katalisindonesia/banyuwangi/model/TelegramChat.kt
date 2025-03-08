@@ -22,5 +22,5 @@ class TelegramChat(
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    var detectionType: DetectionType?,
+    var detectionType: DetectionType,
 ) : Persistent()
