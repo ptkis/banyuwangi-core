@@ -45,5 +45,4 @@ class TelegramServiceTest(
         telegramService.stop(ChatId.fromId(10))
         assertEquals(0, telegramChatRepo.findAll().size)
     }
-
 }

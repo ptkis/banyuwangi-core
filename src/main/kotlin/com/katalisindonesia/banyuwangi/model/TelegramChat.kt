@@ -7,5 +7,4 @@ import javax.persistence.Entity
 class TelegramChat(
     @Column(unique = true)
     val chatId: Long,
-) : Persistent() {
-}
+) : Persistent()

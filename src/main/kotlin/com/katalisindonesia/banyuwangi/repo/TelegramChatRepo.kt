@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.UUID
 
 @Repository
-interface TelegramChatRepo: BaseRepository<TelegramChat, UUID> {
+interface TelegramChatRepo : BaseRepository<TelegramChat, UUID> {
     @Transactional
     fun deleteByChatId(chatId: Long): Int
 }
