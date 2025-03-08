@@ -17,7 +17,7 @@ import javax.persistence.UniqueConstraint
     ]
 )
 class TelegramChat(
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     val chatId: Long,
 
     @Column(nullable = false)
