@@ -44,10 +44,10 @@ class TelegramService(
         dispatch {
             DetectionType.values().forEach {
                 callbackQuery("start${it.name}") {
-                    start(ChatId.fromId(update.message!!.chat.id), it)
+                    start(ChatId.fromId(callbackQuery.message?.chat?.id!!), it)
                 }
                 callbackQuery("stop${it.name}") {
-                    stop(ChatId.fromId(update.message!!.chat.id), it)
+                    stop(ChatId.fromId(callbackQuery.message?.chat?.id!!), it)
                 }
             }
             command("start") {
