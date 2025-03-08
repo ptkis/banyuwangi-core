@@ -33,34 +33,34 @@ class TelegramServiceTest(
 ) {
     @Test
     fun test_start_stop() {
-        telegramService.start(ChatId.fromId(10))
+        telegramService.start(ChatId.fromId(10), DetectionType.TRAFFIC)
 
         assertEquals(1, telegramChatRepo.findAll().size)
 
         // duplicate
-        telegramService.start(ChatId.fromId(10))
+        telegramService.start(ChatId.fromId(10), DetectionType.TRAFFIC)
         assertEquals(1, telegramChatRepo.findAll().size)
 
         // different
-        telegramService.start(ChatId.fromId(59573981))
+        telegramService.start(ChatId.fromId(59573981), DetectionType.TRAFFIC)
         assertEquals(2, telegramChatRepo.findAll().size)
 
         // stop
-        telegramService.stop(ChatId.fromId(59573981))
+        telegramService.stop(ChatId.fromId(59573981), DetectionType.TRAFFIC)
         assertEquals(1, telegramChatRepo.findAll().size)
 
         // duplicate stop
-        telegramService.stop(ChatId.fromId(59573981))
+        telegramService.stop(ChatId.fromId(59573981), DetectionType.TRAFFIC)
         assertEquals(1, telegramChatRepo.findAll().size)
 
         // all stop
-        telegramService.stop(ChatId.fromId(10))
+        telegramService.stop(ChatId.fromId(10), DetectionType.TRAFFIC)
         assertEquals(0, telegramChatRepo.findAll().size)
     }
 
     @Test
     fun sendAlarm() {
-        telegramService.start(ChatId.fromId(59573981))
+        telegramService.start(ChatId.fromId(59573981), DetectionType.TRAFFIC)
         val camera0 = Camera(name = "camera0", location = "")
 
         val snapshot0 = Snapshot(imageId = imageId(), camera = camera0, length = 0, isAnnotation = true)
@@ -79,11 +79,11 @@ class TelegramServiceTest(
                 snapshotCount = count0,
             )
         )
-        telegramService.stop(ChatId.fromId(59573981))
+        telegramService.stop(ChatId.fromId(59573981), DetectionType.TRAFFIC)
     }
     @Test
     fun sendAlarmFloodHigh() {
-        telegramService.start(ChatId.fromId(59573981))
+        telegramService.start(ChatId.fromId(59573981), DetectionType.TRAFFIC)
         val camera0 = Camera(name = "camera0", location = "")
 
         val snapshot0 = Snapshot(imageId = imageId(), camera = camera0, length = 0, isAnnotation = true)
@@ -102,11 +102,11 @@ class TelegramServiceTest(
                 snapshotCount = count0,
             )
         )
-        telegramService.stop(ChatId.fromId(59573981))
+        telegramService.stop(ChatId.fromId(59573981), DetectionType.TRAFFIC)
     }
     @Test
     fun sendAlarmFloodLow() {
-        telegramService.start(ChatId.fromId(59573981))
+        telegramService.start(ChatId.fromId(59573981), DetectionType.TRAFFIC)
         val camera0 = Camera(name = "camera0", location = "")
 
         val snapshot0 = Snapshot(imageId = imageId(), camera = camera0, length = 0, isAnnotation = true)
@@ -125,7 +125,7 @@ class TelegramServiceTest(
                 snapshotCount = count0,
             )
         )
-        telegramService.stop(ChatId.fromId(59573981))
+        telegramService.stop(ChatId.fromId(59573981), DetectionType.TRAFFIC)
     }
 
     private fun imageId(): UUID {
