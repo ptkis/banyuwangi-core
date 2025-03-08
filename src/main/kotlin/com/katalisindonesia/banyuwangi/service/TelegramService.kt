@@ -45,9 +45,17 @@ class TelegramService(
             DetectionType.values().forEach {
                 callbackQuery("start${it.name}") {
                     start(ChatId.fromId(callbackQuery.message?.chat?.id!!), it)
+                    bot.deleteMessage(
+                        ChatId.fromId(callbackQuery.message?.chat?.id!!),
+                        callbackQuery.message!!.messageId
+                    )
                 }
                 callbackQuery("stop${it.name}") {
                     stop(ChatId.fromId(callbackQuery.message?.chat?.id!!), it)
+                    bot.deleteMessage(
+                        ChatId.fromId(callbackQuery.message?.chat?.id!!),
+                        callbackQuery.message!!.messageId
+                    )
                 }
             }
             command("start") {
