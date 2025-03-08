@@ -89,8 +89,6 @@ class AlarmService(
 
         rateLimit.acquire()
         firebaseMessaging.send(message)
-
-        // todo send telegram
     }
 }
 
