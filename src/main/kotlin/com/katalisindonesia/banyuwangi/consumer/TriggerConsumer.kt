@@ -5,6 +5,7 @@ import com.katalisindonesia.banyuwangi.model.SnapshotCount
 import com.katalisindonesia.banyuwangi.repo.AlarmRepo
 import com.katalisindonesia.banyuwangi.repo.SnapshotCountRepo
 import com.katalisindonesia.banyuwangi.service.AlarmService
+import com.katalisindonesia.banyuwangi.service.TelegramService
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.stereotype.Service
 import org.springframework.transaction.PlatformTransactionManager
@@ -16,6 +17,7 @@ class TriggerConsumer(
     private val alarmService: AlarmService,
     private val snapshotCountRepo: SnapshotCountRepo,
     transactionManager: PlatformTransactionManager,
+    private val telegramService: TelegramService,
 
 ) {
     private val tt = TransactionTemplate(transactionManager)
@@ -42,6 +44,7 @@ class TriggerConsumer(
                         alarm1
                     }!!
                     alarmService.sendAlarm(alarm)
+                    telegramService.sendAlarm(alarm)
                 }
             }
         }

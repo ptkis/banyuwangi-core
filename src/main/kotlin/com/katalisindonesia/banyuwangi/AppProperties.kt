@@ -40,4 +40,7 @@ data class AppProperties(
     val alarmHighMessages: Map<DetectionType, String>,
 
     val fcmRateLimit: Double,
+
+    val telegramToken: String,
+    val telegramRateLimit: Double = 30.0,
 )

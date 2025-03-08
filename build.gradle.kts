@@ -13,6 +13,7 @@ plugins {
 
     id("org.springdoc.openapi-gradle-plugin") version "1.8.0"
     id("org.gradle.test-retry") version "1.5.9"
+    id("co.uzzu.dotenv.gradle") version "4.0.0"
 }
 
 val buildId = System.getenv("GITHUB_RUN_NUMBER") ?: System.getenv("BUILD_ID") ?: "1-SNAPSHOT"
@@ -122,6 +123,8 @@ dependencies {
 
     // Firebase cloud messaging
     implementation("com.google.firebase:firebase-admin:9.1.1")
+
+    implementation("io.github.kotlin-telegram-bot.kotlin-telegram-bot:telegram:6.3.0")
 }
 
 tasks.withType<KotlinCompile> {
@@ -135,6 +138,7 @@ tasks.withType<Test> {
     useJUnitPlatform()
     enableAssertions = true
     // setForkEvery(1L)
+    environment(env.allVariables())
     retry {
         if (!buildId.contains("SNAPSHOT")) {
             maxRetries.set(3)
