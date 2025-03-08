@@ -36,7 +36,7 @@ class AlarmService(
     fun sendAlarm(alarm: Alarm) {
         val type = alarm.snapshotCount.type
 
-        val titleBody = titleBody(alarm)
+        val titleBody = titleBody(alarm, appProperties)
         val title =
             MessageFormat.format(
                 titleBody.title ?: "", type.localizedName(), alarm.snapshotCount.snapshotCameraName
@@ -92,26 +92,9 @@ class AlarmService(
 
         // todo send telegram
     }
-
-    private fun titleBody(alarm: Alarm): TitleBody {
-        val type = alarm.snapshotCount.type
-        val value = alarm.snapshotCount.value
-        val minHighValue = appProperties.alarmHighMinimalValues[type]
-
-        if (minHighValue != null && value >= minHighValue) {
-            return TitleBody(
-                title = appProperties.alarmHighTitles[type] ?: appProperties.alarmTitles[type],
-                body = appProperties.alarmHighMessages[type] ?: appProperties.alarmMessages[type],
-            )
-        }
-        return TitleBody(
-            title = appProperties.alarmTitles[type],
-            body = appProperties.alarmMessages[type],
-        )
-    }
 }
 
-private data class TitleBody(
+data class TitleBody(
     val title: String?,
     val body: String?,
 )

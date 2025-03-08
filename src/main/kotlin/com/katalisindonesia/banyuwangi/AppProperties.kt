@@ -42,4 +42,5 @@ data class AppProperties(
     val fcmRateLimit: Double,
 
     val telegramToken: String,
+    val telegramRateLimit: Double = 30.0,
 )
