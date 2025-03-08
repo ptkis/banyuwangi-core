@@ -2,14 +2,18 @@ package com.katalisindonesia.banyuwangi.service
 
 import com.github.kotlintelegrambot.bot
 import com.github.kotlintelegrambot.dispatch
+import com.github.kotlintelegrambot.dispatcher.callbackQuery
 import com.github.kotlintelegrambot.dispatcher.command
 import com.github.kotlintelegrambot.dispatcher.telegramError
 import com.github.kotlintelegrambot.entities.ChatId
+import com.github.kotlintelegrambot.entities.InlineKeyboardMarkup
 import com.github.kotlintelegrambot.entities.TelegramFile
+import com.github.kotlintelegrambot.entities.keyboard.InlineKeyboardButton
 import com.github.kotlintelegrambot.logging.LogLevel
 import com.google.common.util.concurrent.RateLimiter
 import com.katalisindonesia.banyuwangi.AppProperties
 import com.katalisindonesia.banyuwangi.model.Alarm
+import com.katalisindonesia.banyuwangi.model.DetectionType
 import com.katalisindonesia.banyuwangi.model.TelegramChat
 import com.katalisindonesia.banyuwangi.repo.TelegramChatRepo
 import com.katalisindonesia.imageserver.service.StorageService
@@ -38,12 +42,46 @@ class TelegramService(
         logLevel = LogLevel.Network.Body
 
         dispatch {
+            DetectionType.values().forEach {
+                callbackQuery("start${it.name}") {
+                    start(ChatId.fromId(update.message!!.chat.id), it)
+                }
+                callbackQuery("stop${it.name}") {
+                    stop(ChatId.fromId(update.message!!.chat.id), it)
+                }
+            }
             command("start") {
-                start(ChatId.fromId(update.message!!.chat.id))
+                val list = DetectionType.values().map {
+                    listOf(
+                        InlineKeyboardButton.CallbackData(
+                            text = it.localizedName(),
+                            callbackData = "start${it.name}"
+                        )
+                    )
+                }
+                val inlineKeyboardMarkup = InlineKeyboardMarkup.create(list.toList())
+                bot.sendMessage(
+                    chatId = ChatId.fromId(message.chat.id),
+                    text = "Mau berlangganan peringatan apa?",
+                    replyMarkup = inlineKeyboardMarkup,
+                )
             }
 
             command("stop") {
-                stop(ChatId.fromId(update.message!!.chat.id))
+                val list = DetectionType.values().map {
+                    listOf(
+                        InlineKeyboardButton.CallbackData(
+                            text = it.localizedName(),
+                            callbackData = "stop${it.name}"
+                        )
+                    )
+                }
+                val inlineKeyboardMarkup = InlineKeyboardMarkup.create(list.toList())
+                bot.sendMessage(
+                    chatId = ChatId.fromId(message.chat.id),
+                    text = "Mau hentikan peringatan apa?",
+                    replyMarkup = inlineKeyboardMarkup,
+                )
             }
 
             telegramError {
@@ -52,14 +90,14 @@ class TelegramService(
         }
     }
 
-    fun start(chatId: ChatId.Id) {
-        val chat = TelegramChat(chatId.id)
+    fun start(chatId: ChatId.Id, detectionType: DetectionType) {
+        val chat = TelegramChat(chatId.id, detectionType)
         try {
             telegramChatRepo.saveAndFlush(chat)
             bot.sendMessage(
                 chatId = chatId,
-                text = "Anda telah berlangganan peringatan.\n\n" +
-                    "/stop untuk berhenti berlangganan"
+                text = "Anda telah berlangganan peringatan ${detectionType.localizedName()}.\n\n" +
+                    "/stop untuk berhenti berlangganan",
             )
         } catch (e: DataIntegrityViolationException) {
             log.debug(e) { "Duplicate subscription: " + chatId.id }
@@ -67,12 +105,12 @@ class TelegramService(
         }
     }
 
-    fun stop(chatId: ChatId.Id) {
-        telegramChatRepo.deleteByChatId(chatId.id)
+    fun stop(chatId: ChatId.Id, detectionType: DetectionType) {
+        telegramChatRepo.deleteByChatIdAndDetectionType(chatId.id, detectionType)
         bot.sendMessage(
             chatId = chatId,
-            text = "Anda telah berhenti berlangganan.\n\n" +
-                "/start untuk berlangganan peringatan"
+            text = "Anda telah berhenti berlangganan peringatan ${detectionType.localizedName()}.\n\n" +
+                "/start untuk berlangganan peringatan",
         )
     }
 
@@ -92,7 +130,7 @@ class TelegramService(
         val body = titleBody.body ?: ""
         val media = TelegramFile.ByFile(storageService.file(alarm.snapshotCount.snapshotImageId))
 
-        val chats = telegramChatRepo.findAll()
+        val chats = telegramChatRepo.findByDetectionType(type)
         for (chat in chats) {
             rateLimit.acquire()
             rt.execute<Unit, Exception> {
