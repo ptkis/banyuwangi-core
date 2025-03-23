@@ -3,7 +3,6 @@ package com.katalisindonesia.banyuwangi.controller
 import com.katalisindonesia.banyuwangi.model.FcmToken
 import com.katalisindonesia.banyuwangi.repo.FcmTokenRepo
 import com.katalisindonesia.banyuwangi.service.AlarmService
-import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -16,7 +15,7 @@ import javax.transaction.Transactional
 
 @RestController
 @RequestMapping("/v1/fcm")
-@SecurityRequirement(name = "oauth2")
+
 class FirebaseController(
     private val fcmTokenRepo: FcmTokenRepo,
     private val alarmService: AlarmService,

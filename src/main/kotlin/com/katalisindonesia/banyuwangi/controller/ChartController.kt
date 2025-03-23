@@ -39,7 +39,7 @@ import javax.validation.constraints.NotNull
 
 @RestController
 @RequestMapping("/v1/chart")
-@SecurityRequirement(name = "oauth2")
+
 @Tag(name = "chart", description = "Chart")
 @PreAuthorize("hasAuthority('chart')")
 class ChartController(

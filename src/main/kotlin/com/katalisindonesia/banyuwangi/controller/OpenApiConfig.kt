@@ -16,31 +16,34 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class OpenApiConfig {
-    private fun createAPIKeyScheme(
-        keycloakBaseUrl: String,
-        keycloakRealm: String,
-    ): SecurityScheme {
-        return SecurityScheme().name("oauth2").type(SecurityScheme.Type.OAUTH2).flows(
-            OAuthFlows().implicit(
-                OAuthFlow().authorizationUrl("$keycloakBaseUrl/realms/$keycloakRealm/protocol/openid-connect/auth")
-            )
-        )
+class OpenApiConfig(
+    @Value("\${keycloak.auth-server-url}") private val keycloakBaseUrl: String,
+    @Value("\${keycloak.realm}") private val keycloakRealm: String,
+) {
+    private val securitySchemeName = "oauth2"
+    private fun createAPIKeyScheme(): SecurityScheme {
+        val oauthFlow =
+            OAuthFlows()
+                .authorizationCode(
+                    OAuthFlow()
+                        .authorizationUrl("$keycloakBaseUrl/realms/$keycloakRealm/protocol/openid-connect/auth")
+                        .tokenUrl("$keycloakBaseUrl/realms/$keycloakRealm/protocol/openid-connect/token")
+                )
+
+        return SecurityScheme()
+            .type(SecurityScheme.Type.HTTP)
+            .bearerFormat("JWT")
+            .flows(oauthFlow)
+            .scheme("bearer")
+            .`in`(SecurityScheme.In.HEADER)
+            .name("Authorization")
     }
 
     @Bean
-    fun customOpenAPI(
-        @Value("\${keycloak.auth-server-url}") keycloakBaseUrl: String,
-        @Value("\${keycloak.realm}") keycloakRealm: String,
-    ): OpenAPI {
+    fun customOpenAPI(): OpenAPI {
         return OpenAPI()
-            .addSecurityItem(SecurityRequirement().addList("Bearer Authentication"))
-            .components(
-                Components().addSecuritySchemes(
-                    "Bearer Authentication",
-                    createAPIKeyScheme(keycloakBaseUrl, keycloakRealm)
-                )
-            )
+            .addSecurityItem(SecurityRequirement().addList(securitySchemeName))
+            .components(Components().addSecuritySchemes(securitySchemeName, createAPIKeyScheme()))
             .servers(listOf(Server().url("/").description("Local server")))
             .info(
                 Info()
@@ -76,6 +79,13 @@ class OpenApiConfig {
                     val newSummary =
                         "${WordUtils.capitalize(httpMethod)}_${subpaths.joinToString("") { WordUtils.capitalize(it) }}"
                     operation.summary = newSummary
+
+                    val securityRequirement =
+                        SecurityRequirement()
+                            .addList(securitySchemeName, listOf())
+                            .addList("authorization-code", listOf())
+
+                    operation.security(listOf(securityRequirement))
                 }
             }
         }
