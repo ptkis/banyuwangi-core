@@ -31,7 +31,7 @@ class OpenApiConfig(
                 )
 
         return SecurityScheme()
-            .type(SecurityScheme.Type.OAUTH2)
+            .type(SecurityScheme.Type.HTTP)
             .bearerFormat("JWT")
             .flows(oauthFlow)
             .scheme("bearer")
