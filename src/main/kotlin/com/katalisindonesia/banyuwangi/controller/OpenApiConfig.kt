@@ -21,7 +21,7 @@ class OpenApiConfig {
         keycloakBaseUrl: String,
         keycloakRealm: String,
     ): SecurityScheme {
-        return SecurityScheme().name("keycloak").type(SecurityScheme.Type.OAUTH2).flows(
+        return SecurityScheme().name("oauth2").type(SecurityScheme.Type.OAUTH2).flows(
             OAuthFlows().implicit(
                 OAuthFlow().authorizationUrl("$keycloakBaseUrl/realms/$keycloakRealm/protocol/openid-connect/auth")
             )

@@ -34,6 +34,7 @@ import javax.validation.constraints.Min
 
 @RestController
 @RequestMapping("/v1/camera")
+@SecurityRequirement(name = "oauth2")
 class CameraController(
     private val cameraRepo: CameraRepo,
     private val rabbitTemplate: RabbitTemplate,

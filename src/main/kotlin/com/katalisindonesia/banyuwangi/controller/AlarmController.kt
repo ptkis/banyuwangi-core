@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -36,6 +37,7 @@ import javax.validation.constraints.Min
 @RestController
 @RequestMapping("/v1/alarm")
 @Tag(name = "alarm", description = "Alarm")
+@SecurityRequirement(name = "oauth2")
 class AlarmController(
     private val alarmRepo: AlarmRepo,
     private val storageService: StorageService,

@@ -27,6 +27,7 @@ import javax.validation.constraints.Min
 
 @RestController
 @RequestMapping("/v1/live")
+@SecurityRequirement(name = "oauth2")
 class LiveViewController(
     private val cameraRepo: CameraRepo,
 ) {

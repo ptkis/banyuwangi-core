@@ -48,6 +48,7 @@ import javax.validation.constraints.Min
 
 @RestController
 @RequestMapping("/v1/detection")
+@SecurityRequirement(name = "oauth2")
 class DetectionController(
     private val storageService: StorageService,
     private val snapshotCountRepo: SnapshotCountRepo,

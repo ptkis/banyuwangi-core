@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import org.springframework.core.io.InputStreamResource
 import org.springframework.http.CacheControl
 import org.springframework.http.MediaType
@@ -24,6 +25,7 @@ import javax.validation.Valid
 
 @RestController
 @RequestMapping("/v1/image")
+@SecurityRequirement(name = "oauth2")
 class ImageController(
     private val storageService: StorageService,
     private val proxyService: ProxyService,
