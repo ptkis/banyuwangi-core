@@ -125,6 +125,7 @@ dependencies {
     implementation("com.google.firebase:firebase-admin:9.1.1")
 
     implementation("io.github.kotlin-telegram-bot.kotlin-telegram-bot:telegram:6.3.0")
+    implementation("org.apache.commons:commons-text:1.12.0")
 }
 
 tasks.withType<KotlinCompile> {
